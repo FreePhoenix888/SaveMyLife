@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sos_action_list_item_item_height">48dp</dimen>
+    <dimen name="sos_action_list_item_text_view_size">35sp</dimen>
+    <dimen name="sos_action_list_item_margin_between_items">8dp</dimen>
+    <dimen name="padding_edit_text">10dp</dimen>
+</resources>
