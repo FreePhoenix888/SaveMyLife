@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/sosActionsList">
+
+
+    <fragment
+        android:id="@+id/sosActionsList"
+        android:name="com.example.savemylife.fragments.ActionsListFragment"
+        android:label="fragment_sos_actions_list"
+        tools:layout="@layout/fragment_sos_actions_list" >
+        <action
+            android:id="@+id/action_sosActionsList_to_sosSmsActionSettingsFragment"
+            app:destination="@id/sosSmsActionSettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sosSmsActionSettingsFragment"
+        android:name="com.example.savemylife.fragments.SmsActionSettingsFragment"
+        android:label="fragment_sos_sms_action_settings"
+        tools:layout="@layout/fragment_sms_action_settings" >
+        <action
+            android:id="@+id/action_sosSmsActionFragmentSettings_to_sosActionsList"
+            app:destination="@id/sosActionsList" />
+    </fragment>
+    <fragment
+        android:id="@+id/emergencyButtonFragment"
+        android:name="com.example.savemylife.fragments.EmergencyButtonFragment"
+        android:label="fragment_emergency_button"
+        tools:layout="@layout/fragment_emergency_button" />
+    <action
+        android:id="@+id/action_global_emergency_button"
+        app:destination="@id/emergencyButtonFragment"
+        app:launchSingleTop="true"/>
+
+</navigation>
