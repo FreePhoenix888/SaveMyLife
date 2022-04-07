@@ -4,6 +4,5 @@
         <item>@drawable/ic_baseline_message_24</item>
         <item>@drawable/ic_baseline_location_on_24</item>
         <item>@drawable/ic_baseline_phone_24</item>
-        <item>@drawable/ic_telegram</item>
     </integer-array>
 </resources>
