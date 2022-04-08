@@ -18,7 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.PackageManagerCompat
 import com.example.savemylife.R
-import com.example.savemylife.databinding.FragmentSosSmsActionSettingsBinding
+import com.example.savemylife.databinding.FragmentActionsListBinding
+import com.example.savemylife.databinding.FragmentSmsActionSettingsBinding
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -36,14 +37,14 @@ class SmsActionSettingsFragment : Fragment(), EasyPermissions.PermissionCallback
 //        ContactsContract.CommonDataKinds.Phone.PHOTO_ID,
     )
 
-    private lateinit var binding: FragmentSosSmsActionSettingsBinding
+    private lateinit var binding: FragmentSmsActionSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSosSmsActionSettingsBinding.inflate(inflater, container, false)
+        binding = FragmentSmsActionSettingsBinding.inflate(inflater, container, false)
         val pickContactIntent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
         val pickContactIntentCallback: ActivityResultCallback<ActivityResult> = ActivityResultCallback {
             if(it.resultCode != AppCompatActivity.RESULT_OK){
