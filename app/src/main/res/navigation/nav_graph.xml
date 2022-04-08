@@ -10,7 +10,7 @@
         android:id="@+id/sosActionsList"
         android:name="com.example.savemylife.fragments.ActionsListFragment"
         android:label="fragment_sos_actions_list"
-        tools:layout="@layout/fragment_sos_actions_list" >
+        tools:layout="@layout/fragment_actions_list" >
         <action
             android:id="@+id/action_sosActionsList_to_sosSmsActionSettingsFragment"
             app:destination="@id/sosSmsActionSettingsFragment" />
