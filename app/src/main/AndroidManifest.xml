@@ -25,18 +25,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <service
             android:name=".services.MainService"
-            android:enabled="true"></service>
-
-        <receiver
-            android:name=".broadcastReceivers.RestartBroadcastReceiver"
-            android:directBootAware="true"
-            android:enabled="true"
-            android:exported="false"
-            android:label="RestartServiceWhenStopped"
-            android:permission=""></receiver>
+            android:enabled="true" />
     </application>
 
 </manifest>
