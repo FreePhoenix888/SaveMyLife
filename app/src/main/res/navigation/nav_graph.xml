@@ -3,35 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/sosActionsList">
-
-
+    app:startDestination="@id/mainFragment">
     <fragment
-        android:id="@+id/sosActionsList"
-        android:name="com.example.savemylife.fragments.ActionsListFragment"
-        android:label="fragment_sos_actions_list"
-        tools:layout="@layout/fragment_actions_list" >
+        android:id="@+id/mainFragment"
+        android:name="com.freephoenix888.savemylife.fragments.MainFragment"
+        tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_sosActionsList_to_sosSmsActionSettingsFragment"
-            app:destination="@id/sosSmsActionSettingsFragment" />
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/sosSmsActionSettingsFragment"
-        android:name="com.example.savemylife.fragments.SmsActionSettingsFragment"
-        android:label="fragment_sos_sms_action_settings"
-        tools:layout="@layout/fragment_sms_action_settings" >
+        android:id="@+id/settingsFragment"
+        android:name="com.freephoenix888.savemylife.fragments.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" >
         <action
-            android:id="@+id/action_sosSmsActionFragmentSettings_to_sosActionsList"
-            app:destination="@id/sosActionsList" />
+            android:id="@+id/action_settingsFragment_to_contactsFragment"
+            app:destination="@id/contactsFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_messageSettingsFragment"
+            app:destination="@id/messageSettingsFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_locationSettingsFragment"
+            app:destination="@id/locationSettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/emergencyButtonFragment"
-        android:name="com.example.savemylife.fragments.EmergencyButtonFragment"
+        android:name="com.freephoenix888.savemylife.fragments.EmergencyButtonFragment"
         android:label="fragment_emergency_button"
         tools:layout="@layout/fragment_emergency_button" />
     <action
         android:id="@+id/action_global_emergency_button"
-        app:destination="@id/emergencyButtonFragment"
-        app:launchSingleTop="true"/>
-
+        app:destination="@id/emergencyButtonFragment"/>
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.freephoenix888.savemylife.fragments.ContactsFragment"
+        android:label="Contacts"
+        tools:layout="@layout/fragment_contacts" />
+    <fragment
+        android:id="@+id/messageSettingsFragment"
+        android:name="com.freephoenix888.savemylife.fragments.MessageSettingsFragment"
+        android:label="Message"
+        tools:layout="@layout/fragment_message_settings" />
+    <fragment
+        android:id="@+id/locationSettingsFragment"
+        android:name="com.freephoenix888.savemylife.fragments.LocationSettingsFragment"
+        android:label="Location"
+        tools:layout="@layout/fragment_location_settings" />
 </navigation>
