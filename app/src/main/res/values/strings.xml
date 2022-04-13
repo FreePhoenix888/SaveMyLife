@@ -4,12 +4,20 @@
     <!-- TODO: Remove or change this placeholder text -->\
     <string name="actions_setting_button_image_content_description">The image describing button to setting action.</string>
     <string name="sms_message_text_input_hint">Message</string>
-    <string name="contacts">Contacts:</string>
     <string name="add_contact">Add contact</string>
-    <string-array name="sos_action_titles">
-        <item>SMS</item>
-        <item>Location</item>
-        <item>Call</item>
-        <item>Telegram</item>
-    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="emergency_button_danger_text">I AM IN DANGER!</string>
+    <string name="emergency_sms_template">I AM IN DANGER!\nMY LOCATION: ${LOCATION}.\n${NAME}, help me.</string>
+    <string name="will_evaluate_to">will evaluate to</string>
+    <string name="you_can_specify_your_own_message_template_by_using_placeholders">You can specify your own message template by using placeholders.</string>
+    <string name="app_is_not_looking_after_you">App is not looking after you.</string>
+    <string name="location_sharing">Location sharing</string>
+    <string name="message">Message</string>
+    <string name="contacts">Contacts</string>
+    <string name="location">Location</string>
+    <string name="message_template_hint">Message template</string>
+    <string name="your_message_will_look_like_this">Your message will look like this:</string>
+    <string name="message_sending_interval">Message sending interval</string>
+    <string name="read_contacts_permission_rationale">Read contacts permission is required to choose emergency contacts.</string>
 </resources>
