@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.databinding.ActivityMainBinding
 import com.freephoenix888.savemylife.services.MainService
@@ -46,13 +47,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun runMainService(){
         Intent(this, MainService::class.java).also {
-            it.action = Constants.ACTION_START_SERVICE
+            it.action = ActionConstants.ACTION_START_SERVICE
             startService(it)
         }
     }
 
     private fun navigateToEmergencyButtonFragmentIfNeeded(intent: Intent?){
-        if(intent?.action == Constants.ACTION_SHOW_EMERGENCY_BUTTON_FRAGMENT){
+        if(intent?.action == ActionConstants.ACTION_SHOW_EMERGENCY_BUTTON_FRAGMENT){
             val emergencyButtonDirection = NavGraphDirections.actionGlobalEmergencyButton()
             navController.navigate(emergencyButtonDirection)
         }
