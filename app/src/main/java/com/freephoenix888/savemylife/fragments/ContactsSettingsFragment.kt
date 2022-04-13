@@ -21,7 +21,7 @@ import com.freephoenix888.savemylife.databinding.FragmentContactsBinding
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
-class ContactsFragment : Fragment() {
+class ContactsSettingsFragment : Fragment() {
 
     companion object {
         const val TAG = "ContactsFragment"
