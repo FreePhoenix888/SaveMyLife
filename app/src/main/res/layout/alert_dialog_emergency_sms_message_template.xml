@@ -22,7 +22,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/emergency_sms_template"
-        android:theme="@style/InlineCode"
         app:layout_constraintTop_toBottomOf="@id/you_can_specify_your_own_message_template_by_using_placeholders_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
