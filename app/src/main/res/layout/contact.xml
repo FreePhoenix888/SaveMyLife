@@ -7,72 +7,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:id="@+id/image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/between_contact_image_and_text_data_guide_line"
+        app:layout_constraintWidth_percent="0.2"
         tools:src="@drawable/ic_baseline_face_24"
-        />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/between_contact_image_and_text_data_guide_line"
-        app:layout_constraintGuide_percent="0.25"
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/between_contact_image_and_text_data_guide_line"
-        app:layout_constraintBottom_toBottomOf="@id/contact_horizontal_center_guide_line"
-        android:padding="@dimen/padding_edit_text"
+        app:layout_constraintEnd_toStartOf="@id/remove_contact_button"
+        app:layout_constraintStart_toEndOf="@id/image"
+        app:layout_constraintBottom_toTopOf="@id/horizontal_center"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         tools:text="Name"
         />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontal_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/contact_horizontal_center_guide_line"
         app:layout_constraintGuide_percent="0.5"
+        android:orientation="horizontal"
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="+7 777 777 7777"
-        app:layout_constraintStart_toEndOf="@id/between_contact_image_and_text_data_guide_line"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/contact_horizontal_center_guide_line"
-        android:padding="@dimen/padding_edit_text"
+        app:layout_constraintTop_toBottomOf="@id/horizontal_center"
+        app:layout_constraintStart_toEndOf="@id/image"
+        app:layout_constraintEnd_toStartOf="@id/remove_contact_button"
         />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/between_contact_text_data_and_remove_button_guide_line"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.90" />
-
     <com.google.android.material.button.MaterialButton
+        android:theme="@style/Widget.Material3.Button.IconButton"
+        android:id="@+id/remove_contact_button"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintHeight_percent="0.6"
         app:icon="@drawable/ic_baseline_person_remove_24"
         app:iconPadding="0dp"
-        android:padding="0dp"
         android:gravity="center"
         app:iconGravity="textStart"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/between_contact_text_data_and_remove_button_guide_line"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
