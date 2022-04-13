@@ -3,16 +3,14 @@ package com.freephoenix888.savemylife.fragments
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
-import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.databinding.FragmentMessageSettingsBinding
-import com.freephoenix888.savemylife.preferences.Preferences
+import com.freephoenix888.savemylife.constants.PreferencesConstants
 import pub.devrel.easypermissions.EasyPermissions
 
 
@@ -24,7 +22,7 @@ class MessageSettingsFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentMessageSettingsBinding
-    private val preferences = requireContext().getSharedPreferences(Constants.PREFERENCES_FILE_PATH, MODE_PRIVATE)
+    private val preferences = requireContext().getSharedPreferences(PreferencesConstants.PREFERENCES_FILE_PATH, MODE_PRIVATE)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,16 +34,16 @@ class MessageSettingsFragment : Fragment() {
         binding = FragmentMessageSettingsBinding.inflate(inflater)
         binding.infoButtonMessageTemplate.doAfterTextChanged { text: Editable? ->
             preferences.edit()
-                .putString(Preferences.MESSAGE_TEMPLATE, text.toString())
+                .putString(PreferencesConstants.MESSAGE_TEMPLATE, text.toString())
                 .apply()
         }
-        binding.inputMessageTemplate.setText(preferences.getString(Preferences.MESSAGE_TEMPLATE, null))
+        binding.inputMessageTemplate.setText(preferences.getString(PreferencesConstants.MESSAGE_TEMPLATE, null))
         binding.inputMessageSendingInterval.doAfterTextChanged { text: Editable? ->
             preferences.edit()
-                .putString(Preferences.MESSAGE_SENDING_INTERVAL, text.toString())
+                .putString(PreferencesConstants.MESSAGE_SENDING_INTERVAL, text.toString())
                 .apply()
         }
-        binding.inputMessageSendingInterval.setText(preferences.getString(Preferences.MESSAGE_SENDING_INTERVAL, null))
+        binding.inputMessageSendingInterval.setText(preferences.getString(PreferencesConstants.MESSAGE_SENDING_INTERVAL, null))
         return binding.root
     }
 

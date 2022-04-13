@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.databinding.FragmentLocationSettingsBinding
-import com.freephoenix888.savemylife.preferences.Preferences
+import com.freephoenix888.savemylife.constants.PreferencesConstants
 import pub.devrel.easypermissions.EasyPermissions
 
 class LocationSettingsFragment : Fragment(), View.OnClickListener {
@@ -49,9 +49,9 @@ class LocationSettingsFragment : Fragment(), View.OnClickListener {
             Constants.PREFERENCES_FILE_PATH,
             Context.MODE_PRIVATE
         )
-        val isLocationSharingEnabled = preferences.getBoolean(Preferences.IS_LOCATION_SHARING_ENABLED, false)
+        val isLocationSharingEnabled = preferences.getBoolean(PreferencesConstants.IS_LOCATION_SHARING_ENABLED, false)
         preferences.edit()
-            .putBoolean(Preferences.IS_LOCATION_SHARING_ENABLED, !isLocationSharingEnabled)
+            .putBoolean(PreferencesConstants.IS_LOCATION_SHARING_ENABLED, !isLocationSharingEnabled)
             .apply()
     }
 

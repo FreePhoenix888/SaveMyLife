@@ -2,7 +2,6 @@ package com.freephoenix888.savemylife.fragments
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -10,7 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.databinding.FragmentMainBinding
-import com.freephoenix888.savemylife.preferences.Preferences
+import com.freephoenix888.savemylife.constants.PreferencesConstants
 
 class MainFragment : Fragment(), View.OnClickListener {
 
@@ -43,10 +42,10 @@ class MainFragment : Fragment(), View.OnClickListener {
     }
 
     private val serviceEnablerButtonOnClickListener = View.OnClickListener {
-        val preferences = context?.getSharedPreferences(Constants.PREFERENCES_FILE_PATH, MODE_PRIVATE) ?: return@OnClickListener
-        val isMainServiceEnabled = preferences.getBoolean(Preferences.IS_MAIN_SERVICE_ENABLED, true)
+        val preferences = context?.getSharedPreferences(PreferencesConstants.PREFERENCES_FILE_PATH, MODE_PRIVATE) ?: return@OnClickListener
+        val isMainServiceEnabled = preferences.getBoolean(PreferencesConstants.IS_MAIN_SERVICE_ENABLED, true)
         preferences.edit()
-            .putBoolean(Preferences.IS_MAIN_SERVICE_ENABLED, !isMainServiceEnabled)
+            .putBoolean(PreferencesConstants.IS_MAIN_SERVICE_ENABLED, !isMainServiceEnabled)
             .apply()
     }
 }
