@@ -11,19 +11,19 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.Constants
-import com.freephoenix888.savemylife.databinding.ActivityMainBinding
+import com.freephoenix888.savemylife.databinding.ActivitySaveMyLifeBinding
 import com.freephoenix888.savemylife.services.MainService
 import com.google.android.material.appbar.MaterialToolbar
 
 
-class MainActivity : AppCompatActivity() {
+class SaveMyLifeActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivitySaveMyLifeBinding
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivitySaveMyLifeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
