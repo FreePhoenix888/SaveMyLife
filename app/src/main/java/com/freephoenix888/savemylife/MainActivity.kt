@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar(){
-        val toolbar = binding.toolbarMain.toolbarMain
+        val toolbar = binding.toolbarMain.toolbar
         val toolBarConfig = AppBarConfiguration(navController.graph)
         setSupportActionBar(toolbar)
         toolbar.setupWithNavController(navController, toolBarConfig)
@@ -56,18 +56,6 @@ class MainActivity : AppCompatActivity() {
             val emergencyButtonDirection = NavGraphDirections.actionGlobalEmergencyButton()
             navController.navigate(emergencyButtonDirection)
         }
-    }
-
-    private fun GetSettingsButtonClickListeners(): List<View.OnClickListener> {
-        val listeners = mutableListOf<View.OnClickListener>()
-        val settingsButtonActivityClasses = listOf(SosSmsActionActivity::class.java, SosShareLocationActionActivity::class.java, SosSmsActionActivity::class.java, SosSmsActionActivity::class.java)
-        for (settingsButtonActivityClass in settingsButtonActivityClasses){
-            listeners.add { view: View? ->
-                val intent = Intent(this, settingsButtonActivityClass)
-                this.startActivity(intent)
-            }
-        }
-        return listeners
     }
 
 }
