@@ -46,7 +46,7 @@ class LocationSettingsFragment : Fragment(), View.OnClickListener {
             EasyPermissions.requestPermissions(this, "Location permission must be granted to send location link in message.", REQUEST_CODE_PERMISSION_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
         }
         val preferences = requireContext().getSharedPreferences(
-            Constants.PREFERENCES_FILE_PATH,
+            PreferencesConstants.PREFERENCES_FILE_PATH,
             Context.MODE_PRIVATE
         )
         val isLocationSharingEnabled = preferences.getBoolean(PreferencesConstants.IS_LOCATION_SHARING_ENABLED, false)

@@ -47,13 +47,13 @@ class SaveMyLifeActivity : AppCompatActivity() {
 
     private fun runMainService(){
         Intent(this, MainService::class.java).also {
-            it.action = ActionConstants.ACTION_START_SERVICE
+            it.action = ActionConstants.START_SERVICE
             startService(it)
         }
     }
 
     private fun navigateToEmergencyButtonFragmentIfNeeded(intent: Intent?){
-        if(intent?.action == ActionConstants.ACTION_SHOW_EMERGENCY_BUTTON_FRAGMENT){
+        if(intent?.action == ActionConstants.SHOW_EMERGENCY_BUTTON_FRAGMENT){
             val emergencyButtonDirection = NavGraphDirections.actionGlobalEmergencyButton()
             navController.navigate(emergencyButtonDirection)
         }

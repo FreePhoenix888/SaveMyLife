@@ -9,11 +9,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
-import com.freephoenix888.savemylife.constants.Constants
 import android.app.PendingIntent
 import android.graphics.BitmapFactory
-import com.freephoenix888.savemylife.MainActivity
+import com.freephoenix888.savemylife.SaveMyLifeActivity
 import com.freephoenix888.savemylife.R
+import com.freephoenix888.savemylife.constants.ActionConstants
+import com.freephoenix888.savemylife.constants.NotificationConstants
 
 
 class MainService : LifecycleService() {
@@ -32,14 +33,14 @@ class MainService : LifecycleService() {
         super.onStartCommand(intent, flags, startId)
         intent?.let {
             when (it.action) {
-                Constants.ACTION_START_SERVICE -> {
+                ActionConstants.START_SERVICE -> {
                     if(isFirstStart) {
                         Log.d(TAG, "First start...")
                         startForegroundService()
                         isFirstStart = false
                     } else return -1
                 }
-                Constants.ACTION_STOP_SERVICE -> {
+                ActionConstants.STOP_SERVICE -> {
                     Log.d(TAG, "Stopping...")
                 }
                 else -> {}
@@ -57,7 +58,7 @@ class MainService : LifecycleService() {
 
     private fun startForegroundService(){
         val notification = getNotification()
-        startForeground(Constants.NOTIFICATION_ID, notification)
+        startForeground(NotificationConstants.ID, notification)
     }
 
     private fun getNotification(): Notification{
@@ -65,7 +66,7 @@ class MainService : LifecycleService() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             createNotificationChannel(notificationManager)
         }
-        val notificationBuilder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_ID)
             .setAutoCancel(false)
             .setOngoing(true)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_round_warning_24))
@@ -79,8 +80,8 @@ class MainService : LifecycleService() {
 
     private fun getEmergencyButtonActivityPendingIntent(): PendingIntent {
         val pendingIntent: PendingIntent
-        val intent = Intent(this, MainActivity::class.java).also {
-            it.action = Constants.ACTION_SHOW_EMERGENCY_BUTTON_FRAGMENT
+        val intent = Intent(this, SaveMyLifeActivity::class.java).also {
+            it.action = ActionConstants.SHOW_EMERGENCY_BUTTON_FRAGMENT
         }
 
 
@@ -100,7 +101,7 @@ class MainService : LifecycleService() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(notificationManager: NotificationManager){
-        val channel = NotificationChannel(Constants.NOTIFICATION_CHANNEL_ID, Constants.NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW)
+        val channel = NotificationChannel(NotificationConstants.CHANNEL_ID, NotificationConstants.CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW)
         notificationManager.createNotificationChannel(channel)
     }
 
