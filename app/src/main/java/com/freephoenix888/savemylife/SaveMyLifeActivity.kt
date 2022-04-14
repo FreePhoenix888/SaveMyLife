@@ -18,13 +18,18 @@ import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
 
-class SaveMyLifeActivity : AppCompatActivity() {
+class SaveMyLifeActivity : AppCompatActivity(), KodeinAware {
 
+    override val kodein by kodein()
+    private val factory: ContactViewModelFactory by instance()
+
+    private lateinit var viewModel: ContactViewModel
     private lateinit var binding: ActivitySaveMyLifeBinding
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, factory)[ContactViewModel::class.java]
         binding = ActivitySaveMyLifeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
