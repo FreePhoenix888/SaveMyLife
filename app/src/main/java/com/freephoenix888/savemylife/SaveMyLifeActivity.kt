@@ -2,18 +2,20 @@ package com.freephoenix888.savemylife
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.freephoenix888.savemylife.constants.ActionConstants
-import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.databinding.ActivitySaveMyLifeBinding
 import com.freephoenix888.savemylife.services.MainService
-import com.google.android.material.appbar.MaterialToolbar
+import com.freephoenix888.savemylife.ui.ContactViewModel
+import com.freephoenix888.savemylife.ui.ContactViewModelFactory
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 
 
 class SaveMyLifeActivity : AppCompatActivity() {
