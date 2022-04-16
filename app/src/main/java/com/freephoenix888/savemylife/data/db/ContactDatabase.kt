@@ -13,7 +13,7 @@ import com.freephoenix888.savemylife.data.db.entities.Contact
 )
 abstract class ContactDatabase: RoomDatabase() {
 
-    abstract fun dao(): ContactDao
+    abstract val dao: ContactDao
 
     companion object{
         @Volatile
