@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 class Contact(
     @ColumnInfo(name = "phone_number") val phoneNumber: String,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "thumbnail_uri") val thumbnailUri: Uri
+    @ColumnInfo(name = "thumbnail_uri") val thumbnailUri: String
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
