@@ -27,7 +27,7 @@ abstract class ContactDatabase: RoomDatabase() {
         private fun createDatabase(context: Context) = Room.databaseBuilder(
             context.applicationContext,
             ContactDatabase::class.java,
-            "contact"
+            "ContactStorage.db"
         ).build()
 
     }
