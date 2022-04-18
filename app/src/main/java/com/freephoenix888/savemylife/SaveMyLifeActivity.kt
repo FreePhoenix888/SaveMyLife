@@ -13,15 +13,10 @@ import com.freephoenix888.savemylife.databinding.ActivitySaveMyLifeBinding
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.ContactViewModel
 import com.freephoenix888.savemylife.ui.ContactViewModelFactory
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 
 
-class SaveMyLifeActivity : AppCompatActivity(), KodeinAware {
 
-    override val kodein by kodein()
-    private val factory: ContactViewModelFactory by instance()
+class SaveMyLifeActivity : AppCompatActivity()  {
 
     private lateinit var viewModel: ContactViewModel
     private lateinit var binding: ActivitySaveMyLifeBinding
@@ -29,7 +24,6 @@ class SaveMyLifeActivity : AppCompatActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, factory)[ContactViewModel::class.java]
         binding = ActivitySaveMyLifeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
