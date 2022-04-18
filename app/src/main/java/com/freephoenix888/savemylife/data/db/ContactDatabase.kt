@@ -9,7 +9,7 @@ import com.freephoenix888.savemylife.data.db.entities.Contact
 @Database(
     entities = [Contact::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class ContactDatabase: RoomDatabase() {
 
