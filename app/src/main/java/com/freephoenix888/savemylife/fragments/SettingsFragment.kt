@@ -11,7 +11,6 @@ import com.freephoenix888.savemylife.adapters.SettingsAdapter
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.data.models.Setting
 import com.freephoenix888.savemylife.databinding.FragmentSettingsBinding
-import com.google.android.gms.common.internal.Asserts
 import androidx.recyclerview.widget.DividerItemDecoration
 import java.util.*
 
