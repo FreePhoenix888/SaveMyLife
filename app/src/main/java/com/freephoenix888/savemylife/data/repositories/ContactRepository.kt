@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 class ContactRepository(private val db: ContactDatabase) {
 
-    fun getAll(): Flow<List<ContactEntity>> = db.dao().getAll()
-
     suspend fun insert(vararg contacts: ContactEntity): Int{
         return db.dao().insert(*contacts)
     }
@@ -16,5 +14,10 @@ class ContactRepository(private val db: ContactDatabase) {
         return db.dao().remove(*contacts)
     }
 
+    suspend fun get(vararg contactIds: Int): Flow<List<ContactEntity>>{
+        return db.dao().get(*contactIds)
+    }
+
+    fun getAll(): Flow<List<ContactEntity>> = db.dao().getAll()
 
 }
