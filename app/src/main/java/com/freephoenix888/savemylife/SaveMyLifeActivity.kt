@@ -13,16 +13,17 @@ import com.freephoenix888.savemylife.databinding.ActivitySaveMyLifeBinding
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.ContactViewModel
 import com.freephoenix888.savemylife.ui.ContactViewModelFactory
-
+import javax.inject.Inject
 
 
 class SaveMyLifeActivity : AppCompatActivity()  {
 
-    private lateinit var viewModel: ContactViewModel
+    @Inject lateinit var viewModel: ContactViewModel
     private lateinit var binding: ActivitySaveMyLifeBinding
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (applicationContext as SaveMyLifeApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivitySaveMyLifeBinding.inflate(layoutInflater)
         setContentView(binding.root)
