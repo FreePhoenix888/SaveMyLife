@@ -7,11 +7,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "contact")
 data class ContactEntity(
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int? = null,
     @ColumnInfo(name = "phone_number") val phoneNumber: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "thumbnail_uri") val thumbnailUri: String
 ) {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Int? = null
+
 }
