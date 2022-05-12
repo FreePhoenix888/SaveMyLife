@@ -12,26 +12,23 @@ import com.freephoenix888.savemylife.data.db.entities.ContactEntity
     version = 1,
     exportSchema = true
 )
-abstract class ContactDatabase: RoomDatabase() {
+abstract class ContactLocalStorage: RoomDatabase() {
 
     abstract fun dao(): ContactDao
 
     companion object{
         @Volatile
-        private var INSTANCE: ContactDatabase? = null
+        private var INSTANCE: ContactLocalStorage? = null
         private val LOCK = Any()
 
-        operator fun invoke(context: Context) = INSTANCE ?: synchronized(LOCK) {
+        fun getInstance(context: Context) = INSTANCE ?: synchronized(LOCK) {
             INSTANCE ?: createDatabase(context).also { INSTANCE = it }
         }
 
         private fun createDatabase(context: Context) = Room.databaseBuilder(
             context.applicationContext,
-            ContactDatabase::class.java,
-            "ContactStorage.db"
+            ContactLocalStorage::class.java,
+            "contact"
         ).build()
-
     }
-
-
 }
