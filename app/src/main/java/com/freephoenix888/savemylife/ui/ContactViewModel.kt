@@ -1,25 +1,21 @@
 package com.freephoenix888.savemylife.ui
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.freephoenix888.savemylife.data.db.entities.ContactEntity
 import com.freephoenix888.savemylife.data.repositories.ContactRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ContactViewModel @Inject constructor (private val repository: ContactRepository): ViewModel() {
 
-    val contacts = repository.getAll().asLiveData()
+    val contacts = repository.allContacts.asLiveData()
 
-    suspend fun add(contact: ContactEntity) = withContext(Dispatchers.IO) {
-        repository.insert(contact)
+    suspend fun insert(vararg contacts: ContactEntity): List<Long> {
+        return repository.insert(*contacts)
     }
 
-    suspend fun remove(contact: ContactEntity) = withContext(Dispatchers.IO) {
-        repository.remove(contact)
+    suspend fun delete(vararg contacts: ContactEntity): Int {
+        return repository.delete(contacts = contacts)
     }
-
-
 }
