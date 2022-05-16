@@ -1,18 +1,16 @@
-package com.freephoenix888.savemylife.fragments
+package com.freephoenix888.savemylife.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.freephoenix888.savemylife.adapters.SettingsAdapter
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.data.models.Setting
 import com.freephoenix888.savemylife.databinding.FragmentSettingsBinding
 import androidx.recyclerview.widget.DividerItemDecoration
-import java.util.*
 
 
 class SettingsFragment : Fragment() {

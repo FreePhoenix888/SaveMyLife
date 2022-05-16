@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.freephoenix888.savemylife.fragments.MainFragment"
+        android:name="com.freephoenix888.savemylife.ui.fragments.MainFragment"
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_mainFragment_to_settingsFragment"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.freephoenix888.savemylife.fragments.SettingsFragment"
+        android:name="com.freephoenix888.savemylife.ui.fragments.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/emergencyButtonFragment"
-        android:name="com.freephoenix888.savemylife.fragments.EmergencyButtonFragment"
+        android:name="com.freephoenix888.savemylife.ui.fragments.EmergencyButtonFragment"
         android:label="fragment_emergency_button"
         tools:layout="@layout/fragment_emergency_button" />
     <action
@@ -37,17 +37,17 @@
         app:destination="@id/emergencyButtonFragment"/>
     <fragment
         android:id="@+id/contactsFragment"
-        android:name="com.freephoenix888.savemylife.fragments.ContactsSettingsFragment"
+        android:name="com.freephoenix888.savemylife.ui.fragments.ContactsSettingsFragment"
         android:label="Contacts"
         tools:layout="@layout/fragment_contacts_settings" />
     <fragment
         android:id="@+id/messageSettingsFragment"
-        android:name="com.freephoenix888.savemylife.fragments.MessageSettingsFragment"
+        android:name="com.freephoenix888.savemylife.ui.fragments.MessageSettingsFragment"
         android:label="Message"
         tools:layout="@layout/fragment_message_settings" />
     <fragment
         android:id="@+id/locationSettingsFragment"
-        android:name="com.freephoenix888.savemylife.fragments.LocationSettingsFragment"
+        android:name="com.freephoenix888.savemylife.ui.fragments.LocationSettingsFragment"
         android:label="Location"
         tools:layout="@layout/fragment_location_settings" />
 </navigation>

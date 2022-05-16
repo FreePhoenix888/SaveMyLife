@@ -1,7 +1,7 @@
 package com.freephoenix888.savemylife.data.repositories
 
-import com.freephoenix888.savemylife.data.db.ContactLocalStorage
-import com.freephoenix888.savemylife.data.db.entities.ContactEntity
+import com.freephoenix888.savemylife.data.storage.local.ContactLocalStorage
+import com.freephoenix888.savemylife.data.storage.entities.ContactEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton

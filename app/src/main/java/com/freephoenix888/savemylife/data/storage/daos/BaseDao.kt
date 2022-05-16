@@ -1,9 +1,8 @@
-package com.freephoenix888.savemylife.data.db.daos
+package com.freephoenix888.savemylife.data.storage.daos
 
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import com.freephoenix888.savemylife.data.db.entities.ContactEntity
 
 interface BaseDao<T> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

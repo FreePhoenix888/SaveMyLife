@@ -1,4 +1,4 @@
-package com.freephoenix888.savemylife.ui
+package com.freephoenix888.savemylife.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

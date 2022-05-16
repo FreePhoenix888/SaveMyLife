@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.MessageSettingsFragment"
+    tools:context=".ui.fragments.MessageSettingsFragment"
     android:padding="10dp"
     android:orientation="vertical"
     >

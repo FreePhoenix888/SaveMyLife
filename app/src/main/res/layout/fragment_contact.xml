@@ -5,7 +5,7 @@
     android:layout_height="100dp"
     android:padding="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.ContactFragment">
+    tools:context=".ui.fragments.ContactFragment">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:layout_width="0dp"

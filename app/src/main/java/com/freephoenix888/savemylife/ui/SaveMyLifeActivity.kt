@@ -13,6 +13,7 @@ import com.freephoenix888.savemylife.SaveMyLifeApplication
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.databinding.ActivitySaveMyLifeBinding
 import com.freephoenix888.savemylife.services.MainService
+import com.freephoenix888.savemylife.ui.viewModels.ContactViewModel
 import javax.inject.Inject
 
 

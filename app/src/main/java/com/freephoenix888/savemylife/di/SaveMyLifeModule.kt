@@ -1,9 +1,8 @@
 package com.freephoenix888.savemylife.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
-import com.freephoenix888.savemylife.data.db.ContactLocalStorage
+import com.freephoenix888.savemylife.data.storage.local.ContactLocalStorage
 import com.freephoenix888.savemylife.data.repositories.ContactRepository
 import dagger.Module
 import dagger.Provides

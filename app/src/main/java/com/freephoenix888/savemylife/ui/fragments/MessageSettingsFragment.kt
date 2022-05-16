@@ -1,4 +1,4 @@
-package com.freephoenix888.savemylife.fragments
+package com.freephoenix888.savemylife.ui.fragments
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
-import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.databinding.FragmentMessageSettingsBinding
 import com.freephoenix888.savemylife.constants.PreferencesConstants
 import pub.devrel.easypermissions.EasyPermissions

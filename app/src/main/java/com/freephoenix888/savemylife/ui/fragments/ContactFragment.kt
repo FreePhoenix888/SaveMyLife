@@ -1,11 +1,10 @@
-package com.freephoenix888.savemylife.fragments
+package com.freephoenix888.savemylife.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.databinding.FragmentContactBinding
 
 class ContactFragment : Fragment() {

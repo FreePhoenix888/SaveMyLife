@@ -1,10 +1,8 @@
-package com.freephoenix888.savemylife.ui
+package com.freephoenix888.savemylife.ui.viewModels
 
-import android.util.Log
 import androidx.lifecycle.*
-import com.freephoenix888.savemylife.data.db.entities.ContactEntity
+import com.freephoenix888.savemylife.data.storage.entities.ContactEntity
 import com.freephoenix888.savemylife.data.repositories.ContactRepository
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ContactViewModel @Inject constructor (private val repository: ContactRepository): ViewModel() {

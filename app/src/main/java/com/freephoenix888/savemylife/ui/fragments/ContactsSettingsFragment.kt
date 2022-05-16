@@ -1,4 +1,4 @@
-package com.freephoenix888.savemylife.fragments
+package com.freephoenix888.savemylife.ui.fragments
 
 import android.Manifest.permission.READ_CONTACTS
 import android.content.Context
@@ -18,10 +18,10 @@ import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.SaveMyLifeApplication
 import com.freephoenix888.savemylife.adapters.ContactsAdapter
-import com.freephoenix888.savemylife.data.db.entities.ContactEntity
+import com.freephoenix888.savemylife.data.storage.entities.ContactEntity
 import com.freephoenix888.savemylife.data.models.ContactModel
 import com.freephoenix888.savemylife.databinding.FragmentContactsSettingsBinding
-import com.freephoenix888.savemylife.ui.ContactViewModel
+import com.freephoenix888.savemylife.ui.viewModels.ContactViewModel
 import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
