@@ -27,7 +27,9 @@
         </activity>
         <service
             android:name=".services.MainService"
-            android:enabled="true" />
+            android:enabled="true"
+            android:foregroundServiceType="location"
+            />
 
         <receiver
             android:name=".broadcastReceivers.RestartBroadcastReceiver"
