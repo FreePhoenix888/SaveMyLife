@@ -2,7 +2,6 @@ package com.freephoenix888.savemylife.fragments
 
 import android.Manifest.permission.READ_CONTACTS
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.activity.result.registerForActivityResult
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.R
