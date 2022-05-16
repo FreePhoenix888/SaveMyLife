@@ -114,7 +114,8 @@ class ContactsSettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = FragmentContactsBinding.inflate(inflater)
+        binding = FragmentContactsSettingsBinding.inflate(inflater)
+
         binding.addContactBtn.setOnClickListener {
             val rationale = getString(R.string.read_contacts_permission_rationale)
             if(!EasyPermissions.hasPermissions(requireContext(), READ_CONTACTS)){
@@ -125,6 +126,24 @@ class ContactsSettingsFragment : Fragment() {
                 return@setOnClickListener
             }
             pickContactActivityLauncher.launch()
+
+
+        }
+
+        val adapter = ContactAdapter(removeContact = {contact: ContactModel ->
+            contactViewModel.viewModelScope.launch {
+                contactViewModel.delete(ContactEntity(uri = contact.uri))
+            }
+        })
+
+
+        binding.recyclerView.adapter = adapter
+        contactViewModel.contacts.observe(viewLifecycleOwner) { contactEntities: List<ContactEntity> ->
+            val contacts = mutableListOf<ContactModel>()
+            contactEntities.forEach { contactEntity: ContactEntity ->
+                contacts.addAll(getContactsByUri(contactEntity.uri))
+            }
+            adapter.submitContacts(contacts = contacts)
         }
 
         return binding.root
