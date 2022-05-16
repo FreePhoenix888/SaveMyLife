@@ -1,8 +1,10 @@
 package com.freephoenix888.savemylife
 
 import android.app.Application
+import com.freephoenix888.savemylife.data.db.ContactLocalStorage
 import com.freephoenix888.savemylife.data.repositories.ContactRepository
 import com.freephoenix888.savemylife.di.SaveMyLifeModule
+import com.freephoenix888.savemylife.fragments.ContactsSettingsFragment
 import com.freephoenix888.savemylife.ui.ContactViewModel
 import dagger.Component
 import javax.inject.Singleton
