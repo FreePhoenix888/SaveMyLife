@@ -76,6 +76,10 @@ class ContactsSettingsFragment : Fragment() {
         cursor.close()
     }
 
+    override fun onAttach(context: Context) {
+        (context.applicationContext as SaveMyLifeApplication).appComponent.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
