@@ -39,7 +39,7 @@
         android:id="@+id/contactsFragment"
         android:name="com.freephoenix888.savemylife.fragments.ContactsSettingsFragment"
         android:label="Contacts"
-        tools:layout="@layout/fragment_contacts" />
+        tools:layout="@layout/fragment_contacts_settings" />
     <fragment
         android:id="@+id/messageSettingsFragment"
         android:name="com.freephoenix888.savemylife.fragments.MessageSettingsFragment"
