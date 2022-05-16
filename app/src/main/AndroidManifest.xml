@@ -29,6 +29,13 @@
         <service
             android:name=".services.MainService"
             android:enabled="true" />
+
+        <receiver
+            android:name=".broadcastReceivers.RestartBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+        </receiver>
     </application>
 
 </manifest>
