@@ -17,7 +17,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.SaveMyLifeApplication
-import com.freephoenix888.savemylife.adapters.ContactAdapter
+import com.freephoenix888.savemylife.adapters.ContactsAdapter
 import com.freephoenix888.savemylife.data.db.entities.ContactEntity
 import com.freephoenix888.savemylife.data.models.ContactModel
 import com.freephoenix888.savemylife.databinding.FragmentContactsSettingsBinding
@@ -128,7 +128,7 @@ class ContactsSettingsFragment : Fragment() {
 
         }
 
-        val adapter = ContactAdapter(removeContact = {contact: ContactModel ->
+        val adapter = ContactsAdapter(removeContact = { contact: ContactModel ->
             contactViewModel.viewModelScope.launch {
                 contactViewModel.delete(ContactEntity(uri = contact.uri))
             }
