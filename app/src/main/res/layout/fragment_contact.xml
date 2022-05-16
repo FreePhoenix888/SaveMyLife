@@ -19,10 +19,11 @@
         />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/remove_contact_button"
+        app:layout_constraintEnd_toStartOf="@id/button_remove_contact"
         app:layout_constraintStart_toEndOf="@id/image"
         app:layout_constraintBottom_toTopOf="@id/horizontal_center"
         android:layout_marginEnd="8dp"
@@ -39,6 +40,7 @@
         />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="+7 777 777 7777"
@@ -47,12 +49,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/horizontal_center"
         app:layout_constraintStart_toEndOf="@id/image"
-        app:layout_constraintEnd_toStartOf="@id/remove_contact_button"
+        app:layout_constraintEnd_toStartOf="@id/button_remove_contact"
         />
 
     <com.google.android.material.button.MaterialButton
         android:theme="@style/Widget.Material3.Button.IconButton"
-        android:id="@+id/remove_contact_button"
+        android:id="@+id/button_remove_contact"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintWidth_percent="0.1"
