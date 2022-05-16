@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SaveMyLifeActivity">
+    tools:context=".ui.SaveMyLifeActivity">
     <include layout="@layout/toolbar_main" android:id="@+id/toolbar_main" />
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"

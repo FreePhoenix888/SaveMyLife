@@ -1,20 +1,18 @@
-package com.freephoenix888.savemylife
+package com.freephoenix888.savemylife.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.freephoenix888.savemylife.NavGraphDirections
+import com.freephoenix888.savemylife.R
+import com.freephoenix888.savemylife.SaveMyLifeApplication
 import com.freephoenix888.savemylife.constants.ActionConstants
-import com.freephoenix888.savemylife.data.db.entities.ContactEntity
 import com.freephoenix888.savemylife.databinding.ActivitySaveMyLifeBinding
 import com.freephoenix888.savemylife.services.MainService
-import com.freephoenix888.savemylife.ui.ContactViewModel
-import com.freephoenix888.savemylife.ui.ContactViewModelFactory
 import javax.inject.Inject
 
 

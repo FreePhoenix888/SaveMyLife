@@ -6,6 +6,7 @@ import com.freephoenix888.savemylife.data.repositories.ContactRepository
 import com.freephoenix888.savemylife.di.SaveMyLifeModule
 import com.freephoenix888.savemylife.fragments.ContactsSettingsFragment
 import com.freephoenix888.savemylife.ui.ContactViewModel
+import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import dagger.Component
 import javax.inject.Singleton
 

@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleService
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
 import android.app.PendingIntent
 import android.graphics.BitmapFactory
-import com.freephoenix888.savemylife.SaveMyLifeActivity
+import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants
