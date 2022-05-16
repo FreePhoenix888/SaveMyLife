@@ -31,20 +31,21 @@ class MainService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        intent?.let {
-            when (it.action) {
-                ActionConstants.START_SERVICE -> {
-                    if(isFirstStart) {
-                        Log.d(TAG, "First start...")
-                        startForegroundService()
-                        isFirstStart = false
-                    } else return -1
+        if(intent == null){
+            return START_STICKY
+        }
+        when (intent.action) {
+            ActionConstants.START_SERVICE -> {
+                if(isFirstStart) {
+                    Log.d(TAG, "First start...")
+                    startForegroundService()
+                    isFirstStart = false
                 }
-                ActionConstants.STOP_SERVICE -> {
-                    Log.d(TAG, "Stopping...")
-                }
-                else -> {}
             }
+            ActionConstants.STOP_SERVICE -> {
+                Log.d(TAG, "Stopping...")
+            }
+            else -> {}
         }
         return START_STICKY
     }
