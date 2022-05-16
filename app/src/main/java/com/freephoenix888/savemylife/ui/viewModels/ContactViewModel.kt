@@ -9,15 +9,15 @@ import com.freephoenix888.savemylife.domain.useCases.ISaveContactsUseCase
 import com.freephoenix888.savemylife.domain.useCases.SaveContactsUseCase
 import javax.inject.Inject
 
-class ContactViewModel @Inject constructor (private val _repository: ContactRepository, private val _saveContactsUseCase: ISaveContactsUseCase, private val _deleteContactsUseCase: IDeleteContactsUseCase): ViewModel() {
+class ContactViewModel @Inject constructor (private val repository: ContactRepository, private val saveContactsUseCase: ISaveContactsUseCase, private val deleteContactsUseCase: IDeleteContactsUseCase): ViewModel() {
 
-    val contacts = _repository.allContacts.asLiveData()
+    val contacts = repository.allContacts.asLiveData()
 
     suspend fun insert(vararg contacts: ContactEntity): List<Long> {
-        return _saveContactsUseCase(contactRepository = _repository, contacts = contacts)
+        return saveContactsUseCase(contactRepository = repository, contacts = contacts)
     }
 
     suspend fun delete(vararg contacts: ContactEntity): Int {
-        return _deleteContactsUseCase(contactRepository = _repository, contacts = contacts)
+        return deleteContactsUseCase(contactRepository = repository, contacts = contacts)
     }
 }
