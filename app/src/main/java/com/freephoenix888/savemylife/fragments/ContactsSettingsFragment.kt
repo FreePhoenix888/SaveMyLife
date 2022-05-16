@@ -31,7 +31,7 @@ import javax.inject.Inject
 class ContactsSettingsFragment : Fragment() {
 
     companion object {
-        const val TAG = "ContactsFragment"
+        val TAG = this::class.qualifiedName!!
         const val PERMISSIONS_REQUEST_CODE = 1
         val PROJECTION = arrayOf(
             ContactsContract.Contacts._ID,
