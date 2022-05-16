@@ -13,6 +13,8 @@ interface ApplicationComponent {
     fun inject(activity: SaveMyLifeActivity)
     fun inject(repository: ContactRepository)
     fun inject(viewModel: ContactViewModel)
+    fun inject(contactLocalStorage: ContactLocalStorage)
+    fun inject(contactsSettingsFragment: ContactsSettingsFragment)
 }
 
 
