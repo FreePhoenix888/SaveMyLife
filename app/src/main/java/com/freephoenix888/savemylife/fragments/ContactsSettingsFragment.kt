@@ -42,7 +42,8 @@ class ContactsSettingsFragment : Fragment() {
         val PERMISSIONS = arrayOf(READ_CONTACTS)
     }
 
-    private lateinit var binding: FragmentContactsBinding
+    private lateinit var binding: FragmentContactsSettingsBinding
+    @Inject lateinit var contactViewModel: ContactViewModel
 
     private val pickContactActivityLauncher = registerForActivityResult(ActivityResultContracts.PickContact()) { contactData: Uri? ->
         if(contactData == null){
