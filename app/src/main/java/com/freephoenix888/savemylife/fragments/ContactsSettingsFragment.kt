@@ -46,23 +46,36 @@ class ContactsSettingsFragment : Fragment() {
     @Inject lateinit var contactViewModel: ContactViewModel
 
     private val pickContactActivityLauncher = registerForActivityResult(ActivityResultContracts.PickContact()) { contactData: Uri? ->
+        Log.d(TAG, "ContactUri: $contactData")
+
         if(contactData == null){
             return@registerForActivityResult
         }
+
+        contactViewModel.viewModelScope.launch {
+            contactViewModel.insert(ContactEntity(uri = contactData.toString()))
+        }
+    }
+
+    private fun getContactsFromUri(uri: String): List<ContactModel>{
         val contestResolver = requireContext().contentResolver
-        val cursor = contestResolver.query(contactData, null, null, null, null)
-            ?: return@registerForActivityResult
+        val cursor = contestResolver.query(uri.toUri(), null, null, null, null)
+            ?: throw Throwable("Contact with uri $uri does not exist.")
+        val contacts = mutableListOf<ContactModel>()
         if(cursor.moveToFirst()){
             val idColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID)
-            val displayNameColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-            val thumbnailUriColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)
-            val hasPhoneColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
             val contactId = cursor.getString(idColumnIndex)
             Log.d(TAG, "Contact id: $contactId")
-            val displayName = cursor.getString(displayNameColumnIndex)
-            Log.d(TAG, "Display name: $displayName")
-            val thumbnailUri = cursor.getString(thumbnailUriColumnIndex)
+
+            val displayNameColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+            val name = cursor.getString(displayNameColumnIndex)
+            Log.d(TAG, "Display name: $name")
+
+            val thumbnailUriColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)
+            val thumbnailUri: String? = cursor.getString(thumbnailUriColumnIndex)
             Log.d(TAG, "Thumbnail uri: $thumbnailUri")
+
+            val hasPhoneColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
             val hasPhoneNumber = cursor.getString(hasPhoneColumnIndex).toInt() == 1
             if(hasPhoneNumber){
                 val cursor2 = contestResolver.query(
@@ -71,17 +84,23 @@ class ContactsSettingsFragment : Fragment() {
                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
                     null,
                     null
-                ) ?: return@registerForActivityResult
+                )
+                    ?: throw Throwable("Contact does not have phone number.")
+
                 while (cursor2.moveToNext()){
-                    val phoneNumberColumnIndex = cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                    val phoneNumber = cursor2.getString(phoneNumberColumnIndex)
-                    Log.d(TAG, "$cursor2.position phone number: $phoneNumber")
-                    // TODO Save contacts
+                    contactViewModel.viewModelScope.launch {
+                        val phoneNumberColumnIndex = cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                        val phoneNumber = cursor2.getString(phoneNumberColumnIndex)
+                        val contact = ContactModel(uri = uri, name = name, phoneNumber = phoneNumber, thumbnailUri = thumbnailUri)
+                        contacts.add(contact)
+                    }
                 }
+
                 cursor2.close()
             }
         }
         cursor.close()
+        return contacts
     }
 
     override fun onAttach(context: Context) {
