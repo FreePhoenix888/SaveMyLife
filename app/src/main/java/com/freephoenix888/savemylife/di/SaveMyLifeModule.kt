@@ -14,7 +14,13 @@ class SaveMyLifeModule(val application: Application) {
 
     @Singleton
     @Provides
-    fun provideContactLocalStorage() = ContactLocalStorage.getInstance(application)
+    fun provideContactLocalStorage(): ContactLocalStorage {
+        return Room.databaseBuilder(
+            application,
+            ContactLocalStorage::class.java,
+            "Contact.db"
+        ).build()
+    }
 
     @Singleton
     @Provides
