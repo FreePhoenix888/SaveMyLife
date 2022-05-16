@@ -55,7 +55,7 @@ class ContactsSettingsFragment : Fragment() {
         }
     }
 
-    private fun getContactsFromUri(uri: String): List<ContactModel>{
+    private fun getContactsByUri(uri: String): List<ContactModel>{
         val contestResolver = requireContext().contentResolver
         val cursor = contestResolver.query(uri.toUri(), null, null, null, null)
             ?: throw Throwable("Contact with uri $uri does not exist.")
