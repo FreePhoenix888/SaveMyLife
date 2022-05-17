@@ -23,9 +23,25 @@ class SaveMyLifeModule(val application: Application) {
 
     @Singleton
     @Provides
+    fun provideContactViewModel(repository: ContactRepository, saveContactsUseCase: ISaveContactsUseCase, deleteContactsUseCase: IDeleteContactsUseCase) = ContactViewModelFactory(repository = repository, saveContactsUseCase = saveContactsUseCase, deleteContactsUseCase = deleteContactsUseCase)
+
+    @Singleton
+    @Provides
     fun provideYourDao(localStorage: ContactLocalStorage) = localStorage.dao()
 
     @Singleton
     @Provides
     fun provideContactRepository(contactLocalStorage: ContactLocalStorage) = ContactRepository(contactLocalStorage)
+
+    @Singleton
+    @Provides
+    fun provideSaveContactsUseCase(): ISaveContactsUseCase {
+        return SaveContactsUseCase()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDeleteContactsUseCase(): IDeleteContactsUseCase {
+        return DeleteContactsUseCase()
+    }
 }
