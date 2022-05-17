@@ -63,6 +63,11 @@ class MainService : LifecycleService() {
             }
             else -> {}
         }
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_SCREEN_OFF)
+        }
+        this.registerReceiver(powerButtonBroadcastReceiver, filter)
         return START_STICKY
     }
 
@@ -71,6 +76,7 @@ class MainService : LifecycleService() {
         Log.i(TAG, "$TAG is destroyed.")
         val broadcastIntent = Intent(this, RestartBroadcastReceiver::class.java)
         sendBroadcast(broadcastIntent)
+        unregisterReceiver(powerButtonBroadcastReceiver)
     }
 
     private fun startForegroundService(){
