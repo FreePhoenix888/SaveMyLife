@@ -26,4 +26,11 @@
         <item name="textAppearanceButton">@style/TextAppearance.MaterialComponents.Button</item>
         <item name="textAppearanceOverline">@style/TextAppearance.MaterialComponents.Overline</item>
     </style>
+
+    <style name="Theme.SaveMyLife.IconButton" parent="Widget.Material3.Button.IconButton">
+        <item name="backgroundTint">@color/secondaryDarkColor</item>
+        <item name="iconTint">@color/secondaryTextColor</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+    </style>
 </resources>
