@@ -47,6 +47,10 @@ class MainService : LifecycleService() {
             ActionConstants.STOP_SERVICE -> {
                 Log.d(TAG, "Stopping...")
             }
+            ActionConstants.SWITCH_DANGER_MODE -> {
+                isDangerModeEnabled = !isDangerModeEnabled
+                Log.d(TAG, "Switching danger mode to $isDangerModeEnabled")
+            }
             else -> {}
         }
         return START_STICKY
