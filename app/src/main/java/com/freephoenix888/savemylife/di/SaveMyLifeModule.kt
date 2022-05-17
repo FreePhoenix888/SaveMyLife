@@ -4,6 +4,11 @@ import android.app.Application
 import androidx.room.Room
 import com.freephoenix888.savemylife.data.storage.local.ContactLocalStorage
 import com.freephoenix888.savemylife.data.repositories.ContactRepository
+import com.freephoenix888.savemylife.domain.useCases.DeleteContactsUseCase
+import com.freephoenix888.savemylife.domain.useCases.IDeleteContactsUseCase
+import com.freephoenix888.savemylife.domain.useCases.ISaveContactsUseCase
+import com.freephoenix888.savemylife.domain.useCases.SaveContactsUseCase
+import com.freephoenix888.savemylife.ui.viewModels.ContactViewModelFactory
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
