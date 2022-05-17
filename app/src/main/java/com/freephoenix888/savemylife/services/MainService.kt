@@ -19,6 +19,11 @@ import com.freephoenix888.savemylife.constants.NotificationConstants
 
 class MainService : LifecycleService() {
 
+    @Inject lateinit var repository: ContactRepository
+    private var isDangerModeEnabled = false
+    private val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
+
+
     var isFirstStart = true
     private val TAG = this::class.simpleName
 
