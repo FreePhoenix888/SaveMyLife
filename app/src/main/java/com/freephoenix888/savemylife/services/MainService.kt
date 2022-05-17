@@ -20,10 +20,7 @@ import com.freephoenix888.savemylife.constants.NotificationConstants
 class MainService : LifecycleService() {
 
     var isFirstStart = true
-
-    companion object {
-        private const val TAG = "MainService"
-    }
+    private val TAG = this::class.simpleName
 
     init {
         Log.i(TAG, "Initializing...")
