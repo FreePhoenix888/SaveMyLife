@@ -10,11 +10,21 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
 import android.app.PendingIntent
+import android.content.IntentFilter
 import android.graphics.BitmapFactory
+import android.telephony.SmsManager
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.R
+import com.freephoenix888.savemylife.SaveMyLifeApplication
+import com.freephoenix888.savemylife.Utils.Companion.getContactsByUri
+import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants
+import com.freephoenix888.savemylife.data.repositories.ContactRepository
+import com.freephoenix888.savemylife.data.storage.entities.ContactEntity
+import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.flow.collect
 
 
 class MainService : LifecycleService() {
