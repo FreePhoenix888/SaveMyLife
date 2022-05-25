@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer-array name="sos_action_icon_ids">
-        <item>@drawable/ic_baseline_message_24</item>
-        <item>@drawable/ic_baseline_location_on_24</item>
-        <item>@drawable/ic_baseline_phone_24</item>
-    </integer-array>
-</resources>
