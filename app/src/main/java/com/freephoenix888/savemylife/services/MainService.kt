@@ -15,16 +15,13 @@ import android.graphics.BitmapFactory
 import android.telephony.SmsManager
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.SaveMyLifeApplication
 import com.freephoenix888.savemylife.Utils.Companion.getContactsByUri
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.data.repositories.ContactRepository
-import com.freephoenix888.savemylife.data.storage.entities.ContactEntity
+import com.freephoenix888.savemylife.data.room.databases.entities.ContactEntity
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
-import kotlinx.coroutines.flow.collect
 
 
 class MainService : LifecycleService() {
@@ -47,17 +44,17 @@ class MainService : LifecycleService() {
             return START_STICKY
         }
         when (intent.action) {
-            ActionConstants.START_SERVICE -> {
+            ActionConstants.StartMainService -> {
                 if(isFirstStart) {
                     Log.d(TAG, "First start...")
                     startForegroundService()
                     isFirstStart = false
                 }
             }
-            ActionConstants.STOP_SERVICE -> {
+            ActionConstants.StopMainService -> {
                 Log.d(TAG, "Stopping...")
             }
-            ActionConstants.SWITCH_DANGER_MODE -> {
+            ActionConstants.SwitchDangerMode -> {
                 isDangerModeEnabled = !isDangerModeEnabled
                 Log.d(TAG, "Switching danger mode to $isDangerModeEnabled")
             }
@@ -104,7 +101,7 @@ class MainService : LifecycleService() {
     private fun getEmergencyButtonActivityPendingIntent(): PendingIntent {
         val pendingIntent: PendingIntent
         val intent = Intent(this, SaveMyLifeActivity::class.java).also {
-            it.action = ActionConstants.SHOW_EMERGENCY_BUTTON_FRAGMENT
+            it.action = ActionConstants.ShowEmergencyButtonScreen
         }
 
 
@@ -126,6 +123,25 @@ class MainService : LifecycleService() {
     private fun createNotificationChannel(notificationManager: NotificationManager){
         val channel = NotificationChannel(NotificationConstants.CHANNEL_ID, NotificationConstants.CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW)
         notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun sendSMS(phoneNumber: String, message: String) {
+        val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
+        val smsManager: SmsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            applicationContext.getSystemService(SmsManager::class.java)
+        } else {
+            SmsManager.getDefault()
+        }
+        smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+    }
+
+    private suspend fun doOnDangerActions(){
+        repository.contacts.collect { contactList: List<ContactEntity> ->
+            contactList.forEach { contactEntity: ContactEntity ->
+                val contacts = getContactsByUri(context = applicationContext, uri = contactEntity.uri )
+                sendSMS(contact.)
+            }
+        }
     }
 
 }
