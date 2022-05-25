@@ -13,7 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.data.models.Setting
-import com.freephoenix888.savemylife.ui.SaveMyLifeScreen
+import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.theme.SaveMyLifeTheme
 import com.freephoenix888.savemylife.ui.viewModels.ContactsViewModel
 
@@ -23,7 +23,7 @@ fun SaveMyLifeApp(intent: Intent? = null) {
         val navController = rememberNavController()
         val contactsViewModel: ContactsViewModel = viewModel()
         if(intent?.action == ActionConstants.ShowEmergencyButtonScreen){
-            navController.navigate(SaveMyLifeScreen.DangerButton.name)
+            navController.navigate(SaveMyLifeScreenEnum.DangerButton.name)
         }
         Scaffold { innerPadding ->
             SaveMyLifeNavHost(
@@ -52,13 +52,13 @@ private fun SaveMyLifeNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = SaveMyLifeScreen.Home.name,
+        startDestination = SaveMyLifeScreenEnum.Home.name,
         modifier = modifier,
     ) {
-        composable(SaveMyLifeScreen.Home.name) {
+        composable(SaveMyLifeScreenEnum.Home.name) {
             HomeScreenComposable(navController = navController, viewModel = viewModel)
         }
-        composable(SaveMyLifeScreen.Settings.name) {
+        composable(SaveMyLifeScreenEnum.Settings.name) {
             SettingsScreenComposable(
                 onSettingClick = {setting: Setting ->
                     navController.navigate(setting.screenName)
