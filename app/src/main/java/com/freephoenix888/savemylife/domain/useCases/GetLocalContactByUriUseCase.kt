@@ -8,8 +8,9 @@ import com.freephoenix888.savemylife.ui.states.ContactsItemUiState
 import com.freephoenix888.savemylife.data.models.PhoneNumber
 import com.freephoenix888.savemylife.domain.useCases.interfaces.GetContactByUriUseCase
 import com.freephoenix888.savemylife.domain.useCases.interfaces.GetContactPhoneNumbersUseCase
+import javax.inject.Inject
 
-class GetLocalContactByUriUseCase(
+class GetLocalContactByUriUseCase @Inject constructor(
     val context: Context,
     val getContactPhoneNumbersById: GetContactPhoneNumbersUseCase
 ) :

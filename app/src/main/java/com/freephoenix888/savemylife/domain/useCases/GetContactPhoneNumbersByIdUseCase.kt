@@ -4,8 +4,9 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.freephoenix888.savemylife.data.models.PhoneNumber
 import com.freephoenix888.savemylife.domain.useCases.interfaces.GetContactPhoneNumbersUseCase
+import javax.inject.Inject
 
-class GetContactPhoneNumbersByIdUseCase(val context: Context) : GetContactPhoneNumbersUseCase {
+class GetContactPhoneNumbersByIdUseCase @Inject constructor(val context: Context) : GetContactPhoneNumbersUseCase {
     override operator fun invoke(id: String): List<PhoneNumber> {
         val contestResolver = context.contentResolver
         val phoneNumbers = mutableListOf<PhoneNumber>()

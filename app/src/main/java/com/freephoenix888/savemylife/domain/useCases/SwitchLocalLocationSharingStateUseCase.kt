@@ -3,8 +3,9 @@ package com.freephoenix888.savemylife.domain.useCases
 import android.content.Context
 import com.freephoenix888.savemylife.constants.SharedPreferencesConstants
 import com.freephoenix888.savemylife.domain.useCases.interfaces.SwitchLocationSharingStateUseCase
+import javax.inject.Inject
 
-class SwitchLocalLocationSharingStateUseCase(val context: Context) :
+class SwitchLocalLocationSharingStateUseCase @Inject constructor(val context: Context) :
     SwitchLocationSharingStateUseCase {
     override operator fun invoke() {
         val sharedPreferences = context.getSharedPreferences(

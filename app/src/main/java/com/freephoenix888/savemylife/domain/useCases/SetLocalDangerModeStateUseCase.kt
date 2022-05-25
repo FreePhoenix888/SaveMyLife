@@ -3,8 +3,9 @@ package com.freephoenix888.savemylife.domain.useCases
 import android.content.Context
 import com.freephoenix888.savemylife.constants.SharedPreferencesConstants
 import com.freephoenix888.savemylife.domain.useCases.interfaces.SetDangerModeStateUseCase
+import javax.inject.Inject
 
-class SetLocalDangerModeStateUseCase(val context: Context) :
+class SetLocalDangerModeStateUseCase @Inject constructor(val context: Context) :
     SetDangerModeStateUseCase {
     override operator fun invoke(state: Boolean) {
         val sharedPreferences = context.getSharedPreferences(

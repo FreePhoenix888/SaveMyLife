@@ -4,8 +4,9 @@ import com.freephoenix888.savemylife.ui.states.ContactsItemUiState
 import com.freephoenix888.savemylife.data.repositories.ContactRepository
 import com.freephoenix888.savemylife.data.room.databases.entities.ContactEntity
 import com.freephoenix888.savemylife.domain.useCases.interfaces.SaveContactsUseCase
+import javax.inject.Inject
 
-class SaveLocalContactsUseCase(val contactRepository: ContactRepository) :
+class SaveLocalContactsUseCase @Inject constructor(val contactRepository: ContactRepository) :
     SaveContactsUseCase {
     override suspend operator fun invoke(vararg contacts: ContactsItemUiState): List<Long>{
         val contactEntities = contacts.map {contact: ContactsItemUiState ->
