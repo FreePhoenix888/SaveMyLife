@@ -7,6 +7,8 @@ plugins {
     id("kotlin-android")
     id("androidx.navigation.safeargs")
     id("kotlin-kapt")
+    // Hilt
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -32,6 +34,12 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        compose = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
@@ -60,6 +68,34 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("commons-io:commons-io:2.5")
     implementation("pub.devrel:easypermissions:3.0.0")
-    implementation("com.google.dagger:dagger:2.28.3")
-    kapt("com.google.dagger:dagger-compiler:2.28.3")
+
+    /* Jetpack compose */
+    // Integration with activities
+    implementation("androidx.activity:activity-compose:1.4.0")
+    // Compose Material Design
+    implementation("androidx.compose.material:material:1.1.1")
+    // Animations
+    implementation("androidx.compose.animation:animation:1.1.1")
+    // Tooling support (Previews, etc.)
+    implementation("androidx.compose.ui:ui-tooling:1.1.1")
+    // Integration with ViewModels
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
+    // UI Tests
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.1.1")
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.5.0-rc01")
+    // Material icons extended
+    implementation("androidx.compose.material:material-icons-extended:1.1.1")
+    // View model
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.38.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }
