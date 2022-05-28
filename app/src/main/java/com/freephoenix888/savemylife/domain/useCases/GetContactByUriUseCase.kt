@@ -4,19 +4,17 @@ import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
-import com.freephoenix888.savemylife.ui.states.ContactsItemUiState
+import com.freephoenix888.savemylife.domain.models.Contact
 import com.freephoenix888.savemylife.data.models.PhoneNumber
-import com.freephoenix888.savemylife.domain.useCases.interfaces.GetContactByUriUseCase
-import com.freephoenix888.savemylife.domain.useCases.interfaces.GetContactPhoneNumbersUseCase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class GetLocalContactByUriUseCase @Inject constructor(
-    val context: Context,
-    val getContactPhoneNumbersById: GetContactPhoneNumbersUseCase
-) :
-    GetContactByUriUseCase {
+class GetContactByUriUseCase @Inject constructor(
+    @ApplicationContext val context: Context,
+    val getContactPhoneNumbersByIdUseCase: GetContactPhoneNumbersByIdUseCase
+) {
     private val TAG = this::class.simpleName
-    override operator fun invoke(uri: Uri): ContactsItemUiState {
+    operator fun invoke(uri: Uri): Contact {
         val contestResolver = context.contentResolver
         val cursor = contestResolver.query(uri, null, null, null, null)
             ?: throw Throwable("Contact with uri $uri does not exist.")
@@ -40,12 +38,12 @@ class GetLocalContactByUriUseCase @Inject constructor(
             val hasPhoneNumber = cursor.getString(hasPhoneColumnIndex).toInt() == 1
             var phoneNumbers = listOf<PhoneNumber>()
             if (hasPhoneNumber) {
-                phoneNumbers = getContactPhoneNumbersById(id = contactId)
+                phoneNumbers = getContactPhoneNumbersByIdUseCase(id = contactId)
             }
 
             cursor.close()
 
-            return ContactsItemUiState(
+            return Contact(
                 uri = uri.toString(),
                 name = name,
                 phoneNumbers = phoneNumbers,
