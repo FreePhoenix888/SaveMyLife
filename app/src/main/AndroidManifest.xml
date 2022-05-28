@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:name=".SaveMyLifeApplication"
-        android:theme="@style/Theme.SaveMyLife">
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <activity
             android:name=".ui.SaveMyLifeActivity"
             android:exported="true">
