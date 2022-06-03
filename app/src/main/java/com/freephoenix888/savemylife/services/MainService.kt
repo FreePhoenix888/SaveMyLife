@@ -29,12 +29,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 
-class MainService : LifecycleService() {
-
-    @Inject lateinit var repository: ContactRepository
-    private var isDangerModeEnabled = false
-    private val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
-
+class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerButtonBroadcastReceiver, val getEmergencyContactsFlowUseCase: GetEmergencyContactsFlowUseCase, val getEmergencyMessageUseCase: GetEmergencyMessageUseCase) : LifecycleService() {
 
     var isFirstStart = true
     private val TAG = this::class.simpleName
