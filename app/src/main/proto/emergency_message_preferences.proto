@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "com.freephoenix888.savemylife";
+option java_multiple_files = true;
+
+message EmergencyMessagePreferences {
+  string message_template = 1;
+  int32 sending_interval_in_seconds = 2;
+}
