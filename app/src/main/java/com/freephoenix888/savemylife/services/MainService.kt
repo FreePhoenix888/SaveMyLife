@@ -125,7 +125,7 @@ class MainService : LifecycleService() {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun sendSMS(phoneNumber: String, message: String) {
+    private fun sendMessageToContact(phoneNumber: String, message: String) {
         val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
         val smsManager: SmsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             applicationContext.getSystemService(SmsManager::class.java)
