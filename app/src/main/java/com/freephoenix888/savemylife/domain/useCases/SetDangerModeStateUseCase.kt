@@ -1,18 +1,14 @@
 package com.freephoenix888.savemylife.domain.useCases
 
 import android.content.Context
-import com.freephoenix888.savemylife.constants.SharedPreferencesConstants
+import com.freephoenix888.savemylife.data.datastore.MainServicePreferencesSerializer.mainServicePreferencesDataStore
+import com.freephoenix888.savemylife.data.repositories.MainServiceRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.last
 import javax.inject.Inject
 
-class SetDangerModeStateUseCase @Inject constructor(@ApplicationContext val context: Context){
-    operator fun invoke(state: Boolean) {
-        val sharedPreferences = context.getSharedPreferences(
-            SharedPreferencesConstants.FILE_PATH,
-            Context.MODE_PRIVATE
-        )
-        sharedPreferences.edit()
-            .putBoolean(SharedPreferencesConstants.DANGER_MODE_STATE, state)
-            .apply()
+class SetDangerModeStateUseCase @Inject constructor(val mainServiceRepository: MainServiceRepository){
+    suspend operator fun invoke(newState: Boolean) {
+        mainServiceRepository.setDangerModeState(newState)
     }
 }
