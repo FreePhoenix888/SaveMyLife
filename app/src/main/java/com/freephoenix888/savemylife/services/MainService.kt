@@ -135,11 +135,16 @@ class MainService : LifecycleService() {
         smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
     }
 
-    private suspend fun doOnDangerActions(){
-        repository.contacts.collect { contactList: List<ContactEntity> ->
-            contactList.forEach { contactEntity: ContactEntity ->
-                val contacts = getContactsByUri(context = applicationContext, uri = contactEntity.uri )
-                sendSMS(contact.)
+    private suspend fun doOnDangerSituation(){
+
+        getEmergencyContactsFlowUseCase().collect { contacts: List<Contact> ->
+            for (contact in contacts) {
+                for (phoneNumber in contact.phoneNumbers) {
+                    sendMessageToContact(
+                        phoneNumber = phoneNumber,
+                        message = getEmergencyMessageUseCase(contact = contact)
+                    )
+                }
             }
         }
     }
