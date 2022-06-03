@@ -1,8 +1,8 @@
-package com.freephoenix888.savemylife.ui.states
+package com.freephoenix888.savemylife.domain.models
 
 import com.freephoenix888.savemylife.data.models.PhoneNumber
 
-data class ContactsItemUiState(
+data class Contact(
     val uri: String,
     val name: String,
     val phoneNumbers: List<PhoneNumber>,
