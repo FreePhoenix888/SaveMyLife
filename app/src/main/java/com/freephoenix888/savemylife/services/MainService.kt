@@ -11,16 +11,21 @@ import androidx.lifecycle.LifecycleService
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
 import android.app.PendingIntent
 import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.telephony.SmsManager
+import androidx.core.app.TaskStackBuilder
+import androidx.core.net.toUri
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.Utils.Companion.getContactsByUri
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.constants.ActionConstants
+import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.constants.NotificationConstants
-import com.freephoenix888.savemylife.data.repositories.ContactRepository
-import com.freephoenix888.savemylife.data.room.databases.entities.ContactEntity
+import com.freephoenix888.savemylife.domain.models.Contact
+import com.freephoenix888.savemylife.domain.useCases.GetEmergencyContactsFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetEmergencyMessageUseCase
+import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 
