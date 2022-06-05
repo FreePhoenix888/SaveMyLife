@@ -1,14 +1,22 @@
 package com.freephoenix888.savemylife
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
-import android.util.Log
-import com.freephoenix888.savemylife.data.models.PhoneNumber
+import android.provider.Settings
+import androidx.core.content.ContextCompat
 import com.freephoenix888.savemylife.domain.models.Contact
 
 class Utils {
     companion object {
+        fun openAppSettings(context: Context) {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", context.packageName, null)
+            intent.data = uri
+            ContextCompat.startActivity(context, intent, null)
+        }
+
         fun getContactPhoneNumbersById(context: Context, id: String): List<PhoneNumber>{
             val contestResolver = context.contentResolver
             val phoneNumbers = mutableListOf<PhoneNumber>()
@@ -62,7 +70,6 @@ class Utils {
                     uri = uri.toString(),
                     name = name,
                     phoneNumbers = phoneNumbers,
-                    thumbnailUri = thumbnailUri
                 )
             } else {
                 throw Throwable("Contact with uri $uri does not exist.")
