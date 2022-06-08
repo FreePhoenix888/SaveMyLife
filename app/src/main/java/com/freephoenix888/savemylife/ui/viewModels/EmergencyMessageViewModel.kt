@@ -16,15 +16,16 @@ class EmergencyMessageViewModel @Inject constructor(
     val setEmergencyMessageTemplateUseCase: SetEmergencyMessageTemplateUseCase,
     val getEmergencyMessageSendingIntervalFlowUseCase: GetEmergencyMessageSendingIntervalUseCase,
     val setEmergencyMessageSendingIntervalUseCase: SetEmergencyMessageSendingIntervalUseCase,
-    val getEmergencyContactsFlowUseCase: GetEmergencyContactsFlowUseCase
+    val getEmergencyContactsWithPhoneNumbersFlowUseCase: GetEmergencyContactsWithPhoneNumbersFlowUseCase
 ) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            val firstContact = getEmergencyContactsFlowUseCase().last().first()
-            emergencyMessageExample = getEmergencyMessageUseCase(firstContact)
+            val firstContactWithPhoneNumbers = getEmergencyContactsWithPhoneNumbersFlowUseCase().last().first()
+            emergencyMessageExample = getEmergencyMessageUseCase(firstContactWithPhoneNumbers.contact)
         }
     }
+
     val messageTemplate = getEmergencyMessageTemplateFlowUseCase()
     fun setMessageTemplate(newMessageTemplate: String) = viewModelScope.launch {
         setEmergencyMessageTemplateUseCase(newMessageTemplate)
