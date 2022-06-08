@@ -1,22 +1,23 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PowerSettingsNew
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
@@ -25,13 +26,13 @@ fun HomeScreenComposable(
     navController: NavController,
     saveMyLifeViewModel: SaveMyLifeViewModel = viewModel()
 ) {
-    val dangerModeState by saveMyLifeViewModel.isMainServiceEnabled.collectAsState(initial = false)
+    val isMainServiceEnabled by saveMyLifeViewModel.isMainServiceEnabled.collectAsState(initial = false)
     HomeScreenBodyComposable(
         onSettingsButtonClick = {
             navController.navigate(SaveMyLifeScreenEnum.Settings.name)
         },
-        dangerModeState = dangerModeState,
-        onSwitchMainServiceStateButtonClick = {
+        isMainServiceEnabled = isMainServiceEnabled,
+        onSwitchIsMainServiceEnabled = {
             saveMyLifeViewModel.setIsMainServiceEnabled()
         },
     )
@@ -39,38 +40,48 @@ fun HomeScreenComposable(
 
 @Composable
 fun HomeScreenBodyComposable(
-    dangerModeState: Boolean,
-    onSwitchMainServiceStateButtonClick: () -> Unit,
+    isMainServiceEnabled: Boolean,
+    onSwitchIsMainServiceEnabled: () -> Unit,
     onSettingsButtonClick: () -> Unit,
 ) {
     Scaffold { innerPadding ->
-        Box(
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
         ) {
             Button(
-                onClick = onSwitchMainServiceStateButtonClick,
-                shape = MaterialTheme.shapes.small,
-                colors = ButtonDefaults.buttonColors(backgroundColor = if(dangerModeState) MaterialTheme.colors.primary else MaterialTheme.colors.error),
+                onClick = onSwitchIsMainServiceEnabled,
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(backgroundColor = if(isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error),
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(100.dp)
+                    .size(150.dp)
             ) {
                 Icon(
                     imageVector = Icons.Filled.PowerSettingsNew,
-                    contentDescription = "Switch app state"
+                    contentDescription = "Switch app state",
+                    Modifier.fillMaxSize()
                 )
             }
-            Button(
-                onClick = onSettingsButtonClick,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 32.dp)
-            ) {
-                Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
-                Text("Settings")
-            }
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = buildAnnotatedString {
+                                            append("SaveMyLife is ")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Black, color = if(isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error)) {
+                        append((if(isMainServiceEnabled) "enabled" else "disabled").uppercase())
+                    }
+                },
+            )
+//            Button(
+//                onClick = onSettingsButtonClick,
+//                modifier = Modifier
+//                    .padding(bottom = 32.dp)
+//            ) {
+//                Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+//                Text("Settings")
+//            }
         }
     }
 }
@@ -80,8 +91,8 @@ fun HomeScreenBodyComposable(
 private fun HomeScreenComposablePreview() {
     val context = LocalContext.current
     var dangerModeState by remember { mutableStateOf(false) }
-    HomeScreenBodyComposable(dangerModeState = dangerModeState,
-        onSwitchMainServiceStateButtonClick = {
+    HomeScreenBodyComposable(isMainServiceEnabled = dangerModeState,
+        onSwitchIsMainServiceEnabled = {
             dangerModeState = !dangerModeState
 
         },
