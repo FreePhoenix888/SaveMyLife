@@ -19,8 +19,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.domain.models.Contact
+import com.freephoenix888.savemylife.domain.models.ContactPhoneNumber
+import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
+import com.freephoenix888.savemylife.ui.composables.DefaultValuesForPreviews
 import com.freephoenix888.savemylife.ui.composables.EmergencyContactComposable
 import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
+import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactPhoneNumbersViewModel
 import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -32,41 +36,51 @@ const val REQUEST_CODE_READ_WRITE_CONTACTS = 1
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun EmergencyContactsSettingsScreenComposable(
-    emergencyContactViewModel: EmergencyContactViewModel = viewModel()
+    emergencyContactViewModel: EmergencyContactViewModel = viewModel(),
+    emergencyContactPhoneNumbersViewModel: EmergencyContactPhoneNumbersViewModel = viewModel()
 ) {
     val context = LocalContext.current as AppCompatActivity
     val readContactsPermissionState =
         rememberPermissionState(permission = android.Manifest.permission.READ_CONTACTS)
     if (readContactsPermissionState.status != PermissionStatus.Granted) {
-        RequestPermissionComposable(context = context, permissionState = readContactsPermissionState, text = "SaveMyLife needs access to your contacts to save your emergency contacts.")
+        RequestPermissionComposable(
+            context = context,
+            permissionState = readContactsPermissionState,
+            text = "SaveMyLife needs access to your contacts to save your emergency contacts."
+        )
         return
     }
-    val emergencyContacts by emergencyContactViewModel.emergencyContacts.collectAsState(initial = listOf())
+    val emergencyContacts by emergencyContactViewModel.emergencyContactsWithPhoneNumbers.collectAsState(
+        initial = listOf()
+    )
     EmergencyContactsSettingsScreenBodyComposable(
         emergencyContacts = emergencyContacts,
-        onRemoveEmergencyContact = {
-            emergencyContactViewModel.deleteEmergencyContacts(listOf(it))
+        onDeleteEmergencyContact = {
+            emergencyContactViewModel.delete(it)
         },
-        onRemoveEmergencyContactPhoneNumber = { emergencyContactToRemovePhoneNumber, phoneNumberToRemove ->
-            val updatedEmergencyContact = emergencyContactToRemovePhoneNumber.copy(
-                phoneNumbers = emergencyContactToRemovePhoneNumber.phoneNumbers.filter {
-                    it != phoneNumberToRemove
+        onDeleteEmergencyContactPhoneNumber = {
+            emergencyContactPhoneNumbersViewModel.delete(it)
+        },
+        onAddContactWithPhoneNumbers = { contactWithPhoneNumbers ->
+            emergencyContactViewModel.insert(contactWithPhoneNumbers.contact)
+            emergencyContactPhoneNumbersViewModel.insertList(
+                contactWithPhoneNumbers.phoneNumbers.map { phoneNumber ->
+                    ContactPhoneNumber(
+                        contactUri = contactWithPhoneNumbers.contact.uri,
+                        phoneNumber = phoneNumber
+                    )
                 }
             )
-            emergencyContactViewModel.updateEmergencyContacts(listOf(updatedEmergencyContact))
         },
-        onAddEmergencyContact = {
-            emergencyContactViewModel.insertEmergencyContacts(listOf(it))
-        }
     )
 }
 
 @Composable
 private fun EmergencyContactsSettingsScreenBodyComposable(
-    emergencyContacts: List<Contact>,
-    onAddEmergencyContact: (Contact) -> Unit,
-    onRemoveEmergencyContact: (Contact) -> Unit,
-    onRemoveEmergencyContactPhoneNumber: (Contact, String) -> Unit,
+    emergencyContacts: List<ContactWithPhoneNumbers>,
+    onAddContactWithPhoneNumbers: (ContactWithPhoneNumbers) -> Unit,
+    onDeleteEmergencyContact: (Contact) -> Unit,
+    onDeleteEmergencyContactPhoneNumber: (ContactPhoneNumber) -> Unit,
 ) {
     val context = LocalContext.current
     val pickContactActivityLauncher = rememberLauncherForActivityResult(
@@ -75,14 +89,15 @@ private fun EmergencyContactsSettingsScreenBodyComposable(
             if (contactUri == null) {
                 return@rememberLauncherForActivityResult
             }
-            val contact = Utils.getContactByUri(uri = contactUri, context = context)
-            onAddEmergencyContact(contact)
+            val contactWithPhoneNumbers =
+                Utils.getContactWithPhoneNumbersByUri(uri = contactUri, context = context)
+            onAddContactWithPhoneNumbers(contactWithPhoneNumbers)
         })
     Scaffold(
         topBar = {
-                 TopAppBar(title = {
-                     Text("Emergency contacts")
-                 })
+            TopAppBar(title = {
+                Text("Emergency contacts")
+            })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -100,12 +115,12 @@ private fun EmergencyContactsSettingsScreenBodyComposable(
             LazyColumn {
                 items(
                     items = emergencyContacts,
-                    key = { it.uri }
-                ) { contact: Contact ->
+                    key = { it.contact.uri }
+                ) { contact: ContactWithPhoneNumbers ->
                     EmergencyContactComposable(
-                        contact = contact,
-                        onRemoveEmergencyContact = onRemoveEmergencyContact,
-                        onRemoveEmergencyContactPhoneNumber = onRemoveEmergencyContactPhoneNumber,
+                        contactWithPhoneNumbers = contact,
+                        onRemoveEmergencyContact = onDeleteEmergencyContact,
+                        onRemoveEmergencyContactPhoneNumber = onDeleteEmergencyContactPhoneNumber,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -118,37 +133,36 @@ private fun EmergencyContactsSettingsScreenBodyComposable(
 @Preview(showBackground = true, widthDp = 320, heightDp = 480)
 @Composable
 fun EmergencyContactsSettingsScreenBodyComposablePreview() {
-    val emergencyContacts = remember {
-        mutableStateListOf(
-            Contact(
-                uri = "1",
-                name = "Name",
-                phoneNumbers = listOf("+1-111-111-1111", "+2-222-222-2222")
-            ),
-            Contact(
-                uri = "2",
-                name = "Name",
-                phoneNumbers = listOf("+3-333-333-3333", "+4-444-444-4444")
-            )
-        )
-    }
+    val emergencyContactsWithPhoneNumbers =
+        remember { mutableStateListOf<ContactWithPhoneNumbers>(*DefaultValuesForPreviews.defaultContactsWithPhoneNumbers.toTypedArray()) }
 
     EmergencyContactsSettingsScreenBodyComposable(
-        emergencyContacts = emergencyContacts,
-        onRemoveEmergencyContact = {
-            emergencyContacts.remove(it)
-        },
-        onRemoveEmergencyContactPhoneNumber = { emergencyContactToRemovePhoneNumber, phoneNumberToRemove ->
-            val updatedEmergencyContact = emergencyContactToRemovePhoneNumber.copy(
-                phoneNumbers = emergencyContactToRemovePhoneNumber.phoneNumbers.filter {
-                    it != phoneNumberToRemove
+        emergencyContacts = emergencyContactsWithPhoneNumbers,
+        onDeleteEmergencyContact = {
+            val emergencyContactWithPhoneNumbersToRemove =
+                emergencyContactsWithPhoneNumbers.first { emergencyContactWithPhoneNumbers ->
+                    emergencyContactWithPhoneNumbers.contact.uri == it.uri
                 }
-            )
-            emergencyContacts.remove(emergencyContactToRemovePhoneNumber)
-            emergencyContacts.add(updatedEmergencyContact)
+            emergencyContactsWithPhoneNumbers.remove(emergencyContactWithPhoneNumbersToRemove)
         },
-        onAddEmergencyContact = {
-            emergencyContacts.add(it)
+        onDeleteEmergencyContactPhoneNumber = { contactPhoneNumber: ContactPhoneNumber ->
+            val emergencyContactWithPhoneNumbersToDeleteIndex =
+                emergencyContactsWithPhoneNumbers.indexOfFirst { emergencyContactWithPhoneNumbers ->
+                    emergencyContactWithPhoneNumbers.contact.uri == contactPhoneNumber.contactUri
+                }
+            val updatedEmergencyContactWithPhoneNumbers =
+                emergencyContactsWithPhoneNumbers.get(emergencyContactWithPhoneNumbersToDeleteIndex).copy(
+                    phoneNumbers = emergencyContactsWithPhoneNumbers.get(
+                        emergencyContactWithPhoneNumbersToDeleteIndex
+                    ).phoneNumbers.filter { phoneNumber ->
+                        phoneNumber != contactPhoneNumber.phoneNumber
+                    }
+                )
+            emergencyContactsWithPhoneNumbers.removeAt(emergencyContactWithPhoneNumbersToDeleteIndex)
+            emergencyContactsWithPhoneNumbers.add(updatedEmergencyContactWithPhoneNumbers)
+        },
+        onAddContactWithPhoneNumbers = {
+            emergencyContactsWithPhoneNumbers.add(it)
         }
     )
 }
