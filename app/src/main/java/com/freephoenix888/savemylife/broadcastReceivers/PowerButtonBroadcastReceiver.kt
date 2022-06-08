@@ -7,13 +7,14 @@ import android.util.Log
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.concurrent.schedule
 
-class PowerButtonBroadcastReceiver: BroadcastReceiver() {
+@Singleton
+class PowerButtonBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
-    companion object {
-        val TAG = this::class.simpleName
-    }
+    val TAG = this::class.java.simpleName
 
     private var _count = 0
     private val timer = Timer().schedule(5000) {
@@ -22,7 +23,6 @@ class PowerButtonBroadcastReceiver: BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d(TAG, "onReceive: ")
         val intentAction = intent?.action
         if(intentAction == Intent.ACTION_SCREEN_OFF || intentAction == Intent.ACTION_SCREEN_ON){
             if(_count == 0) {
@@ -30,7 +30,7 @@ class PowerButtonBroadcastReceiver: BroadcastReceiver() {
             }
             if(_count == 5) {
                 Intent(context, MainService::class.java).also {
-                    it.action = ActionConstants.SWITCH_DANGER_MODE
+                    it.action = ActionConstants.SwitchDangerMode
                     context?.startService(it)
                 }
             }
