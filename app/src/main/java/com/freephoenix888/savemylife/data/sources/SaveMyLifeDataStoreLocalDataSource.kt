@@ -1,38 +1,37 @@
 package com.freephoenix888.savemylife.data.sources
 
-import android.content.Context
-import com.freephoenix888.savemylife.data.datastore.MainServicePreferencesSerializer.mainServicePreferencesDataStore
+import androidx.datastore.core.DataStore
+import com.freephoenix888.savemylife.SaveMyLifePreferences
 import com.freephoenix888.savemylife.data.sources.interfaces.SaveMyLifeLocalDataSource
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SaveMyLifeDataStoreLocalDataSource @Inject constructor(@ApplicationContext val context: Context) :
+class SaveMyLifeDataStoreLocalDataSource @Inject constructor(private val dataStore: DataStore<SaveMyLifePreferences>) :
     SaveMyLifeLocalDataSource {
 
-    override val mainServiceState: Flow<Boolean> = context.mainServicePreferencesDataStore.data.map {
-        it.state
+    override val isMainServiceEnabled: Flow<Boolean> = dataStore.data.map {
+        it.isMainServiceEnabled
     }
 
-    override suspend fun setMainServiceState(newState: Boolean){
-        context.mainServicePreferencesDataStore.updateData {
+    override suspend fun setIsMainServiceEnabled(newState: Boolean){
+        dataStore.updateData {
             it.toBuilder()
-                .setState(newState)
+                .setIsMainServiceEnabled(newState)
                 .build()
         }
     }
 
-    override val dangerModeState: Flow<Boolean> = context.mainServicePreferencesDataStore.data.map {
-        it.dangerModeState
+    override val isDangerModeEnabled: Flow<Boolean> = dataStore.data.map {
+        it.isDangerModeEnabled
     }
 
-    override suspend fun setDangerModeState(newState: Boolean) {
-        context.mainServicePreferencesDataStore.updateData {
+    override suspend fun setIsDangerModeEnabled(newState: Boolean) {
+        dataStore.updateData {
             it.toBuilder()
-                .setDangerModeState(newState)
+                .setIsDangerModeEnabled(newState)
                 .build()
         }
     }

@@ -11,21 +11,21 @@ import javax.inject.Singleton
 class EmergencyContactPhoneNumberRoomLocalDataSource @Inject constructor(private val database: ContactPhoneNumberDatabase) :
     EmergencyContactPhoneNumberLocalDataSource {
     override val contactPhoneNumbers: Flow<List<ContactPhoneNumberEntity>> = database.dao().getContactPhoneNumbers()
-    override suspend fun insert(contact: ContactPhoneNumberEntity) {
-        database.dao().insert(contact)
+    override suspend fun insert(contactPhoneNumber: ContactPhoneNumberEntity) {
+        database.dao().insert(contactPhoneNumber)
     }
 
-    override suspend fun delete(contact: ContactPhoneNumberEntity) {
-        database.dao().delete(contact)
+    override suspend fun delete(contactPhoneNumber: ContactPhoneNumberEntity) {
+        database.dao().delete(contactPhoneNumber)
     }
 
-    override suspend fun insertAll(contacts: List<ContactPhoneNumberEntity>): List<Long> {
-        return database.dao().insertAll(contacts)
+    override suspend fun insertAll(contactPhoneNumberList: List<ContactPhoneNumberEntity>): List<Long> {
+        return database.dao().insertAll(contactPhoneNumberList)
     }
 
 
-    override suspend fun deleteAll(contacts: List<ContactPhoneNumberEntity>): Int {
-        return database.dao().deleteAll(contacts)
+    override suspend fun deleteAll(contactPhoneNumberList: List<ContactPhoneNumberEntity>): Int {
+        return database.dao().deleteAll(contactPhoneNumberList)
     }
 
 }

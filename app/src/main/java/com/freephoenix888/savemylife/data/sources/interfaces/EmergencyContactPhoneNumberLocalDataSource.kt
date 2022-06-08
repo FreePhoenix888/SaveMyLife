@@ -10,7 +10,7 @@ interface EmergencyContactPhoneNumberLocalDataSource {
 
     suspend fun delete(contactPhoneNumber: ContactPhoneNumberEntity)
 
-    suspend fun insertAll(contactPhoneNumber: List<ContactPhoneNumberEntity>): List<Long>
+    suspend fun insertAll(contactPhoneNumberList: List<ContactPhoneNumberEntity>): List<Long>
 
-    suspend fun deleteAll(contactPhoneNumber: List<ContactPhoneNumberEntity>): Int
+    suspend fun deleteAll(contactPhoneNumberList: List<ContactPhoneNumberEntity>): Int
 }
