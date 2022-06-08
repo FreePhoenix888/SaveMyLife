@@ -7,6 +7,7 @@ import android.provider.ContactsContract
 import android.provider.Settings
 import androidx.core.content.ContextCompat
 import com.freephoenix888.savemylife.domain.models.Contact
+import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
 
 class Utils {
     companion object {
@@ -40,7 +41,7 @@ class Utils {
             return phoneNumbers
         }
 
-        fun getContactByUri(context: Context, uri: Uri): Contact {
+        fun getContactWithPhoneNumbersByUri(context: Context, uri: Uri): ContactWithPhoneNumbers {
             val contestResolver = context.contentResolver
             val cursor = contestResolver.query(uri, null, null, null, null)
                 ?: throw Throwable("Contact with uri $uri does not exist.")
@@ -66,10 +67,12 @@ class Utils {
 
                 cursor.close()
 
-                return Contact(
-                    uri = uri.toString(),
-                    name = name,
-                    phoneNumbers = phoneNumbers,
+                return ContactWithPhoneNumbers(
+                    contact = Contact(
+                        uri = uri,
+                        name = name,
+                    ),
+                    phoneNumbers = phoneNumbers
                 )
             } else {
                 throw Throwable("Contact with uri $uri does not exist.")
