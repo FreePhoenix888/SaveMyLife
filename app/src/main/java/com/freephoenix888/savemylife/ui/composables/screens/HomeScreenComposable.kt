@@ -33,7 +33,7 @@ fun HomeScreenComposable(
         },
         isMainServiceEnabled = isMainServiceEnabled,
         onSwitchIsMainServiceEnabled = {
-            saveMyLifeViewModel.setIsMainServiceEnabled()
+            saveMyLifeViewModel.switchIsDangerModeEnabled()
         },
     )
 }
