@@ -6,13 +6,13 @@ import javax.inject.Singleton
 
 @Singleton
 class SaveMyLifeRepository @Inject constructor (private val saveMyLifeLocalDataSource: SaveMyLifeLocalDataSource) {
-    val mainServiceState = saveMyLifeLocalDataSource.mainServiceState
+    val isMainServiceEnabled = saveMyLifeLocalDataSource.isMainServiceEnabled
     suspend fun setMainServiceState(state: Boolean) {
-        saveMyLifeLocalDataSource.setMainServiceState(state)
+        saveMyLifeLocalDataSource.setIsMainServiceEnabled(state)
     }
 
-    val dangerModeState = saveMyLifeLocalDataSource.dangerModeState
+    val isDangerModeEnabled = saveMyLifeLocalDataSource.isDangerModeEnabled
     suspend fun setDangerModeState(state: Boolean) {
-        saveMyLifeLocalDataSource.setDangerModeState(state)
+        saveMyLifeLocalDataSource.setIsDangerModeEnabled(state)
     }
 }
