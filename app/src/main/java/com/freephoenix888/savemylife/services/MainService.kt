@@ -1,38 +1,42 @@
 package com.freephoenix888.savemylife.services
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
+import android.telephony.SmsManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.LifecycleService
-import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
-import android.app.PendingIntent
-import android.content.IntentFilter
-import android.telephony.SmsManager
 import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
-import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
+import androidx.lifecycle.LifecycleService
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
+import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.domain.models.Contact
-import com.freephoenix888.savemylife.domain.useCases.GetEmergencyContactsFlowUseCase
+import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
+import com.freephoenix888.savemylife.domain.useCases.GetEmergencyContactsWithPhoneNumbersFlowUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetEmergencyMessageUseCase
+import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 
-class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerButtonBroadcastReceiver, val getEmergencyContactsFlowUseCase: GetEmergencyContactsFlowUseCase, val getEmergencyMessageUseCase: GetEmergencyMessageUseCase) : LifecycleService() {
+class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerButtonBroadcastReceiver, val getEmergencyContactsWithPhoneNumbersFlowUseCase: GetEmergencyContactsWithPhoneNumbersFlowUseCase, val getEmergencyMessageUseCase: GetEmergencyMessageUseCase) : LifecycleService() {
 
     var isFirstStart = true
     private val TAG = this::class.simpleName
+    var emergencyContacts: Flow<List<Contact>> = emptyFlow()
 
     init {
         Log.i(TAG, "Initializing...")
@@ -54,10 +58,10 @@ class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerBu
             ActionConstants.StopMainService -> {
                 Log.d(TAG, "Stopping...")
             }
-            ActionConstants.SwitchDangerMode -> {
-                isDangerModeEnabled = !isDangerModeEnabled
-                Log.d(TAG, "Switching danger mode to $isDangerModeEnabled")
-            }
+//            ActionConstants.SwitchDangerMode -> {
+//                isDangerModeEnabled = !isDangerModeEnabled
+//                Log.d(TAG, "Switching danger mode to $isDangerModeEnabled")
+//            }
             else -> {}
         }
         val filter = IntentFilter().apply {
@@ -89,8 +93,8 @@ class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerBu
         val notificationBuilder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_ID)
             .setAutoCancel(false)
             .setOngoing(true)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_round_warning_24))
-//            .setSmallIcon(R.drawable.ic_round_warning_24)
+//            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_baseline_warning_24))
+            .setSmallIcon(R.drawable.ic_baseline_warning_24)
             .setContentTitle("SaveMyLife")
             .setContentText("SaveMyLife is active")
             .setContentIntent(getEmergencyButtonActivityPendingIntent())
@@ -99,10 +103,18 @@ class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerBu
     }
 
     private fun getEmergencyButtonActivityPendingIntent(): PendingIntent {
-        val pendingIntent: PendingIntent
-        val intent = Intent(this, SaveMyLifeActivity::class.java).also {
-            it.action = ActionConstants.ShowEmergencyButtonScreen
-        }
+        val dangerButtonIntent = Intent(
+            Intent.ACTION_VIEW,
+            "${Constants.APP_URI}/screen/${SaveMyLifeScreenEnum.DangerButton.name}".toUri(),
+            applicationContext,
+            SaveMyLifeActivity::class.java
+        )
+
+
+//        val pendingIntent: PendingIntent
+//        val intent = Intent(this, SaveMyLifeActivity::class.java).also {
+//            it.action = ActionConstants.ShowEmergencyButtonScreen
+//        }
 
 
         val flags: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -110,13 +122,17 @@ class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerBu
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
-        pendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            intent,
-            flags
-        )
-        return pendingIntent
+//        pendingIntent = PendingIntent.getActivity(
+//            this,
+//            0,
+//            intent,
+//            flags
+//        )
+        val pendingIntent = TaskStackBuilder.create(applicationContext).run {
+            addNextIntentWithParentStack(dangerButtonIntent)
+            getPendingIntent(0, flags)
+        }
+        return pendingIntent ?: throw Throwable("Unable to create pending intent")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -127,7 +143,7 @@ class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerBu
 
     private fun sendMessageToContact(phoneNumber: String, message: String) {
         val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
-        val smsManager: SmsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        @Suppress("DEPRECATION") val smsManager: SmsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             applicationContext.getSystemService(SmsManager::class.java)
         } else {
             SmsManager.getDefault()
@@ -137,12 +153,12 @@ class MainService @Inject constructor (val powerButtonBroadcastReceiver: PowerBu
 
     private suspend fun doOnDangerSituation(){
 
-        getEmergencyContactsFlowUseCase().collect { contacts: List<Contact> ->
-            for (contact in contacts) {
-                for (phoneNumber in contact.phoneNumbers) {
+        getEmergencyContactsWithPhoneNumbersFlowUseCase().collect { contactsWithPhoneNumbers: List<ContactWithPhoneNumbers> ->
+            for (contactWithPhoneNumbers in contactsWithPhoneNumbers) {
+                for (phoneNumber in contactWithPhoneNumbers.phoneNumbers) {
                     sendMessageToContact(
                         phoneNumber = phoneNumber,
-                        message = getEmergencyMessageUseCase(contact = contact)
+                        message = getEmergencyMessageUseCase(contact = contactWithPhoneNumbers.contact)
                     )
                 }
             }
