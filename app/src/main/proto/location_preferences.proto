@@ -3,6 +3,6 @@ syntax = "proto3";
 option java_package = "com.freephoenix888.savemylife";
 option java_multiple_files = true;
 
-message LocationSharingPreferences {
+message LocationPreferences {
   bool state = 1;
 }
