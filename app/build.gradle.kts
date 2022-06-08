@@ -1,17 +1,21 @@
-import org.jetbrains.kotlin.base.kapt3.KaptOptions
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-import kotlin.reflect.full.memberProperties
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.plugins
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("androidx.navigation.safeargs")
     id("kotlin-kapt")
+    kotlin("kapt")
+
     // Hilt
     id("dagger.hilt.android.plugin")
 
     id("com.google.protobuf") version "0.8.17"
+
+
 }
 
 android {
@@ -97,11 +101,16 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
     // Libs
     implementation("com.github.alorma:compose-settings-ui:0.7.2")
+    // Accompanist
+    implementation("com.google.accompanist:accompanist-permissions:0.24.9-beta")
 
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.38.1")
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+
+    // Hilt+Compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Play Services
     implementation("com.google.android.gms:play-services-base:18.0.1")
@@ -117,6 +126,7 @@ dependencies {
     // optional - RxJava3 support
     implementation("androidx.datastore:datastore-rxjava3:1.0.0")
     implementation("com.google.protobuf:protobuf-kotlin:3.19.1")
+
 }
 
 // Allow references to generated code
