@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class EmergencyMessageRepository @Inject constructor(val localStorage: EmergencyMessageLocalDataSource) {
+class EmergencyMessageRepository @Inject constructor(private val localStorage: EmergencyMessageLocalDataSource) {
     val messageTemplate = localStorage.messageTemplate
     suspend fun setMessageTemplate(newMessageTemplate: String) {
         localStorage.setMessageTemplate(newMessageTemplate)
