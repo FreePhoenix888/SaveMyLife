@@ -3,19 +3,34 @@ package com.freephoenix888.savemylife.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.composables.SaveMyLifeApp
+import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactViewModel
+import com.freephoenix888.savemylife.ui.viewModels.EmergencyMessageViewModel
+import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
+import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
+import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SaveMyLifeActivity : AppCompatActivity()  {
 
+    companion object {
+        private const val REQUEST_CODE_ACCESS_COARSE_LOCATION_PERMISSION = 1
+    }
+
+    private val emergencyContactViewModel: EmergencyContactViewModel by viewModels()
+    private val emergencyMessageViewModel: EmergencyMessageViewModel by viewModels()
+    private val locationViewModel: LocationViewModel by viewModels()
+    private val saveMyLifeViewModel: SaveMyLifeViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SaveMyLifeApp(intent = intent)
+            SaveMyLifeApp()
         }
     }
 
@@ -26,6 +41,15 @@ class SaveMyLifeActivity : AppCompatActivity()  {
 //        toolbar.setupWithNavController(navController, toolBarConfig)
 //        supportActionBar?.setDisplayShowTitleEnabled(false)
 //    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
