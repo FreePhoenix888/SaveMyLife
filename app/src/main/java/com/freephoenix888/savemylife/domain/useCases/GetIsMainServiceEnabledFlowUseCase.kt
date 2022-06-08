@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class GetIsMainServiceEnabledFlowUseCase @Inject constructor(val saveMyLifeRepository: SaveMyLifeRepository) {
     operator fun invoke(): Flow<Boolean> {
-        return saveMyLifeRepository.mainServiceState
+        return saveMyLifeRepository.isMainServiceEnabled
     }
 }

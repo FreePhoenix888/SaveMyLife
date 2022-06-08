@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class GetIsDangerModeEnabledFlowUseCase @Inject constructor(val repository: SaveMyLifeRepository){
     operator fun invoke(): Flow<Boolean> {
-        return repository.dangerModeState
+        return repository.isDangerModeEnabled
     }
 }

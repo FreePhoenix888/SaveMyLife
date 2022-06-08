@@ -1,6 +1,6 @@
 package com.freephoenix888.savemylife.domain.useCases
 
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class SwitchIsDangerModeEnabledUseCase @Inject constructor(
@@ -8,7 +8,7 @@ class SwitchIsDangerModeEnabledUseCase @Inject constructor(
     val setDangerModeStateUseCase: SetDangerModeStateUseCase
 ) {
     suspend operator fun invoke() {
-        val newState = !getIsDangerModeEnabledFlowUseCase().last()
-        setDangerModeStateUseCase(newState)
+        val oldState = getIsDangerModeEnabledFlowUseCase().first()
+        setDangerModeStateUseCase(!oldState)
     }
 }
