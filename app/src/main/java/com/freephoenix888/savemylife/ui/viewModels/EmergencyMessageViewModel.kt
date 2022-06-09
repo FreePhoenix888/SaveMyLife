@@ -3,9 +3,10 @@ package com.freephoenix888.savemylife.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.SecondsInterval
+import com.freephoenix888.savemylife.constants.EmergencyContactsConstants
 import com.freephoenix888.savemylife.domain.useCases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +22,12 @@ class EmergencyMessageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val firstContactWithPhoneNumbers = getEmergencyContactsWithPhoneNumbersFlowUseCase().last().first()
-            emergencyMessageExample = getEmergencyMessageUseCase(firstContactWithPhoneNumbers.contact)
+            val contactWithPhoneNumbersList =
+                getEmergencyContactsWithPhoneNumbersFlowUseCase().first()
+            val firstContactWithPhoneNumbers =
+                if (contactWithPhoneNumbersList.isEmpty()) EmergencyContactsConstants.fakeContactsWithPhoneNumbers.first() else contactWithPhoneNumbersList.first()
+            emergencyMessageExample =
+                getEmergencyMessageUseCase(firstContactWithPhoneNumbers.contact)
         }
     }
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.freephoenix888.savemylife.PhoneNumber
+import com.freephoenix888.savemylife.constants.EmergencyContactsConstants
 import com.freephoenix888.savemylife.domain.models.Contact
 import com.freephoenix888.savemylife.domain.models.ContactPhoneNumber
 
@@ -50,7 +51,7 @@ fun ContactPhoneComposable(
 @Composable
 private fun ContactPhoneComposablePreview() {
     val context = LocalContext.current
-    var contactWithPhoneNumbers by remember { mutableStateOf(DefaultValuesForPreviews.defaultContactsWithPhoneNumbers.first())}
+    var contactWithPhoneNumbers by remember { mutableStateOf(EmergencyContactsConstants.fakeContactsWithPhoneNumbers.first())}
     ContactPhoneComposable(
         contact = contactWithPhoneNumbers.contact,
         phoneNumber = contactWithPhoneNumbers.phoneNumbers.first(),

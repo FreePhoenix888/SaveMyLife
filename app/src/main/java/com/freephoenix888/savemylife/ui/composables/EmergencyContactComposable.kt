@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.freephoenix888.savemylife.constants.EmergencyContactsConstants
 import com.freephoenix888.savemylife.domain.models.Contact
 import com.freephoenix888.savemylife.domain.models.ContactPhoneNumber
 import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
@@ -112,7 +113,7 @@ fun EmergencyContactComposable(
 @Preview(showBackground = true)
 @Composable
 private fun ContactComposablePreview() {
-    var contact by remember { mutableStateOf<ContactWithPhoneNumbers>(DefaultValuesForPreviews.defaultContactsWithPhoneNumbers.first()) }
+    var contact by remember { mutableStateOf<ContactWithPhoneNumbers>(EmergencyContactsConstants.fakeContactsWithPhoneNumbers.first()) }
     EmergencyContactComposable(
         contactWithPhoneNumbers = contact,
         onRemoveEmergencyContact = {
