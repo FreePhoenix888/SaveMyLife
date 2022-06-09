@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.freephoenix888.savemylife.domain.models.Setting
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
@@ -25,17 +24,17 @@ val settingsList = listOf(
     Setting(
         iconVector = Icons.Filled.Contacts,
         title = "Contacts",
-        screen = SaveMyLifeScreenEnum.ContactsSettings
+        screen = SaveMyLifeScreenEnum.EmergencyContacts
     ),
     Setting(
         iconVector = Icons.Filled.Message,
         title = "Messages",
-        screen = SaveMyLifeScreenEnum.MessagesSettings
+        screen = SaveMyLifeScreenEnum.EmergencyMessages
     ),
     Setting(
         iconVector = Icons.Filled.ShareLocation,
         title = "Location",
-        screen = SaveMyLifeScreenEnum.LocationSettings
+        screen = SaveMyLifeScreenEnum.Location
     )
 )
 
