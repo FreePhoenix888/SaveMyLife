@@ -44,7 +44,23 @@ fun HomeScreenBodyComposable(
     onSwitchIsMainServiceEnabled: () -> Unit,
     onSettingsButtonClick: () -> Unit,
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("SaveMyLife")
+                },
+                actions = {
+                    IconButton(
+                        onClick = onSettingsButtonClick,
+                        modifier = Modifier
+                    ) {
+                        Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
