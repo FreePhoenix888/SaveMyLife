@@ -1,11 +1,11 @@
-package com.freephoenix888.savemylife.ui.composables
+package com.freephoenix888.savemylife.constants
 
 import androidx.core.net.toUri
 import com.freephoenix888.savemylife.domain.models.Contact
 import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
 
-object DefaultValuesForPreviews {
-    val defaultContactsWithPhoneNumbers = listOf(
+object EmergencyContactsConstants {
+    val fakeContactsWithPhoneNumbers = listOf(
         ContactWithPhoneNumbers(
             contact = Contact(
                 uri = "0".toUri(),
