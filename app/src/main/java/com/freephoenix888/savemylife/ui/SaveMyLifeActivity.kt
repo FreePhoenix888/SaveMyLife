@@ -8,10 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.composables.SaveMyLifeApp
-import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactViewModel
-import com.freephoenix888.savemylife.ui.viewModels.EmergencyMessageViewModel
-import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
-import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
+import com.freephoenix888.savemylife.ui.viewModels.*
 import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,10 +19,11 @@ class SaveMyLifeActivity : AppCompatActivity()  {
         private const val REQUEST_CODE_ACCESS_COARSE_LOCATION_PERMISSION = 1
     }
 
+    private val saveMyLifeViewModel: SaveMyLifeViewModel by viewModels()
     private val emergencyContactViewModel: EmergencyContactViewModel by viewModels()
+    private val emergencyContactPhoneNumberViewModel: EmergencyContactPhoneNumberViewModel by viewModels()
     private val emergencyMessageViewModel: EmergencyMessageViewModel by viewModels()
     private val locationViewModel: LocationViewModel by viewModels()
-    private val saveMyLifeViewModel: SaveMyLifeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
