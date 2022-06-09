@@ -24,17 +24,17 @@ val settingsList = listOf(
     Setting(
         iconVector = Icons.Filled.Contacts,
         title = "Contacts",
-        screen = SaveMyLifeScreenEnum.EmergencyContacts
+        screen = SaveMyLifeScreenEnum.EmergencyContactsSettings
     ),
     Setting(
         iconVector = Icons.Filled.Message,
         title = "Messages",
-        screen = SaveMyLifeScreenEnum.EmergencyMessages
+        screen = SaveMyLifeScreenEnum.EmergencyMessagesSettings
     ),
     Setting(
         iconVector = Icons.Filled.ShareLocation,
         title = "Location",
-        screen = SaveMyLifeScreenEnum.Location
+        screen = SaveMyLifeScreenEnum.LocationSettings
     )
 )
 
