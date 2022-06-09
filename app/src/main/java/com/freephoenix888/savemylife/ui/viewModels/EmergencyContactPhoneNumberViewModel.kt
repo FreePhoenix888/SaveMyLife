@@ -12,7 +12,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EmergencyContactPhoneNumbersViewModel @Inject constructor(private val insertEmergencyContactPhoneNumberUseCase: InsertEmergencyContactPhoneNumberUseCase, private val insertEmergencyContactPhoneNumbersUseCase: InsertEmergencyContactPhoneNumbersUseCase, private val deleteEmergencyContactPhoneNumberUseCase: DeleteEmergencyContactPhoneNumberUseCase, private val deleteEmergencyContactPhoneNumbersUseCase: DeleteEmergencyContactPhoneNumbersUseCase): ViewModel() {
+class EmergencyContactPhoneNumberViewModel @Inject constructor(
+    private val insertEmergencyContactPhoneNumberUseCase: InsertEmergencyContactPhoneNumberUseCase,
+    private val insertEmergencyContactPhoneNumbersUseCase: InsertEmergencyContactPhoneNumbersUseCase,
+    private val deleteEmergencyContactPhoneNumberUseCase: DeleteEmergencyContactPhoneNumberUseCase,
+    private val deleteEmergencyContactPhoneNumbersUseCase: DeleteEmergencyContactPhoneNumbersUseCase
+) : ViewModel() {
     fun insert(contactPhoneNumber: ContactPhoneNumber) = viewModelScope.launch {
         insertEmergencyContactPhoneNumberUseCase(contactPhoneNumber)
     }
