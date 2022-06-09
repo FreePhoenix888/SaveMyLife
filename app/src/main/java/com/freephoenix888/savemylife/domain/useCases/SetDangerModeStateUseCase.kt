@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class SetDangerModeStateUseCase @Inject constructor(val saveMyLifeRepository: SaveMyLifeRepository){
     suspend operator fun invoke(newState: Boolean) {
-        saveMyLifeRepository.setDangerModeState(newState)
+        saveMyLifeRepository.setIsDangerModeEnabled(newState)
     }
 }

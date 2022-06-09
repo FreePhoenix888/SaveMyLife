@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class SetMainServiceStateUseCase @Inject constructor(val saveMyLifeRepository: SaveMyLifeRepository) {
     suspend operator fun invoke(newState: Boolean) {
-        saveMyLifeRepository.setMainServiceState(newState)
+        saveMyLifeRepository.setIsMainServiceEnabled(newState)
     }
 }
