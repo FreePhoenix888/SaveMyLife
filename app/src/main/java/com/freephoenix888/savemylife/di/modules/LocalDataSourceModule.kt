@@ -13,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class LocalDataSourceModule {
     @Binds
-    abstract fun bindContactLocalStorage(emergencyContactRoomLocalDataSource: EmergencyContactRoomLocalDataSource): ContactLocalDataSource
+    abstract fun bindEmergencyContactLocalStorage(emergencyContactRoomLocalDataSource: EmergencyContactRoomLocalDataSource): ContactLocalDataSource
 
     @Binds
     abstract fun bindEmergencyContactPhoneNumberLocalDataSource(emergencyContactPhoneNumberLocalDataSource: EmergencyContactPhoneNumberRoomLocalDataSource): EmergencyContactPhoneNumberLocalDataSource
