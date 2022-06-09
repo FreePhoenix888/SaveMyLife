@@ -19,7 +19,7 @@ class   SaveMyLifeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val isMainServiceEnabled = getIsMainServiceEnabledFlowUseCase()
-    fun setIsMainServiceEnabled() = viewModelScope.launch {
+    fun switchIsMainServiceEnabled() = viewModelScope.launch {
         switchIsMainServiceEnabledUseCase()
     }
 
