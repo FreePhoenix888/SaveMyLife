@@ -24,7 +24,7 @@ import com.freephoenix888.savemylife.domain.models.ContactPhoneNumber
 import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
 import com.freephoenix888.savemylife.ui.composables.EmergencyContactComposable
 import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
-import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactPhoneNumbersViewModel
+import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactPhoneNumberViewModel
 import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -37,7 +37,7 @@ const val REQUEST_CODE_READ_WRITE_CONTACTS = 1
 @Composable
 fun EmergencyContactsSettingsScreenComposable(
     emergencyContactViewModel: EmergencyContactViewModel = viewModel(),
-    emergencyContactPhoneNumbersViewModel: EmergencyContactPhoneNumbersViewModel = viewModel()
+    emergencyContactPhoneNumberViewModel: EmergencyContactPhoneNumberViewModel = viewModel()
 ) {
     val context = LocalContext.current as AppCompatActivity
     val readContactsPermissionState =
@@ -59,11 +59,11 @@ fun EmergencyContactsSettingsScreenComposable(
             emergencyContactViewModel.delete(it)
         },
         onDeleteEmergencyContactPhoneNumber = {
-            emergencyContactPhoneNumbersViewModel.delete(it)
+            emergencyContactPhoneNumberViewModel.delete(it)
         },
         onAddContactWithPhoneNumbers = { contactWithPhoneNumbers ->
             emergencyContactViewModel.insert(contactWithPhoneNumbers.contact)
-            emergencyContactPhoneNumbersViewModel.insertList(
+            emergencyContactPhoneNumberViewModel.insertList(
                 contactWithPhoneNumbers.phoneNumbers.map { phoneNumber ->
                     ContactPhoneNumber(
                         contactUri = contactWithPhoneNumbers.contact.uri,
