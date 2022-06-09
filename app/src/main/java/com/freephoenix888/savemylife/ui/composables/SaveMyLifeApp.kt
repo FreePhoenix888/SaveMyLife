@@ -23,10 +23,6 @@ import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 @Composable
 fun SaveMyLifeApp() {
     SaveMyLifeTheme {
-        val emergencyContactViewModel: EmergencyContactViewModel = viewModel()
-        val emergencyMessageViewModel: EmergencyMessageViewModel = viewModel()
-        val locationViewModel: LocationViewModel = viewModel()
-        val saveMyLifeViewModel: SaveMyLifeViewModel = viewModel()
         SaveMyLifeNavHost()
     }
 }
