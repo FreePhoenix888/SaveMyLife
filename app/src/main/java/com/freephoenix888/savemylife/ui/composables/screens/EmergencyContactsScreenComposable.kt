@@ -18,10 +18,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.freephoenix888.savemylife.Utils
+import com.freephoenix888.savemylife.constants.EmergencyContactsConstants
 import com.freephoenix888.savemylife.domain.models.Contact
 import com.freephoenix888.savemylife.domain.models.ContactPhoneNumber
 import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
-import com.freephoenix888.savemylife.ui.composables.DefaultValuesForPreviews
 import com.freephoenix888.savemylife.ui.composables.EmergencyContactComposable
 import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
 import com.freephoenix888.savemylife.ui.viewModels.EmergencyContactPhoneNumbersViewModel
@@ -134,7 +134,7 @@ private fun EmergencyContactsSettingsScreenBodyComposable(
 @Composable
 fun EmergencyContactsSettingsScreenBodyComposablePreview() {
     val emergencyContactsWithPhoneNumbers =
-        remember { mutableStateListOf<ContactWithPhoneNumbers>(*DefaultValuesForPreviews.defaultContactsWithPhoneNumbers.toTypedArray()) }
+        remember { mutableStateListOf<ContactWithPhoneNumbers>(*EmergencyContactsConstants.fakeContactsWithPhoneNumbers.toTypedArray()) }
 
     EmergencyContactsSettingsScreenBodyComposable(
         emergencyContacts = emergencyContactsWithPhoneNumbers,
