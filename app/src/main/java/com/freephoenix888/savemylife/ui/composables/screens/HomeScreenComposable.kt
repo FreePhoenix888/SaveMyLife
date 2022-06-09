@@ -68,9 +68,14 @@ fun HomeScreenBodyComposable(
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = buildAnnotatedString {
-                                            append("SaveMyLife is ")
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Black, color = if(isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error)) {
-                        append((if(isMainServiceEnabled) "enabled" else "disabled").uppercase())
+                    append("SaveMyLife is ")
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Black,
+                            color = if (isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error
+                        )
+                    ) {
+                        append((if (isMainServiceEnabled) "enabled" else "disabled").uppercase())
                     }
                 },
             )
