@@ -1,6 +1,7 @@
 package com.freephoenix888.savemylife.data.datastore
 
 import androidx.datastore.core.Serializer
+import com.freephoenix888.savemylife.MessagePreferences
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
