@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.core.net.toUri
 import androidx.room.TypeConverter
 
-class ContactConverter {
+class PhoneNumberConverter {
     @TypeConverter
     fun fromUriToString(uri: Uri): String {
         return uri.toString()
