@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,17 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.freephoenix888.savemylife.SecondsInterval
-import com.freephoenix888.savemylife.constants.EmergencyMessageConstants
-import com.freephoenix888.savemylife.ui.viewModels.EmergencyMessageViewModel
-import java.lang.Integer.parseInt
+import com.freephoenix888.savemylife.constants.MessageConstants
+import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
 
 @Composable
 fun MessageSettingsScreenComposable(
-    emergencyMessageViewModel: EmergencyMessageViewModel = viewModel()
+    emergencyMessageViewModel: MessageViewModel = viewModel()
 ) {
-    val emergencyMessageTemplate by emergencyMessageViewModel.messageTemplate.collectAsState(initial = EmergencyMessageConstants.DEFAULT_EMERGENCY_MESSAGE_TEMPLATE)
+    val emergencyMessageTemplate by emergencyMessageViewModel.messageTemplate.collectAsState(initial = MessageConstants.DEFAULT_EMERGENCY_MESSAGE_TEMPLATE)
     val emergencyMessageSendingInterval by emergencyMessageViewModel.sendingInterval.collectAsState(
-        initial = EmergencyMessageConstants.DEFAULT_EMERGENCY_MESSAGE_SENDING_SECONDS_INTERVAL
+        initial = MessageConstants.DEFAULT_EMERGENCY_MESSAGE_SENDING_SECONDS_INTERVAL
     )
     MessageSettingsScreenBodyComposable(
         emergencyMessageTemplate = emergencyMessageTemplate,
@@ -49,16 +49,26 @@ private fun MessageSettingsScreenBodyComposable(
     onMessageTemplateInfoButtonClick: () -> Unit,
     messageSendingInterval: SecondsInterval,
     onMessageSendingIntervalChange: (SecondsInterval) -> Unit,
-    emergencyMessageExample: String
+    emergencyMessageExample: String?
 ) {
 //    var a by remember { mutableStateOf("A")}
 //    OutlinedTextField(value = a, onValueChange = { a = it})
-    Scaffold { innerPadding: PaddingValues ->
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-            Row() {
+    Scaffold(
+        topBar = {
+            TopAppBar(title = {
+                Icon(imageVector = Icons.Filled.Message, contentDescription = "Message")
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Message")
+            })
+        }
+    ) { innerPadding: PaddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(
                     value = emergencyMessageTemplate,
                     onValueChange = onMessageTemplateChange,
@@ -70,23 +80,25 @@ private fun MessageSettingsScreenBodyComposable(
                         Text("Message template")
                     }
                 )
-                IconButton(onClick = onMessageTemplateInfoButtonClick, modifier = Modifier.weight(1f)) {
+                IconButton(
+                    onClick = onMessageTemplateInfoButtonClick,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Info,
                         contentDescription = "String template information"
                     )
                 }
             }
-            Text("Your message will look like this:")
-            Text(emergencyMessageExample)
-            Card {
-                Text(text = "Example message")
+            if (emergencyMessageExample != null) {
+                Text("Your message will look like this:")
+                Text(emergencyMessageExample)
             }
             Divider(modifier = Modifier.padding(vertical = 32.dp))
             OutlinedTextField(
                 value = messageSendingInterval.toString(),
                 onValueChange = {
-                    onMessageSendingIntervalChange(if (it.isNotEmpty()) parseInt(it) else 0)
+                    onMessageSendingIntervalChange(it.toLongOrNull() ?: 0)
                 },
                 label = {
                     Text("Sending interval in seconds")
@@ -94,6 +106,9 @@ private fun MessageSettingsScreenBodyComposable(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
+                leadingIcon = {
+                    Icon(imageVector = Icons.Filled.Timer, contentDescription = "Sending interval")
+                },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -105,7 +120,7 @@ private fun MessageSettingsScreenBodyComposable(
 private fun MessageSettingsScreenBodyComposablePreview() {
     val context = LocalContext.current
     var messageTemplate by remember { mutableStateOf("") }
-    var messageSendingInterval by remember { mutableStateOf(EmergencyMessageConstants.DEFAULT_EMERGENCY_MESSAGE_SENDING_SECONDS_INTERVAL) }
+    var messageSendingInterval by remember { mutableStateOf(MessageConstants.DEFAULT_EMERGENCY_MESSAGE_SENDING_SECONDS_INTERVAL) }
     MessageSettingsScreenBodyComposable(
         emergencyMessageTemplate = messageTemplate,
         onMessageTemplateChange = { messageTemplate = it },
