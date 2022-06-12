@@ -2,24 +2,28 @@ package com.freephoenix888.savemylife.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.freephoenix888.savemylife.domain.useCases.GetLocationSharingStateFlowUseCase
-import com.freephoenix888.savemylife.domain.useCases.SetLocationSharingStateUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetIsLocationSharingEnabledFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.SetIsLocationSharingEnabledUseCase
 import com.freephoenix888.savemylife.domain.useCases.SwitchLocationSharingStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LocationViewModel @Inject constructor(
-    val getLocationSharingStateFlowUseCase: GetLocationSharingStateFlowUseCase,
-    val setLocationSharingStateUseCase: SetLocationSharingStateUseCase,
+    val getIsLocationSharingEnabledFlowUseCase: GetIsLocationSharingEnabledFlowUseCase,
+    val setIsLocationSharingEnabledUseCase: SetIsLocationSharingEnabledUseCase,
     val switchLocationSharingStateUseCase: SwitchLocationSharingStateUseCase
 ) : ViewModel() {
-    val locationSharingState = getLocationSharingStateFlowUseCase()
-    fun setLocationSharingState(newState: Boolean) = viewModelScope.launch {
-        setLocationSharingStateUseCase(newState)
+    val isLocationSharingEnabled = getIsLocationSharingEnabledFlowUseCase()
+    fun isLocationSharingEnabled(newState: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        setIsLocationSharingEnabledUseCase(newState)
     }
-    fun switchLocationSharingState() = viewModelScope.launch {
+    fun setIsLocationSharingEnabled(newState: Boolean) =viewModelScope.launch {
+        setIsLocationSharingEnabledUseCase(newState)
+    }
+    fun switchLocationSharingState() = viewModelScope.launch(Dispatchers.IO) {
         switchLocationSharingStateUseCase()
     }
 }

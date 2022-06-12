@@ -7,6 +7,7 @@ import com.freephoenix888.savemylife.domain.useCases.GetIsMainServiceEnabledFlow
 import com.freephoenix888.savemylife.domain.useCases.SwitchIsDangerModeEnabledUseCase
 import com.freephoenix888.savemylife.domain.useCases.SwitchIsMainServiceEnabledUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,12 +20,12 @@ class   SaveMyLifeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val isMainServiceEnabled = getIsMainServiceEnabledFlowUseCase()
-    fun switchIsMainServiceEnabled() = viewModelScope.launch {
+    fun switchIsMainServiceEnabled() = viewModelScope.launch(Dispatchers.IO) {
         switchIsMainServiceEnabledUseCase()
     }
 
     val isDangerModeEnabled = getIsDangerModeEnabledFlowUseCase()
-    fun switchIsDangerModeEnabled() = viewModelScope.launch {
+    fun switchIsDangerModeEnabled() = viewModelScope.launch(Dispatchers.IO) {
         switchIsDangerModeEnabledUseCase()
     }
 }
