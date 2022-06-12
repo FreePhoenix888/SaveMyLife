@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.freephoenix888.savemylife.EmergencyMessagePreferences
-import com.freephoenix888.savemylife.data.datastore.EmergencyMessagePreferencesSerializer
+import com.freephoenix888.savemylife.MessagePreferences
+import com.freephoenix888.savemylife.data.datastore.MessagePreferencesSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,12 +18,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object EmergencyMessageModule {
+object MessageModule {
     @Singleton
     @Provides
-    fun provideEmergencyMessageDataStore(@ApplicationContext applicationContext: Context): DataStore<EmergencyMessagePreferences> =
+    fun provideMessageDataStore(@ApplicationContext applicationContext: Context): DataStore<MessagePreferences> =
         DataStoreFactory.create(
-            serializer = EmergencyMessagePreferencesSerializer,
+            serializer = MessagePreferencesSerializer,
             produceFile = { applicationContext.dataStoreFile("emergency_message_preferences.pb") },
             corruptionHandler = null,
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob())

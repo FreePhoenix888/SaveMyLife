@@ -1,9 +1,13 @@
 package com.freephoenix888.savemylife.di.modules
 
-import com.freephoenix888.savemylife.data.sources.*
-import com.freephoenix888.savemylife.data.sources.interfaces.*
-//import com.freephoenix888.savemylife.data.sources.EmergencyMessageDataStoreLocalDataSource
-//import com.freephoenix888.savemylife.data.sources.LocationSettingDataStoreLocalDataSource
+import com.freephoenix888.savemylife.data.sources.LocationDataStoreLocalDataSource
+import com.freephoenix888.savemylife.data.sources.MessageDataStoreLocalDataSource
+import com.freephoenix888.savemylife.data.sources.PhoneNumberRoomLocalDataSource
+import com.freephoenix888.savemylife.data.sources.SaveMyLifeDataStoreLocalDataSource
+import com.freephoenix888.savemylife.data.sources.interfaces.LocationLocalDataSource
+import com.freephoenix888.savemylife.data.sources.interfaces.MessageLocalDataSource
+import com.freephoenix888.savemylife.data.sources.interfaces.PhoneNumberLocalDataSource
+import com.freephoenix888.savemylife.data.sources.interfaces.SaveMyLifeLocalDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,13 +17,10 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class LocalDataSourceModule {
     @Binds
-    abstract fun bindEmergencyContactLocalStorage(emergencyContactRoomLocalDataSource: EmergencyContactRoomLocalDataSource): ContactLocalDataSource
+    abstract fun bindPhoneNumberLocalDataSource(emergencyPhoneNumberLocalDataSource: PhoneNumberRoomLocalDataSource): PhoneNumberLocalDataSource
 
     @Binds
-    abstract fun bindEmergencyContactPhoneNumberLocalDataSource(emergencyContactPhoneNumberLocalDataSource: EmergencyContactPhoneNumberRoomLocalDataSource): EmergencyContactPhoneNumberLocalDataSource
-
-    @Binds
-    abstract fun bindEmergencyMessageLocalStorage(emergencyMessageDataStoreLocalDataSource: EmergencyMessageDataStoreLocalDataSource): EmergencyMessageLocalDataSource
+    abstract fun bindMessageLocalStorage(messageDataStoreLocalDataSource: MessageDataStoreLocalDataSource): MessageLocalDataSource
 
     @Binds
     abstract fun bindLocationSettingLocalDataSource(locationSettingDataStoreLocalDataSource: LocationDataStoreLocalDataSource): LocationLocalDataSource
