@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
-import com.freephoenix888.savemylife.ui.composables.SaveMyLifeApp
+import com.freephoenix888.savemylife.ui.composables.SaveMyLifeAppComposable
 import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
 import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberViewModel
@@ -30,7 +30,7 @@ class SaveMyLifeActivity : AppCompatActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SaveMyLifeApp()
+            SaveMyLifeAppComposable()
         }
     }
 
