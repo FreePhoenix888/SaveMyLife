@@ -4,8 +4,8 @@ import com.freephoenix888.savemylife.data.repositories.LocationRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetLocationSharingStateFlowUseCase @Inject constructor(val locationRepository: LocationRepository) {
+class GetIsLocationSharingEnabledFlowUseCase @Inject constructor(val locationRepository: LocationRepository) {
     operator fun invoke(): Flow<Boolean> {
-        return locationRepository.locationSharingState
+        return locationRepository.isLocationSharingEnabled
     }
 }
