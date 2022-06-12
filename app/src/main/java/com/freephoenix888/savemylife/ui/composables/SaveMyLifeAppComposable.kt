@@ -11,20 +11,20 @@ import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.composables.screens.*
 import com.freephoenix888.savemylife.ui.theme.SaveMyLifeTheme
-import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
 import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
+import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 @Composable
-fun SaveMyLifeApp() {
+fun SaveMyLifeAppComposable() {
     SaveMyLifeTheme {
-        SaveMyLifeNavHost()
+        SaveMyLifeNavHostComposable()
     }
 }
 
 @Composable
-private fun SaveMyLifeNavHost(
+private fun SaveMyLifeNavHostComposable(
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -41,18 +41,18 @@ private fun SaveMyLifeNavHost(
         composable(SaveMyLifeScreenEnum.Settings.name) {
             SettingsScreenComposable(navController = navController)
         }
-        composable(SaveMyLifeScreenEnum.PhoneNumber.name) {
+        composable(SaveMyLifeScreenEnum.SmsSettings.name) {
             val phoneNumberViewModel: PhoneNumberViewModel =
                 hiltViewModel()
             PhoneNumbersScreenComposable(
                 phoneNumberViewModel = phoneNumberViewModel
             )
         }
-        composable(SaveMyLifeScreenEnum.Message.name) {
+        composable(SaveMyLifeScreenEnum.MessageSettings.name) {
             val emergencyMessageViewModel: MessageViewModel = hiltViewModel()
             MessageSettingsScreenComposable(emergencyMessageViewModel = emergencyMessageViewModel)
         }
-        composable(SaveMyLifeScreenEnum.Location.name) {
+        composable(SaveMyLifeScreenEnum.LocationSettings.name) {
             val locationViewModel: LocationViewModel = hiltViewModel()
             LocationSettingsScreenComposable(locationViewModel = locationViewModel)
         }
@@ -71,5 +71,5 @@ private fun SaveMyLifeNavHost(
 @Preview
 @Composable
 private fun SaveMyLifeAppPreview() {
-    SaveMyLifeApp()
+    SaveMyLifeAppComposable()
 }
