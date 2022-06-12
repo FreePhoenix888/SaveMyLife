@@ -32,21 +32,21 @@ fun SettingsScreenComposable(
                 icon = Icons.Filled.Message,
                 title = "Phone numbers",
                 onClick = {
-                    navController.navigate(SaveMyLifeScreenEnum.PhoneNumber.name)
+                    navController.navigate(SaveMyLifeScreenEnum.SmsSettings.name)
                 }
             ),
             SettingLink(
                 icon = Icons.Filled.Message,
                 title = "Message",
                 onClick = {
-                    navController.navigate(SaveMyLifeScreenEnum.Message.name)
+                    navController.navigate(SaveMyLifeScreenEnum.MessageSettings.name)
                 }
             ),
             SettingLink(
                 icon = Icons.Filled.ShareLocation,
                 title = "Location",
                 onClick = {
-                    navController.navigate(SaveMyLifeScreenEnum.Location.name)
+                    navController.navigate(SaveMyLifeScreenEnum.LocationSettings.name)
                 }
             )
         )
