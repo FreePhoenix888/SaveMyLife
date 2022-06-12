@@ -3,6 +3,6 @@ package com.freephoenix888.savemylife.data.sources.interfaces
 import kotlinx.coroutines.flow.Flow
 
 interface LocationLocalDataSource {
-    val locationSharingState: Flow<Boolean>
-    suspend fun setLocationSharingState(newState: Boolean)
+    val isLocationSharingEnabled: Flow<Boolean>
+    suspend fun setIsLocationSharingEnabled(newState: Boolean)
 }

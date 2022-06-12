@@ -11,14 +11,14 @@ import javax.inject.Singleton
 @Singleton
 class LocationDataStoreLocalDataSource @Inject constructor(private val dataStore: DataStore<LocationPreferences>) :
     LocationLocalDataSource {
-    override val locationSharingState: Flow<Boolean> = dataStore.data.map {
-        it.state
+    override val isLocationSharingEnabled: Flow<Boolean> = dataStore.data.map {
+        it.isLocationSharingEnabled
     }
 
-    override suspend fun setLocationSharingState(newState: Boolean) {
+    override suspend fun setIsLocationSharingEnabled(newState: Boolean) {
         dataStore.updateData {
             it.toBuilder()
-                .setState(newState)
+                .setIsLocationSharingEnabled(newState)
                 .build()
         }
     }
