@@ -99,8 +99,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.1.1")
     // View model
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
-    // Libs
-    implementation("com.github.alorma:compose-settings-ui:0.7.2")
     // Accompanist
     implementation("com.google.accompanist:accompanist-permissions:0.24.9-beta")
 
