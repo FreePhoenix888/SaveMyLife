@@ -6,8 +6,9 @@ import android.net.Uri
 import android.provider.ContactsContract
 import android.provider.Settings
 import androidx.core.content.ContextCompat
-import com.freephoenix888.savemylife.domain.models.Contact
-import com.freephoenix888.savemylife.domain.models.ContactWithPhoneNumbers
+import androidx.core.net.toUri
+import com.freephoenix888.savemylife.domain.models.PhoneNumber
+
 
 class Utils {
     companion object {
@@ -18,66 +19,58 @@ class Utils {
             ContextCompat.startActivity(context, intent, null)
         }
 
-        fun getContactPhoneNumbersById(context: Context, id: String): List<PhoneNumber>{
-            val contestResolver = context.contentResolver
-            val phoneNumbers = mutableListOf<PhoneNumber>()
-            val cursor = contestResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null,
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,
-                null,
-                null
-            )
-                ?: return phoneNumbers
-
-            while (cursor.moveToNext()) {
-                val phoneNumberColumnIndex =
-                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                val phoneNumber = cursor.getString(phoneNumberColumnIndex)
-                phoneNumbers.add(phoneNumber)
-            }
-
-            cursor.close()
-            return phoneNumbers
+        fun getContactLookupUri(id: Long, lookupKey: String): Uri {
+            return ContactsContract.Contacts.getLookupUri(id, lookupKey)
         }
 
-        fun getContactWithPhoneNumbersByUri(context: Context, uri: Uri): ContactWithPhoneNumbers {
+//        fun getContactByLookupUri(context: Context, lookupUri: Uri): Contact {
+//            val contestResolver = context.contentResolver
+//            val cursor = contestResolver.query(lookupUri, arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI), null, null, null)
+//                ?: throw Throwable("Contact with lookup uri $lookupUri does not exist.")
+//            if (cursor.moveToFirst()) {
+//                val displayNameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+//                val displayName = cursor.getString(displayNameColumnIndex)
+//
+//                val photoThumbnailUriColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
+//                val photoThumbnailUri = cursor.getString(photoThumbnailUriColumnIndex)
+//
+//                val contactLookupKeyColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY)
+//                val contactLookupKey = cursor.getString(contactLookupKeyColumnIndex)
+//
+//                val contactIdColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)
+//                val contactId = cursor.getLong(contactIdColumnIndex)
+//
+//                cursor.close()
+//                return Contact(
+//                    lookupUri = getContactLookupUri(contactId, contactLookupKey),
+//                    displayName = displayName,
+//                    photoThumbnailUri = photoThumbnailUri?.toUri(),
+//                )
+//            } else throw Throwable("Contact with lookup uri $lookupUri does not exist.")
+//        }
+        
+        fun getPhoneNumberByContentUri(context: Context, contentUri: Uri): PhoneNumber {
             val contestResolver = context.contentResolver
-            val cursor = contestResolver.query(uri, null, null, null, null)
-                ?: throw Throwable("Contact with uri $uri does not exist.")
+            val cursor = contestResolver.query(contentUri, arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME), null, null, null)
+                ?: throw Throwable("Phone number with content uri $contentUri does not exist.")
             if (cursor.moveToFirst()) {
-                val idColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID)
-                val contactId = cursor.getString(idColumnIndex)
+                val phoneNumberColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                val phoneNumber = cursor.getString(phoneNumberColumnIndex)
 
-                val displayNameColumnIndex =
-                    cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-                val name = cursor.getString(displayNameColumnIndex)
+                val contactPhotoThumbnailUriColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)
+                val contactPhotoThumbnailUri = cursor.getString(contactPhotoThumbnailUriColumnIndex)?.toUri()
 
-                val thumbnailUriColumnIndex =
-                    cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)
-                val thumbnailUri: String? = cursor.getString(thumbnailUriColumnIndex)
-
-                val hasPhoneColumnIndex =
-                    cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
-                val hasPhoneNumber = cursor.getString(hasPhoneColumnIndex).toInt() == 1
-                var phoneNumbers = listOf<PhoneNumber>()
-                if (hasPhoneNumber) {
-                    phoneNumbers = getContactPhoneNumbersById(context = context, id = contactId)
-                }
+                val contactDisplayNameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                val contactDisplayName = cursor.getString(contactDisplayNameColumnIndex)
 
                 cursor.close()
-
-                return ContactWithPhoneNumbers(
-                    contact = Contact(
-                        uri = uri,
-                        name = name,
-                    ),
-                    phoneNumbers = phoneNumbers
+                return PhoneNumber(
+                    phoneNumber = phoneNumber,
+                    contactName = contactDisplayName,
+                    contactPhotoThumbnailUri = contactPhotoThumbnailUri,
+                    contentUri = contentUri
                 )
-            } else {
-                throw Throwable("Contact with uri $uri does not exist.")
-            }
-
+            } else throw Throwable("Phone number with content uri $contentUri does not exist.")
         }
     }
 }
