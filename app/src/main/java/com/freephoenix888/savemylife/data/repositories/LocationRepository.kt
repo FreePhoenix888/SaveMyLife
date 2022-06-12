@@ -6,8 +6,8 @@ import javax.inject.Singleton
 
 @Singleton
 class LocationRepository @Inject constructor(private val locationLocalDataSource: LocationLocalDataSource) {
-    val locationSharingState = locationLocalDataSource.locationSharingState
-    suspend fun setLocationSharingState(newLocationSharingState: Boolean) {
-        locationLocalDataSource.setLocationSharingState(newLocationSharingState)
+    val isLocationSharingEnabled = locationLocalDataSource.isLocationSharingEnabled
+    suspend fun setIsLocationSharingEnabled(newLocationSharingState: Boolean) {
+        locationLocalDataSource.setIsLocationSharingEnabled(newLocationSharingState)
     }
 }
