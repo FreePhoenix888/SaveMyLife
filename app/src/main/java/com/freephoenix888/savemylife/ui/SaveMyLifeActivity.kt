@@ -8,7 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.composables.SaveMyLifeApp
-import com.freephoenix888.savemylife.ui.viewModels.*
+import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
+import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
+import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberViewModel
+import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,9 +23,8 @@ class SaveMyLifeActivity : AppCompatActivity()  {
     }
 
     private val saveMyLifeViewModel: SaveMyLifeViewModel by viewModels()
-    private val emergencyContactViewModel: EmergencyContactViewModel by viewModels()
-    private val emergencyContactPhoneNumberViewModel: EmergencyContactPhoneNumberViewModel by viewModels()
-    private val emergencyMessageViewModel: EmergencyMessageViewModel by viewModels()
+    private val phoneNumberViewModel: PhoneNumberViewModel by viewModels()
+    private val emergencyMessageViewModel: MessageViewModel by viewModels()
     private val locationViewModel: LocationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +53,7 @@ class SaveMyLifeActivity : AppCompatActivity()  {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        navigateToEmergencyButtonFragmentIfNeeded(intent)
+        navigateToButtonFragmentIfNeeded(intent)
     }
 
     private fun runMainService(){
@@ -62,11 +64,11 @@ class SaveMyLifeActivity : AppCompatActivity()  {
     }
 
     private fun processIntentAction(intent: Intent?){
-        navigateToEmergencyButtonFragmentIfNeeded(intent)
+        navigateToButtonFragmentIfNeeded(intent)
 
     }
 
-    private fun navigateToEmergencyButtonFragmentIfNeeded(intent: Intent?){
+    private fun navigateToButtonFragmentIfNeeded(intent: Intent?){
 
     }
 }
