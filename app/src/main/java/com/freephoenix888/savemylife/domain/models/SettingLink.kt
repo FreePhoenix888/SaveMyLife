@@ -5,5 +5,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 data class SettingLink(
     val icon: ImageVector,
     val title: String,
+    val subtitle: String? = null,
     val onClick: () -> Unit,
 )
