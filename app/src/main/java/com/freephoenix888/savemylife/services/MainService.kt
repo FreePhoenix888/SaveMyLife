@@ -1,12 +1,10 @@
 package com.freephoenix888.savemylife.services
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.icu.util.Calendar
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -14,8 +12,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleService
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
@@ -28,19 +24,19 @@ import com.freephoenix888.savemylife.domain.useCases.GetMessageUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
-import com.freephoenix888.savemylife.workers.DoInDangerWorker
+import com.freephoenix888.savemylife.workers.DoInDangerBroadcastReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
-import kotlin.time.toJavaDuration
 
 
 @AndroidEntryPoint
 class MainService: LifecycleService() {
 
-    val powerButtonBroadcastReceiver: PowerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
+    val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
+    val doInDangerBroadcastReceiver = DoInDangerBroadcastReceiver()
     @Inject lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
     @Inject lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
     @Inject lateinit var getMessageUseCase: GetMessageUseCase
@@ -57,15 +53,33 @@ class MainService: LifecycleService() {
         isDangerModeEnabled = getIsDangerModeEnabledFlowUseCase()
         coroutineScope.launch {
             isDangerModeEnabled.collect {
-                if(!it){
-                    return@collect
+                val intent: Intent = Intent(applicationContext, DoInDangerBroadcastReceiver::class.java)
+                val flags = if(Build.VERSION.SDK_INT >= 31) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+                val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, flags)
+                if(it){
+                    val messageSendingInterval = getMessageSendingIntervalFlowUseCase().first()
+                    val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    alarmManager.setRepeating(
+                        AlarmManager.RTC,
+                        Calendar.getInstance().timeInMillis,
+                        messageSendingInterval.inWholeMilliseconds,
+                        pendingIntent
+                    )
+//                    alarmManager.setExactAndAllowWhileIdle(
+//                        AlarmManager.RTC,
+//                        messageSendingInterval.inWholeMilliseconds,
+//                        pendingIntent
+//                    )
+                } else {
+                    val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    alarmManager.cancel(pendingIntent)
                 }
-                val messageSendingInterval = getMessageSendingIntervalFlowUseCase().first()
-                val doInDangerRequest =
-                    PeriodicWorkRequestBuilder<DoInDangerWorker>(
-                        repeatInterval = messageSendingInterval.toJavaDuration()
-                    ).build()
-                WorkManager.getInstance(applicationContext).enqueue(doInDangerRequest)
+//                val doInDangerRequest =
+//                    PeriodicWorkRequestBuilder<DoInDangerWorker>(
+//                        repeatInterval = messageSendingInterval.inWholeSeconds, repeatIntervalTimeUnit = TimeUnit.SECONDS
+//                    ).build()
+//                WorkManager.getInstance(applicationContext).enqueue(doInDangerRequest)
+
             }
 
         }
@@ -90,6 +104,7 @@ class MainService: LifecycleService() {
             addAction(Intent.ACTION_SCREEN_OFF)
         }
         this.registerReceiver(powerButtonBroadcastReceiver, filter)
+        this.registerReceiver(doInDangerBroadcastReceiver, filter)
         return START_STICKY
     }
 
@@ -99,6 +114,7 @@ class MainService: LifecycleService() {
         val broadcastIntent = Intent(this, RestartBroadcastReceiver::class.java)
         sendBroadcast(broadcastIntent)
         unregisterReceiver(powerButtonBroadcastReceiver)
+        unregisterReceiver(doInDangerBroadcastReceiver)
     }
 
     private fun startForegroundService() {
