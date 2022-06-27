@@ -8,13 +8,15 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetUserLocationUrlUseCase @Inject constructor(
-    @ApplicationContext val context: Context,
-    val fusedLocationProviderClient: FusedLocationProviderClient
+    @ApplicationContext private val context: Context,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
 ) {
-    operator fun invoke(): String {
+    suspend operator fun invoke(): String {
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -25,11 +27,16 @@ class GetUserLocationUrlUseCase @Inject constructor(
         ) {
             throw Throwable("Location permission not granted")
         }
-        val location = fusedLocationProviderClient.getCurrentLocation(
+        val locationTask = fusedLocationProviderClient.getCurrentLocation(
             LocationRequest.PRIORITY_HIGH_ACCURACY,
             CancellationTokenSource().token
-        ).result
-        return "https://www.google.com/maps/${location.latitude},${location.longitude}"
+        )
+        val locationUrl: String
+        withContext(Dispatchers.IO) {
+            val location = locationTask.result
+            locationUrl = "https://www.google.com/maps/${location.latitude},${location.longitude}"
+        }
+        return locationUrl
     }
 
 }
