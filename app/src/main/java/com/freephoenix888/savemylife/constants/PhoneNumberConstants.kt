@@ -10,25 +10,25 @@ object PhoneNumberConstants {
             PhoneNumber(
                 phoneNumber = "+7 777 777 7779",
                 contactName = "Name",
-                contactPhotoThumbnailUri = null,
+                contactImageThumbnailUri = null,
                 contentUri = "0".toUri()
             ),
             PhoneNumber(
                 phoneNumber = "+7 777 777 7778",
                 contactName = "Name",
-                contactPhotoThumbnailUri = null,
+                contactImageThumbnailUri = null,
                 contentUri = "0".toUri()
             ),
             PhoneNumber(
                 phoneNumber = "+7 777 777 7797",
                 contactName = "Name",
-                contactPhotoThumbnailUri = null,
+                contactImageThumbnailUri = null,
                 contentUri = "1".toUri()
             ),
             PhoneNumber(
                 phoneNumber = "+7 777 777 7787",
                 contactName = "Name",
-                contactPhotoThumbnailUri = null,
+                contactImageThumbnailUri = null,
                 contentUri = "1".toUri()
             ),
         )
