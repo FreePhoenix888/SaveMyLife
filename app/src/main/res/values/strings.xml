@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">SaveMyLife</string>
-    <string name="settings">Settings</string>
-    <string name="location_sharing">Location sharing</string>
+    <string name="all_app_name" translatable="false">SaveMyLife</string>
+    <string name="all_settings">Settings</string>
+    <string name="all_message">Message</string>
+    <string name="all_phone_numbers">Phone numbers</string>
+    <string name="all_location">Location</string>
+    <string name="all_i_am_in_danger">I AM IN DANGER</string>
+    <string name="all_grant_permissions">Grant permissions</string>
+    <string name="home_screen_app_state">SaveMyLife is %1$s</string>
+    <string name="home_screen_app_state_enabled">enabled</string>
+    <string name="home_screen_app_state_disabled">disabled</string>
+    <string name="home_screen_switch_app_state">Switch app state</string>
+    <string name="phone_numbers_settings_screen_read_contacts_permission_request">SaveMyLife needs access to read your contacts to save your emergency contacts.</string>
+    <string name="phone_number_settings_screen_add_phone_number">Add phone number</string>
+    <string name="phone_number_settings_screen_delete_phone_number">Delete phone number</string>
+    <string name="phone_numbers_settings_screen_contact_image">Contact image</string>
+    <string name="location_settings_screen_location_sharing">Location sharing</string>
+    <string name="all_save">Save</string>
 </resources>
