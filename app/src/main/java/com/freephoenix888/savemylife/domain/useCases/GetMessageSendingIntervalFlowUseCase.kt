@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.time.Duration
 
-class GetMessageSendingIntervalUseCase @Inject constructor (val messageRepository: MessageRepository) {
+class GetMessageSendingIntervalFlowUseCase @Inject constructor (val messageRepository: MessageRepository) {
     operator fun invoke(): Flow<Duration> {
         return messageRepository.settings.map {
             it.sendingInterval
