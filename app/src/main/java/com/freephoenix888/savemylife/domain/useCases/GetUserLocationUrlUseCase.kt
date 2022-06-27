@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.Tasks
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,6 +34,7 @@ class GetUserLocationUrlUseCase @Inject constructor(
         )
         val locationUrl: String
         withContext(Dispatchers.IO) {
+            Tasks.await(locationTask)
             val location = locationTask.result
             locationUrl = "https://www.google.com/maps/${location.latitude},${location.longitude}"
         }
