@@ -1,8 +1,10 @@
 package com.freephoenix888.savemylife.constants
 
-import com.freephoenix888.savemylife.SecondsInterval
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 object MessageConstants {
-    const val DEFAULT_EMERGENCY_MESSAGE_SENDING_SECONDS_INTERVAL: SecondsInterval = 30
-    const val DEFAULT_EMERGENCY_MESSAGE_TEMPLATE: String = "{CONTACT_NAME}, I AM IN DANGER! My location: {LOCATION_URL}"
+    val DEFAULT_SENDING_INTERVAL: Duration =  (30L).toDuration(DurationUnit.SECONDS)
+    const val DEFAULT_TEMPLATE: String = "{CONTACT_NAME}, I AM IN DANGER! My location: {LOCATION_URL}"
 }
