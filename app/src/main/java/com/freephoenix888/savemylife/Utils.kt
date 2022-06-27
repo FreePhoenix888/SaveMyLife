@@ -77,7 +77,8 @@ class Utils {
         }
 
         fun sendSms(context: Context, phoneNumber: String, message: String) {
-            val sentPI: PendingIntent = PendingIntent.getBroadcast(context, 0, Intent("SMS_SENT"), 0)
+            val flags = if(Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+            val sentPI: PendingIntent = PendingIntent.getBroadcast(context, 0, Intent("SMS_SENT"), flags)
             @Suppress("DEPRECATION") val smsManager: SmsManager =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     context.getSystemService(SmsManager::class.java)
