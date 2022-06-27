@@ -1,5 +1,7 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
+import android.Manifest
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,13 +23,29 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.domain.models.MessageSettingsFormState
 import com.freephoenix888.savemylife.ui.MessageSettingsFormEvent
+import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
 import com.freephoenix888.savemylife.ui.composables.TextFieldWithError
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MessageSettingsScreenComposable(
     messageSettingsViewModel: MessageSettingsViewModel = viewModel()
 ) {
+    if(Build.VERSION.SDK_INT >= 31) {
+        val scheduleExactPermission = rememberPermissionState(permission = Manifest.permission.SCHEDULE_EXACT_ALARM)
+        if(scheduleExactPermission.status != PermissionStatus.Granted){
+            RequestPermissionComposable(
+                permissionState = scheduleExactPermission,
+                text = stringResource(R.string.message_settings_screen_schedule_exact_alarm_permission_request)
+            )
+            return
+        }
+    }
+
     val context = LocalContext.current
     val messageFormState by messageSettingsViewModel.state.collectAsState()
     MessageSettingsScreenBodyComposable(
