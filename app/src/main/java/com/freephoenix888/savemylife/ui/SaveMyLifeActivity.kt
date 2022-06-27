@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.composables.SaveMyLifeAppComposable
-import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
-import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
-import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberViewModel
+import com.freephoenix888.savemylife.ui.viewModels.LocationSettingsViewModel
+import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
+import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,12 +23,13 @@ class SaveMyLifeActivity : AppCompatActivity()  {
     }
 
     private val saveMyLifeViewModel: SaveMyLifeViewModel by viewModels()
-    private val phoneNumberViewModel: PhoneNumberViewModel by viewModels()
-    private val emergencyMessageViewModel: MessageViewModel by viewModels()
-    private val locationViewModel: LocationViewModel by viewModels()
+    private val phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel by viewModels()
+    private val emergencyMessageSettingsViewModel: MessageSettingsViewModel by viewModels()
+    private val locationSettingsViewModel: LocationSettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        runMainService()
         setContent {
             SaveMyLifeAppComposable()
         }
