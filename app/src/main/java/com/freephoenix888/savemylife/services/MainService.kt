@@ -14,6 +14,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleService
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
@@ -21,18 +23,18 @@ import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.domain.useCases.GetIsDangerModeEnabledFlowUseCase
-import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalFlowUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetMessageUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
+import com.freephoenix888.savemylife.workers.DoInDangerWorker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
+import kotlin.time.toJavaDuration
 
 
 @AndroidEntryPoint
@@ -41,8 +43,8 @@ class MainService: LifecycleService() {
     val powerButtonBroadcastReceiver: PowerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
     @Inject lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
     @Inject lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
-    @Inject lateinit var getMessageSendingIntervalUseCase: GetMessageSendingIntervalUseCase
     @Inject lateinit var getMessageUseCase: GetMessageUseCase
+    @Inject lateinit var getMessageSendingIntervalFlowUseCase: GetMessageSendingIntervalFlowUseCase
 
     var isFirstStart = true
     private val TAG = this::class.simpleName
@@ -53,6 +55,20 @@ class MainService: LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         isDangerModeEnabled = getIsDangerModeEnabledFlowUseCase()
+        coroutineScope.launch {
+            isDangerModeEnabled.collect {
+                if(!it){
+                    return@collect
+                }
+                val messageSendingInterval = getMessageSendingIntervalFlowUseCase().first()
+                val doInDangerRequest =
+                    PeriodicWorkRequestBuilder<DoInDangerWorker>(
+                        repeatInterval = messageSendingInterval.toJavaDuration()
+                    ).build()
+                WorkManager.getInstance(applicationContext).enqueue(doInDangerRequest)
+            }
+
+        }
         if (intent == null) {
             return START_STICKY
         }
