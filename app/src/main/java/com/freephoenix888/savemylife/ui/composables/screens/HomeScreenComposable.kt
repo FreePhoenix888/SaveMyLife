@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
@@ -56,7 +58,10 @@ fun HomeScreenBodyComposable(
                         onClick = onSettingsButtonClick,
                         modifier = Modifier
                     ) {
-                        Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = stringResource(R.string.all_settings)
+                        )
                     }
                 }
             )
@@ -72,13 +77,13 @@ fun HomeScreenBodyComposable(
             Button(
                 onClick = onSwitchIsMainServiceEnabled,
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(backgroundColor = if(isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error),
+                colors = ButtonDefaults.buttonColors(backgroundColor = if (isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error),
                 modifier = Modifier
                     .size(150.dp)
             ) {
                 Icon(
                     imageVector = Icons.Filled.PowerSettingsNew,
-                    contentDescription = "Switch app state",
+                    contentDescription = stringResource(R.string.home_screen_switch_app_state),
                     Modifier.fillMaxSize()
                 )
             }
@@ -92,18 +97,14 @@ fun HomeScreenBodyComposable(
                             color = if (isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error
                         )
                     ) {
-                        append((if (isMainServiceEnabled) "enabled" else "disabled").uppercase())
+                        append(
+                            (if (isMainServiceEnabled) stringResource(R.string.home_screen_app_state_enabled) else stringResource(
+                                R.string.home_screen_app_state_disabled
+                            )).uppercase()
+                        )
                     }
                 },
             )
-//            Button(
-//                onClick = onSettingsButtonClick,
-//                modifier = Modifier
-//                    .padding(bottom = 32.dp)
-//            ) {
-//                Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
-//                Text("Settings")
-//            }
         }
     }
 }
@@ -116,7 +117,6 @@ private fun HomeScreenComposablePreview() {
     HomeScreenBodyComposable(isMainServiceEnabled = dangerModeState,
         onSwitchIsMainServiceEnabled = {
             dangerModeState = !dangerModeState
-
         },
         onSettingsButtonClick = {
             Toast.makeText(

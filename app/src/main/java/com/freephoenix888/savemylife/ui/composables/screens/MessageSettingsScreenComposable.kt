@@ -7,132 +7,172 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.freephoenix888.savemylife.SecondsInterval
-import com.freephoenix888.savemylife.constants.MessageConstants
-import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
+import com.freephoenix888.savemylife.R
+import com.freephoenix888.savemylife.domain.models.MessageSettingsFormState
+import com.freephoenix888.savemylife.ui.MessageSettingsFormEvent
+import com.freephoenix888.savemylife.ui.composables.TextFieldWithError
+import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 
 @Composable
 fun MessageSettingsScreenComposable(
-    emergencyMessageViewModel: MessageViewModel = viewModel()
+    messageSettingsViewModel: MessageSettingsViewModel = viewModel()
 ) {
-    val emergencyMessageTemplate by emergencyMessageViewModel.messageTemplate.collectAsState(initial = MessageConstants.DEFAULT_EMERGENCY_MESSAGE_TEMPLATE)
-    val emergencyMessageSendingInterval by emergencyMessageViewModel.sendingInterval.collectAsState(
-        initial = MessageConstants.DEFAULT_EMERGENCY_MESSAGE_SENDING_SECONDS_INTERVAL
-    )
+    val context = LocalContext.current
+    val messageFormState by messageSettingsViewModel.state.collectAsState()
     MessageSettingsScreenBodyComposable(
-        emergencyMessageTemplate = emergencyMessageTemplate,
-        onMessageTemplateChange = { newMessageTemplate: String ->
-            emergencyMessageViewModel.setMessageTemplate(newMessageTemplate)
+        messageSettingsFormState = messageFormState,
+        onTemplateChange = {
+            messageSettingsViewModel.onEvent(MessageSettingsFormEvent.TemplateChanged(it))
         },
         onMessageTemplateInfoButtonClick = { /*TODO*/ },
-        messageSendingInterval = emergencyMessageSendingInterval,
-        onMessageSendingIntervalChange = {
-            emergencyMessageViewModel.setSendingInterval(it)
+        onSendingIntervalInSecondsChange = {
+            messageSettingsViewModel.onEvent(MessageSettingsFormEvent.sendingIntervalInSecondsChanged(it))
         },
-        emergencyMessageExample = emergencyMessageViewModel.emergencyMessageExample
+        onSubmit = {
+            messageSettingsViewModel.onEvent(MessageSettingsFormEvent.Submit)
+        },
+        onLaunchedEffect = {
+            messageSettingsViewModel.validationEvents.collect {
+                when(it) {
+                    is MessageSettingsViewModel.ValidationEvent.Success -> {
+                        Toast.makeText(context,
+                        "Setting are saved successfully",
+                        Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     )
 }
 
 @Composable
 private fun MessageSettingsScreenBodyComposable(
-    emergencyMessageTemplate: String,
-    onMessageTemplateChange: (String) -> Unit,
+    messageSettingsFormState: MessageSettingsFormState,
+    onTemplateChange: (String) -> Unit,
     onMessageTemplateInfoButtonClick: () -> Unit,
-    messageSendingInterval: SecondsInterval,
-    onMessageSendingIntervalChange: (SecondsInterval) -> Unit,
-    emergencyMessageExample: String?
+    onSendingIntervalInSecondsChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onLaunchedEffect: suspend () -> Unit
 ) {
-//    var a by remember { mutableStateOf("A")}
-//    OutlinedTextField(value = a, onValueChange = { a = it})
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Icon(imageVector = Icons.Filled.Message, contentDescription = "Message")
+                Icon(
+                    imageVector = Icons.Filled.Message,
+                    contentDescription = stringResource(R.string.all_message)
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Message")
-            })
-        }
-    ) { innerPadding: PaddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(
-                    value = emergencyMessageTemplate,
-                    onValueChange = onMessageTemplateChange,
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Filled.Message, contentDescription = "Message")
-                    },
-                    modifier = Modifier.weight(9f),
-                    label = {
-                        Text("Message template")
-                    }
-                )
-                IconButton(
-                    onClick = onMessageTemplateInfoButtonClick,
-                    modifier = Modifier.weight(1f)
-                ) {
+            }, actions = {
+                IconButton(onClick = {
+                    onSubmit()
+                }) {
                     Icon(
-                        imageVector = Icons.Filled.Info,
-                        contentDescription = "String template information"
+                        imageVector = Icons.Filled.Save,
+                        contentDescription = stringResource(R.string.all_save)
                     )
                 }
+            })
+        },
+        content = { innerPadding: PaddingValues ->
+            LaunchedEffect(key1 = context, block = {
+                onLaunchedEffect()
+            })
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    Column(modifier = Modifier.weight(9f)) {
+                        TextFieldWithError(textFieldComposable = {
+                            OutlinedTextField(
+                                value = messageSettingsFormState.template,
+                                onValueChange = { onTemplateChange(it) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Message,
+                                        contentDescription = "Message"
+                                    )
+                                },
+                                label = {
+                                    Text("Message template")
+                                },
+                                isError = messageSettingsFormState.templateErrorMessage != null
+                            )
+
+                        }, error = messageSettingsFormState.templateErrorMessage)
+
+                    }
+                    IconButton(
+                        onClick = onMessageTemplateInfoButtonClick,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = "String template information"
+                        )
+                    }
+                }
+
+                Divider(modifier = Modifier.padding(vertical = 16.dp))
+
+                TextFieldWithError(textFieldComposable = {
+                    OutlinedTextField(
+                        value = messageSettingsFormState.sendingIntervalInSeconds,
+                        onValueChange = {
+                            onSendingIntervalInSecondsChange(it)
+                        },
+                        label = {
+                            Text("Sending interval in seconds")
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Timer,
+                                contentDescription = "Sending interval"
+                            )
+                        },
+                        isError = messageSettingsFormState.sendingIntervalInSecondsErrorMessage != null,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }, error = messageSettingsFormState.sendingIntervalInSecondsErrorMessage)
             }
-            if (emergencyMessageExample != null) {
-                Text("Your message will look like this:")
-                Text(emergencyMessageExample)
-            }
-            Divider(modifier = Modifier.padding(vertical = 32.dp))
-            OutlinedTextField(
-                value = messageSendingInterval.toString(),
-                onValueChange = {
-                    onMessageSendingIntervalChange(it.toLongOrNull() ?: 0)
-                },
-                label = {
-                    Text("Sending interval in seconds")
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                leadingIcon = {
-                    Icon(imageVector = Icons.Filled.Timer, contentDescription = "Sending interval")
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
+        })
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun MessageSettingsScreenBodyComposablePreview() {
     val context = LocalContext.current
-    var messageTemplate by remember { mutableStateOf("") }
-    var messageSendingInterval by remember { mutableStateOf(MessageConstants.DEFAULT_EMERGENCY_MESSAGE_SENDING_SECONDS_INTERVAL) }
+    var messageSettingsFormState by remember { mutableStateOf(MessageSettingsFormState()) }
     MessageSettingsScreenBodyComposable(
-        emergencyMessageTemplate = messageTemplate,
-        onMessageTemplateChange = { messageTemplate = it },
-        onMessageTemplateInfoButtonClick = {
-            Toast.makeText(
-                context,
-                "String template information buttin is clicked",
-                Toast.LENGTH_SHORT
-            ).show()
+        messageSettingsFormState = messageSettingsFormState,
+        onTemplateChange = {
+            messageSettingsFormState = messageSettingsFormState.copy(template = it)
         },
-        messageSendingInterval = messageSendingInterval,
-        onMessageSendingIntervalChange = { messageSendingInterval = it },
-        emergencyMessageExample = "Example"
+        onMessageTemplateInfoButtonClick = {
+        },
+        onSendingIntervalInSecondsChange = {
+            messageSettingsFormState = messageSettingsFormState.copy(sendingIntervalInSeconds = it)
+        },
+        onSubmit = {},
+        onLaunchedEffect = {}
     )
 }

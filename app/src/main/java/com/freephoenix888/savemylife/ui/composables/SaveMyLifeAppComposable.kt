@@ -11,9 +11,9 @@ import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.composables.screens.*
 import com.freephoenix888.savemylife.ui.theme.SaveMyLifeTheme
-import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
-import com.freephoenix888.savemylife.ui.viewModels.MessageViewModel
-import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberViewModel
+import com.freephoenix888.savemylife.ui.viewModels.LocationSettingsViewModel
+import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
+import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 @Composable
@@ -42,19 +42,19 @@ private fun SaveMyLifeNavHostComposable(
             SettingsScreenComposable(navController = navController)
         }
         composable(SaveMyLifeScreenEnum.SmsSettings.name) {
-            val phoneNumberViewModel: PhoneNumberViewModel =
+            val phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel =
                 hiltViewModel()
             PhoneNumbersScreenComposable(
-                phoneNumberViewModel = phoneNumberViewModel
+                phoneNumberSettingsViewModel = phoneNumberSettingsViewModel
             )
         }
         composable(SaveMyLifeScreenEnum.MessageSettings.name) {
-            val emergencyMessageViewModel: MessageViewModel = hiltViewModel()
-            MessageSettingsScreenComposable(emergencyMessageViewModel = emergencyMessageViewModel)
+            val emergencyMessageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()
+            MessageSettingsScreenComposable(messageSettingsViewModel = emergencyMessageSettingsViewModel)
         }
         composable(SaveMyLifeScreenEnum.LocationSettings.name) {
-            val locationViewModel: LocationViewModel = hiltViewModel()
-            LocationSettingsScreenComposable(locationViewModel = locationViewModel)
+            val locationSettingsViewModel: LocationSettingsViewModel = hiltViewModel()
+            LocationSettingsScreenComposable(locationSettingsViewModel = locationSettingsViewModel)
         }
         composable(
             route = SaveMyLifeScreenEnum.DangerButton.name,

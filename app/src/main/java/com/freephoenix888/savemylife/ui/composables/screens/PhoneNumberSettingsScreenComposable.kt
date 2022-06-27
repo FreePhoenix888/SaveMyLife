@@ -12,20 +12,25 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
+import com.freephoenix888.savemylife.ui.PhoneNumberSettingsFormEvent
 import com.freephoenix888.savemylife.ui.composables.PhoneNumberComposable
 import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
-import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberViewModel
+import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -33,41 +38,49 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PhoneNumbersScreenComposable(
-    phoneNumberViewModel: PhoneNumberViewModel = viewModel()
+    phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel = viewModel()
 ) {
     val context = LocalContext.current as AppCompatActivity
+    val state by phoneNumberSettingsViewModel.state.collectAsState()
     val readContactsPermissionState =
         rememberPermissionState(permission = android.Manifest.permission.READ_CONTACTS)
     if (readContactsPermissionState.status != PermissionStatus.Granted) {
         RequestPermissionComposable(
-            context = context,
             permissionState = readContactsPermissionState,
-            text = "SaveMyLife needs access to your contacts to save your emergency contacts."
+            text = stringResource(R.string.phone_numbers_settings_screen_read_contacts_permission_request)
         )
         return
     }
-    val phoneNumbers by phoneNumberViewModel.contactPhoneNumberList.collectAsState(
-        initial = listOf()
-    )
 
     ContactsSettingsScreenBodyComposable(
-        phoneNumbers = phoneNumbers,
-        onAddPhoneNumber = { phoneNumber ->
-            phoneNumberViewModel.insert(phoneNumber)
+        phoneNumberList = state.phoneNumberList,
+        onAddPhoneNumber = {
+            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberAdded(it))
         },
         onDeletePhoneNumber = {
-            phoneNumberViewModel.delete(it)
+            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberDeleted(it))
         },
+        onSubmit = {
+            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.Submit)
+        },
+        onLaunchedEffect = {
+
+        }
     )
 }
 
 @Composable
 private fun ContactsSettingsScreenBodyComposable(
-    phoneNumbers: List<PhoneNumber>,
+    phoneNumberList: List<PhoneNumber>,
     onAddPhoneNumber: (PhoneNumber) -> Unit,
     onDeletePhoneNumber: (PhoneNumber) -> Unit,
+    onSubmit: () -> Unit,
+    onLaunchedEffect: suspend () -> Unit
 ) {
     val context = LocalContext.current
+    LaunchedEffect(key1 = context, block = {
+        onLaunchedEffect()
+    })
     val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
     val pickContactActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -80,16 +93,30 @@ private fun ContactsSettingsScreenBodyComposable(
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Icon(imageVector = Icons.Filled.Phone, contentDescription = "Phone numbers")
-                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Filled.Phone,
+                    contentDescription = stringResource(R.string.all_phone_numbers)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text("Phone numbers")
-            })
+            },
+                actions = {
+                    IconButton(onClick = {
+                        onSubmit()
+                    },
+                        content = {
+                            Icon(imageVector = Icons.Filled.Save, contentDescription = "Save")
+                        })
+                })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 pickContactActivityLauncher.launch(intent)
             }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add contact")
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.phone_number_settings_screen_add_phone_number)
+                )
             }
         }) { innerPadding: PaddingValues ->
         Column(
@@ -100,7 +127,7 @@ private fun ContactsSettingsScreenBodyComposable(
         ) {
             LazyColumn {
                 items(
-                    items = phoneNumbers,
+                    items = phoneNumberList,
                     key = { it.contentUri }
                 ) { phoneNumber ->
                     PhoneNumberComposable(

@@ -1,54 +1,78 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.ShareLocation
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.freephoenix888.savemylife.R
+import com.freephoenix888.savemylife.ui.LocationSettingsFormEvent
 import com.freephoenix888.savemylife.ui.composables.SettingSwitchComposable
-import com.freephoenix888.savemylife.ui.viewModels.LocationViewModel
+import com.freephoenix888.savemylife.ui.viewModels.LocationSettingsViewModel
 
 
 @Composable
 fun LocationSettingsScreenComposable(
-    locationViewModel: LocationViewModel = viewModel()
+    locationSettingsViewModel: LocationSettingsViewModel = viewModel()
 ) {
-    val isLocationSharingEnabled by locationViewModel.isLocationSharingEnabled.collectAsState(
-        initial = false
-    )
+    val state by locationSettingsViewModel.state.collectAsState()
+    val context = LocalContext.current
     LocationSettingsScreenBodyComposable(
         settingsComposable = {
-            SettingSwitchComposable(state = isLocationSharingEnabled, onChangeState = {
-                locationViewModel.setIsLocationSharingEnabled(it)
-            }, text = {
-                Text(stringResource(R.string.location_sharing))
+            SettingSwitchComposable(state = state.isLocationSharingEnabled, onChangeState = {
+                locationSettingsViewModel.onEvent(LocationSettingsFormEvent.IsLocationSharingEnabledChanged(it))
+            }, textComposable = {
+                Text(stringResource(R.string.location_settings_screen_location_sharing))
             })
+        },
+        onSubmit = {
+            locationSettingsViewModel.onEvent(LocationSettingsFormEvent.Submit)
+        },
+        onLaunchedEffect = {
+            locationSettingsViewModel.validationEvents.collect {
+                when(it) {
+                    is LocationSettingsViewModel.ValidationEvent.Success -> {
+                        Toast.makeText(context, "The settings are successfully saved", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     )
 }
 
 @Composable
 private fun LocationSettingsScreenBodyComposable(
-    settingsComposable: @Composable () -> Unit
+    settingsComposable: @Composable () -> Unit,
+    onSubmit: () -> Unit,
+    onLaunchedEffect: suspend () -> Unit
 ) {
+    val context = LocalContext.current
+    LaunchedEffect(key1 = context, block = {
+        onLaunchedEffect()
+    })
     Scaffold(
         topBar = {
-            TopAppBar {
-                Icon(imageVector = Icons.Filled.ShareLocation, contentDescription = "Location")
+            TopAppBar(actions = {
+                                IconButton(onClick = {
+                                    onSubmit()
+                                }) {
+                                    Icon(imageVector = Icons.Filled.Save, contentDescription = "Save")
+                                }
+            }, title = {
+                Icon(imageVector = Icons.Filled.ShareLocation, contentDescription = stringResource(R.string.all_location))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Location")
-            }
-        }
+                Text(stringResource(R.string.all_location))
+
+            })         }
     ) { innerPadding: PaddingValues ->
         Column(
             modifier = Modifier
@@ -69,8 +93,10 @@ private fun LocationSettingsScreenBodyComposablePreview() {
     LocationSettingsScreenBodyComposable(settingsComposable = {
         SettingSwitchComposable(state = locationSharingState, onChangeState = {
             locationSharingState = it
-        }, text = {
+        }, textComposable = {
             Text("Location sharing")
         })
-    })
+    },
+    onSubmit = {},
+    onLaunchedEffect = {})
 }

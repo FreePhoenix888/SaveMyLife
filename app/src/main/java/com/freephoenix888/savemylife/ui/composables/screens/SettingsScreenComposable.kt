@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShareLocation
 import androidx.compose.runtime.Composable
@@ -26,59 +27,56 @@ import com.freephoenix888.savemylife.ui.composables.SettingLinkComposable
 fun SettingsScreenComposable(
     navController: NavController
 ) {
-    val settingLinkList = remember {
-        listOf(
-            SettingLink(
-                icon = Icons.Filled.Message,
-                title = "Phone numbers",
-                onClick = {
-                    navController.navigate(SaveMyLifeScreenEnum.SmsSettings.name)
-                }
-            ),
-            SettingLink(
-                icon = Icons.Filled.Message,
-                title = "Message",
-                onClick = {
-                    navController.navigate(SaveMyLifeScreenEnum.MessageSettings.name)
-                }
-            ),
-            SettingLink(
-                icon = Icons.Filled.ShareLocation,
-                title = "Location",
-                onClick = {
-                    navController.navigate(SaveMyLifeScreenEnum.LocationSettings.name)
-                }
-            )
+    val settingLinkList = listOf(
+        SettingLink(
+            icon = Icons.Filled.Phone,
+            title = stringResource(R.string.all_phone_numbers),
+            onClick = {
+                navController.navigate(SaveMyLifeScreenEnum.SmsSettings.name)
+            }
+        ),
+        SettingLink(
+            icon = Icons.Filled.Message,
+            title = stringResource(R.string.all_message),
+            onClick = {
+                navController.navigate(SaveMyLifeScreenEnum.MessageSettings.name)
+            }
+        ),
+        SettingLink(
+            icon = Icons.Filled.ShareLocation,
+            title = stringResource(R.string.all_location),
+            onClick = {
+                navController.navigate(SaveMyLifeScreenEnum.LocationSettings.name)
+            }
         )
-    }
-    SettingsScreenBodyComposable(settingsComposable = {
-        settingLinkList.forEach { settingLink ->
-            SettingLinkComposable(settingLink = settingLink)
-        }
-    })
+    )
+    SettingsScreenBodyComposable(settingLinkList)
 }
 
 @Composable
-private fun SettingsScreenBodyComposable(settingsComposable: @Composable () -> Unit) {
+private fun SettingsScreenBodyComposable(settingLinkList: List<SettingLink>) {
     Scaffold(
         topBar = {
-            TopAppBar {
+            TopAppBar(title = {
                 Icon(
                     imageVector = Icons.Filled.Settings,
-                    contentDescription = stringResource(R.string.settings)
+                    contentDescription = stringResource(R.string.all_settings)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(stringResource(R.string.settings))
-            }
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(stringResource(R.string.all_settings))
+            })
         }
     ) { innerPadding: PaddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            settingsComposable()
+            settingLinkList.forEach { settingLink ->
+                SettingLinkComposable(settingLink = settingLink)
+            }
         }
     }
 }
@@ -87,30 +85,14 @@ private fun SettingsScreenBodyComposable(settingsComposable: @Composable () -> U
 @Composable
 private fun SettingsScreenBodyComposablePreview() {
     val settingLinkList = remember {
-        listOf(
+        List(3) {
             SettingLink(
-                icon = Icons.Filled.Message,
-                title = "Phone numbers",
-                onClick = {
-                }
-            ),
-            SettingLink(
-                icon = Icons.Filled.Message,
-                title = "Message",
-                onClick = {
-                }
-            ),
-            SettingLink(
-                icon = Icons.Filled.ShareLocation,
-                title = "Location",
+                icon = Icons.Filled.Settings,
+                title = "Setting",
                 onClick = {
                 }
             )
-        )
-    }
-    SettingsScreenBodyComposable(settingsComposable = {
-        settingLinkList.forEach { settingLink ->
-            SettingLinkComposable(settingLink = settingLink)
         }
-    })
+    }
+    SettingsScreenBodyComposable(settingLinkList)
 }

@@ -18,8 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.PhoneNumberConstants
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
 
@@ -31,15 +33,15 @@ fun PhoneNumberComposable(
 ) {
     val context = LocalContext.current
     val contactImageBitmap = remember {
-        phoneNumber.contactPhotoThumbnailUri?.let { contactPhotoThumbnailUri ->
+        phoneNumber.contactImageThumbnailUri?.let { contactImageThumbnailUri ->
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 return@remember MediaStore.Images.Media.getBitmap(
                     context.contentResolver,
-                    contactPhotoThumbnailUri
+                    contactImageThumbnailUri
                 ).asImageBitmap()
             } else {
                 val source =
-                    ImageDecoder.createSource(context.contentResolver, contactPhotoThumbnailUri)
+                    ImageDecoder.createSource(context.contentResolver, contactImageThumbnailUri)
                 return@remember ImageDecoder.decodeBitmap(source).asImageBitmap()
             }
         }
@@ -64,7 +66,7 @@ fun PhoneNumberComposable(
         ) {
             if (contactImageBitmap != null) {
                 Image(
-                    bitmap = contactImageBitmap, contentDescription = "Contact image",
+                    bitmap = contactImageBitmap, contentDescription = stringResource(R.string.phone_numbers_settings_screen_contact_image),
                     modifier = Modifier
                         .weight(2f)
                         .size(80.dp)
@@ -72,7 +74,7 @@ fun PhoneNumberComposable(
             } else {
                 Icon(
                     imageVector = Icons.Filled.Person,
-                    contentDescription = "Contact image",
+                    contentDescription = null,
                     modifier = Modifier
                         .weight(2f)
                         .size(80.dp)
@@ -98,7 +100,7 @@ fun PhoneNumberComposable(
             ) {
                 Icon(
                     imageVector = Icons.Filled.PersonRemove,
-                    contentDescription = "Remove contact",
+                    contentDescription = stringResource(R.string.phone_number_settings_screen_delete_phone_number),
                 )
             }
         }

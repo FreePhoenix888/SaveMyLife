@@ -2,28 +2,37 @@ package com.freephoenix888.savemylife.ui.composables
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.Icon
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShareLocation
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.Settings
+import com.freephoenix888.savemylife.R
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.semantics.Role
 
 @Composable
 fun SettingSwitchComposable(
     state: Boolean,
     onChangeState: (Boolean) -> Unit,
-    icon: @Composable (() -> Unit)? = null,
-    text: @Composable () -> Unit,
-    switch: @Composable () -> Unit = { Switch(checked = state, onCheckedChange = onChangeState)}
+    iconComposable: @Composable (() -> Unit)? = null,
+    textComposable: @Composable () -> Unit,
+    switchComposable: @Composable () -> Unit = {
+        Switch(
+            checked = state,
+            onCheckedChange = onChangeState
+        )
+    }
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(dimensionResource(R.dimen.setting_paddings))
             .toggleable(
                 value = state,
                 role = Role.Switch,
@@ -31,16 +40,18 @@ fun SettingSwitchComposable(
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (icon != null) {
-            Icon(
-                imageVector = Icons.Filled.ShareLocation,
-                contentDescription = "Location sharing"
-            )
+        if (iconComposable != null) {
+            iconComposable()
         }
-        Text(text = "Location sharing")
-        Switch(
-            checked = state,
-            onCheckedChange = onChangeState
-        )
+        textComposable()
+        switchComposable()
     }
+}
+
+@Composable
+private fun SettingSwitchComposablePreview() {
+    var state by remember { mutableStateOf(false) }
+    SettingSwitchComposable(state = state, onChangeState = { state = it }, iconComposable = {
+        Icon(imageVector = Icons.Filled.Settings, contentDescription = "Setting")
+    }, textComposable = { Text("Setting") })
 }
