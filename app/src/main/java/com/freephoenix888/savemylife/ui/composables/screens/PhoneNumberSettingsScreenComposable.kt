@@ -52,6 +52,16 @@ fun PhoneNumbersScreenComposable(
         return
     }
 
+    val sendSmsPermissionState =
+        rememberPermissionState(permission = android.Manifest.permission.SEND_SMS)
+    if(sendSmsPermissionState.status != PermissionStatus.Granted) {
+        RequestPermissionComposable(
+            permissionState = sendSmsPermissionState,
+            text = stringResource(R.string.phone_numbers_settings_screen_send_sms_permission_request)
+        )
+        return
+    }
+
     ContactsSettingsScreenBodyComposable(
         phoneNumberList = state.phoneNumberList,
         onAddPhoneNumber = {
