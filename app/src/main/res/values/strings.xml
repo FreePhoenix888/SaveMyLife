@@ -21,4 +21,5 @@
     <string name="fine_location_settings_screen_location_permission_request">Fine location permission is required to share your location with your emergency contacts.</string>
     <string name="background_location_settings_screen_location_permission_request">Background location permission is required to share your location with your emergency contacts.</string>
     <string name="all_save">Save</string>
+    <string name="message_settings_screen_schedule_exact_alarm_permission_request">Schedule exact alarm permission is required to  with your emergency contacts.</string>
 </resources>
