@@ -4,21 +4,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalUseCase
-import com.freephoenix888.savemylife.workers.DoInDangerWorker
+import com.freephoenix888.savemylife.domain.useCases.SwitchIsDangerModeEnabledUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
-import kotlin.time.toJavaDuration
 
 @AndroidEntryPoint
 class PowerButtonBroadcastReceiver :
@@ -29,7 +24,7 @@ class PowerButtonBroadcastReceiver :
     lateinit var applicationContext: Context
 
     @Inject
-    lateinit var getMessageSendingIntervalFlowUseCase: GetMessageSendingIntervalUseCase
+    lateinit var switchIsDangerModeEnabledUseCase: SwitchIsDangerModeEnabledUseCase
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -49,12 +44,7 @@ class PowerButtonBroadcastReceiver :
             }
             if (_count == 5) {
                 scope.launch {
-                    val messageSendingInterval = getMessageSendingIntervalFlowUseCase().first()
-                    val doInDangerRequest =
-                        PeriodicWorkRequestBuilder<DoInDangerWorker>(
-                            repeatInterval = messageSendingInterval.toJavaDuration()
-                        ).build()
-                    WorkManager.getInstance(applicationContext).enqueue(doInDangerRequest)
+                    switchIsDangerModeEnabledUseCase()
                 }
 //                scope.launch {
 //                    saveMyLifeRepository.setIsDangerModeEnabled(true)
