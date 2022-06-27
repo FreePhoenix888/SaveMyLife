@@ -9,7 +9,7 @@ import kotlin.time.Duration
 
 @Singleton
 class MessageRepository @Inject constructor(private val localStorage: MessageLocalDataSource, private val messagePreferencesToMessageSettingsMapper: MessagePreferencesToMessageSettingsMapper) {
-    val settings = localStorage.settings.map {
+    val settings = localStorage.preferences.map {
         messagePreferencesToMessageSettingsMapper.map(it)
     }
 
