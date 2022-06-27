@@ -1,12 +1,13 @@
 package com.freephoenix888.savemylife.data.sources.interfaces
 
-import com.freephoenix888.savemylife.SecondsInterval
+import com.freephoenix888.savemylife.MessagePreferences
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Duration
 
 interface MessageLocalDataSource {
-    val messageTemplate: Flow<String>
+    val preferences: Flow<MessagePreferences>
+
     suspend fun setMessageTemplate(newMessageTemplate: String)
 
-    val sendingInterval: Flow<SecondsInterval>
-    suspend fun setSendingInterval(newSendingInterval: SecondsInterval)
+    suspend fun setSendingInterval(newSendingInterval: Duration)
 }
