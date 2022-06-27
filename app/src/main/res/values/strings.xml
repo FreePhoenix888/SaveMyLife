@@ -16,5 +16,8 @@
     <string name="phone_number_settings_screen_delete_phone_number">Delete phone number</string>
     <string name="phone_numbers_settings_screen_contact_image">Contact image</string>
     <string name="location_settings_screen_location_sharing">Location sharing</string>
+    <string name="coarse_location_settings_screen_location_permission_request">SaveMyLife needs access to your coarse location to share your location with your emergency contacts.</string>
+    <string name="fine_location_settings_screen_location_permission_request">SaveMyLife needs access to your fine location to share your location with your emergency contacts.</string>
+    <string name="background_location_settings_screen_location_permission_request">SaveMyLife needs access to your background location to share your location with your emergency contacts.</string>
     <string name="all_save">Save</string>
 </resources>
