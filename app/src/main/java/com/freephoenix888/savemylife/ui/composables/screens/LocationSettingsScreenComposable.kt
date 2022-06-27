@@ -1,5 +1,7 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
+import android.Manifest
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -16,14 +18,51 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.LocationSettingsFormEvent
+import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
 import com.freephoenix888.savemylife.ui.composables.SettingSwitchComposable
 import com.freephoenix888.savemylife.ui.viewModels.LocationSettingsViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LocationSettingsScreenComposable(
     locationSettingsViewModel: LocationSettingsViewModel = viewModel()
 ) {
+    val coarseLocationPermissionState =
+        rememberPermissionState(permission = Manifest.permission.ACCESS_COARSE_LOCATION)
+    if(coarseLocationPermissionState.status != PermissionStatus.Granted) {
+        RequestPermissionComposable(
+            permissionState = coarseLocationPermissionState,
+            text = stringResource(R.string.coarse_location_settings_screen_location_permission_request)
+        )
+        return
+    }
+
+    val fineLocationPermissionState =
+        rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+    if(fineLocationPermissionState.status != PermissionStatus.Granted) {
+        RequestPermissionComposable(
+            permissionState = fineLocationPermissionState,
+            text = stringResource(R.string.fine_location_settings_screen_location_permission_request)
+        )
+        return
+    }
+
+    if(Build.VERSION.SDK_INT >= 29) {
+        val backgroundLocationPermissionState =
+            rememberPermissionState(permission = Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        if(backgroundLocationPermissionState.status != PermissionStatus.Granted) {
+            RequestPermissionComposable(
+                permissionState = backgroundLocationPermissionState,
+                text = stringResource(R.string.background_location_settings_screen_location_permission_request)
+            )
+            return
+        }
+    }
+
     val state by locationSettingsViewModel.state.collectAsState()
     val context = LocalContext.current
     LocationSettingsScreenBodyComposable(
