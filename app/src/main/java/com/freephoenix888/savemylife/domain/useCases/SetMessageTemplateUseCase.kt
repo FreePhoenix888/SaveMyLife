@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class SetMessageTemplateUseCase @Inject constructor(val messageRepository: MessageRepository) {
     suspend operator fun invoke(newMessageTemplate: String) {
-        messageRepository.setMessageTemplate(newMessageTemplate)
+        messageRepository.setTemplate(newMessageTemplate)
     }
 }
