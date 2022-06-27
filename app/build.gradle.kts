@@ -102,13 +102,30 @@ dependencies {
     // Accompanist
     implementation("com.google.accompanist:accompanist-permissions:0.24.9-beta")
 
+    val workVersion = "2.7.1"
+    // Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
+    // optional - RxJava2 support
+    implementation("androidx.work:work-rxjava2:$workVersion")
+    // optional - GCMNetworkManager support
+    implementation("androidx.work:work-gcm:$workVersion")
+    // optional - Test helpers
+    androidTestImplementation("androidx.work:work-testing:$workVersion")
+    // optional - Multiprocess support
+    implementation("androidx.work:work-multiprocess:$workVersion")
+
+
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.38.1")
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-
     // Hilt+Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    // Hilt work
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    // When using Kotlin.
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+
 
     // Play Services
     implementation("com.google.android.gms:play-services-base:18.0.1")
