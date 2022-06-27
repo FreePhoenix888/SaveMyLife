@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
-import android.telephony.SmsManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -24,31 +23,36 @@ import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.domain.useCases.GetIsDangerModeEnabledFlowUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetMessageUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
-import kotlinx.coroutines.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class MainService @Inject constructor(
-    private val powerButtonBroadcastReceiver: PowerButtonBroadcastReceiver,
-    private val getMessageSendingIntervalUseCase: GetMessageSendingIntervalUseCase,
-    private val getMessageUseCase: GetMessageUseCase,
-    private val getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
-) : LifecycleService() {
+@AndroidEntryPoint
+class MainService: LifecycleService() {
+
+    val powerButtonBroadcastReceiver: PowerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
+    @Inject lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
+    @Inject lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
+    @Inject lateinit var getMessageSendingIntervalUseCase: GetMessageSendingIntervalUseCase
+    @Inject lateinit var getMessageUseCase: GetMessageUseCase
 
     var isFirstStart = true
     private val TAG = this::class.simpleName
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val isDangerModeEnabled = getIsDangerModeEnabledFlowUseCase()
+    private lateinit var isDangerModeEnabled: Flow<Boolean>
     private var doInDangerSituationJob: Job? = null
-
-    init {
-        Log.i(TAG, "Initializing...")
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        isDangerModeEnabled = getIsDangerModeEnabledFlowUseCase()
         if (intent == null) {
             return START_STICKY
         }
@@ -70,15 +74,6 @@ class MainService @Inject constructor(
             addAction(Intent.ACTION_SCREEN_OFF)
         }
         this.registerReceiver(powerButtonBroadcastReceiver, filter)
-        coroutineScope.launch {
-            isDangerModeEnabled.collect {
-                if (it) {
-                    doInDangerSituationJob = doInDangerSituation()
-                } else if (!it) {
-                    doInDangerSituationJob?.cancel()
-                }
-            }
-        }
         return START_STICKY
     }
 
@@ -154,40 +149,6 @@ class MainService @Inject constructor(
             NotificationManager.IMPORTANCE_LOW
         )
         notificationManager.createNotificationChannel(channel)
-    }
-
-    private fun sendMessageToContact(phoneNumber: String, message: String) {
-        val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
-        @Suppress("DEPRECATION") val smsManager: SmsManager =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                applicationContext.getSystemService(SmsManager::class.java)
-            } else {
-                SmsManager.getDefault()
-            }
-        smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
-    }
-
-    private suspend fun doInDangerSituation(): Job = coroutineScope.launch {
-//        val contactAndPhoneNumbersMap = mutableMapOf<Contact, List<PhoneNumber>>()
-//        val contactList = getContactListFlowUseCase().first()
-//        contactList.forEach { contact ->
-//            val phoneNumbers =
-//                getPhoneNumberListByUriFlowUseCase(contact.contentUri).first()
-//            contactAndPhoneNumbersMap[contact] = phoneNumbers
-//        }
-//        val messageSendingInterval = getMessageSendingIntervalUseCase().first()
-//        while (true) {
-//            for (contactAndPhoneNumbers in contactAndPhoneNumbersMap) {
-//                val contact = contactAndPhoneNumbers.key
-//                for (contactPhoneNumber in contactAndPhoneNumbers.value) {
-//                    sendMessageToContact(
-//                        phoneNumber = contactPhoneNumber.contentUri,
-//                        message = getMessageUseCase(contact = contact)
-//                    )
-//                }
-//            }
-//            delay(messageSendingInterval)
-//        }
     }
 
 }
