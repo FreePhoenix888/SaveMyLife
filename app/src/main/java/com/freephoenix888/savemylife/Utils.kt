@@ -1,10 +1,13 @@
 package com.freephoenix888.savemylife
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.ContactsContract
 import android.provider.Settings
+import android.telephony.SmsManager
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
@@ -67,10 +70,22 @@ class Utils {
                 return PhoneNumber(
                     phoneNumber = phoneNumber,
                     contactName = contactDisplayName,
-                    contactPhotoThumbnailUri = contactPhotoThumbnailUri,
+                    contactImageThumbnailUri = contactPhotoThumbnailUri,
                     contentUri = contentUri
                 )
             } else throw Throwable("Phone number with content uri $contentUri does not exist.")
         }
+
+        fun sendSms(context: Context, phoneNumber: String, message: String) {
+            val sentPI: PendingIntent = PendingIntent.getBroadcast(context, 0, Intent("SMS_SENT"), 0)
+            @Suppress("DEPRECATION") val smsManager: SmsManager =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    context.getSystemService(SmsManager::class.java)
+                } else {
+                    SmsManager.getDefault()
+                }
+            smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+        }
+
     }
 }
