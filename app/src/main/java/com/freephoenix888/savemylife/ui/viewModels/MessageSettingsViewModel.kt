@@ -29,6 +29,9 @@ class MessageSettingsViewModel @Inject constructor(
 
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
+    private val _state: MutableStateFlow<MessageSettingsFormState> = MutableStateFlow(MessageSettingsFormState())
+
+    val state: StateFlow<MessageSettingsFormState> = _state
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -37,9 +40,6 @@ class MessageSettingsViewModel @Inject constructor(
             }
         }
     }
-
-    private val _state = MutableStateFlow(MessageSettingsFormState())
-    val state: StateFlow<MessageSettingsFormState> = _state
 
     fun onEvent(event: MessageSettingsFormEvent) {
         if(event !is MessageSettingsFormEvent.Submit) {
