@@ -1,10 +1,10 @@
 package com.freephoenix888.savemylife.data.sources.interfaces
 
+import com.freephoenix888.savemylife.SaveMyLifePreferences
 import kotlinx.coroutines.flow.Flow
 
 interface SaveMyLifeLocalDataSource {
-    val isMainServiceEnabled: Flow<Boolean>
+    val preferences: Flow<SaveMyLifePreferences>
     suspend fun setIsMainServiceEnabled(newState: Boolean)
-    val isDangerModeEnabled: Flow<Boolean>
     suspend fun setIsDangerModeEnabled(newState: Boolean)
 }
