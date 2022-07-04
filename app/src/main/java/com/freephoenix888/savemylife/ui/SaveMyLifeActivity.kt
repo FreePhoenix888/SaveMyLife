@@ -2,9 +2,11 @@ package com.freephoenix888.savemylife.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.composables.SaveMyLifeAppComposable
@@ -14,6 +16,7 @@ import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SaveMyLifeActivity : AppCompatActivity()  {
@@ -29,7 +32,18 @@ class SaveMyLifeActivity : AppCompatActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        runMainService()
+        saveMyLifeViewModel.viewModelScope.launch {
+            saveMyLifeViewModel.isMainServiceEnabled.collect { isMainSerivceEnabled ->
+                Log.d(null, "HomeScreenComposable: isMainServiceEnabled: $isMainSerivceEnabled")
+                if(isMainSerivceEnabled) {
+                    Intent(this@SaveMyLifeActivity, MainService::class.java).also {
+                        it.action = ActionConstants.StartMainService
+                        Log.d(null, "HomeScreenComposable: starting main service")
+                        startService(it)
+                    }
+                }
+            }
+        }
         setContent {
             SaveMyLifeAppComposable()
         }
@@ -55,13 +69,6 @@ class SaveMyLifeActivity : AppCompatActivity()  {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         navigateToButtonFragmentIfNeeded(intent)
-    }
-
-    private fun runMainService(){
-        Intent(this, MainService::class.java).also {
-            it.action = ActionConstants.StartMainService
-            startService(it)
-        }
     }
 
     private fun processIntentAction(intent: Intent?){
