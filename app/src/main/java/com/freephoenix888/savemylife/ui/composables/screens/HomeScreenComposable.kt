@@ -1,5 +1,12 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
+import android.annotation.SuppressLint
+import android.content.Context.POWER_SERVICE
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,11 +31,14 @@ import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
+
+@SuppressLint("BatteryLife")
 @Composable
 fun HomeScreenComposable(
     navController: NavController,
     saveMyLifeViewModel: SaveMyLifeViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val isMainServiceEnabled by saveMyLifeViewModel.isMainServiceEnabled.collectAsState(initial = false)
     HomeScreenBodyComposable(
         onSettingsButtonClick = {
@@ -36,6 +46,16 @@ fun HomeScreenComposable(
         },
         isMainServiceEnabled = isMainServiceEnabled,
         onSwitchIsMainServiceEnabled = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val intent = Intent()
+                val packageName: String = context.packageName
+                val pm: PowerManager? = context.getSystemService(POWER_SERVICE) as PowerManager?
+                if (pm != null && !pm.isIgnoringBatteryOptimizations(packageName)) {
+                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                    intent.data = Uri.parse("package:$packageName")
+                    context.startActivity(intent)
+                }
+            }
             saveMyLifeViewModel.switchIsMainServiceEnabled()
         },
     )
