@@ -2,7 +2,6 @@ package com.freephoenix888.savemylife.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -34,11 +33,9 @@ class SaveMyLifeActivity : AppCompatActivity()  {
         super.onCreate(savedInstanceState)
         saveMyLifeViewModel.viewModelScope.launch {
             saveMyLifeViewModel.isMainServiceEnabled.collect { isMainServiceEnabled ->
-                Log.d(null, "HomeScreenComposable: isMainServiceEnabled: $isMainServiceEnabled")
                 if(isMainServiceEnabled) {
                     Intent(this@SaveMyLifeActivity, MainService::class.java).also {
                         it.action = ActionConstants.StartMainService
-                        Log.d(null, "HomeScreenComposable: starting main service")
                         startService(it)
                     }
                 }
