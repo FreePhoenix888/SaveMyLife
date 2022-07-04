@@ -4,7 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.freephoenix888.savemylife.domain.useCases.SwitchIsDangerModeEnabledUseCase
+import android.widget.Toast
+import com.freephoenix888.savemylife.domain.useCases.SetIsDangerModeEnabledUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +25,7 @@ class PowerButtonBroadcastReceiver :
     lateinit var applicationContext: Context
 
     @Inject
-    lateinit var switchIsDangerModeEnabledUseCase: SwitchIsDangerModeEnabledUseCase
+    lateinit var setIsDangerModeEnabledUseCase: SetIsDangerModeEnabledUseCase
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -37,6 +38,8 @@ class PowerButtonBroadcastReceiver :
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Toast.makeText(applicationContext, "power button pressed", Toast.LENGTH_LONG).show()
+
         val intentAction = intent?.action ?: return
         if (intentAction == Intent.ACTION_SCREEN_OFF || intentAction == Intent.ACTION_SCREEN_ON) {
             if (_count == 0) {
@@ -44,7 +47,7 @@ class PowerButtonBroadcastReceiver :
             }
             if (_count == 5) {
                 scope.launch {
-                    switchIsDangerModeEnabledUseCase()
+                    setIsDangerModeEnabledUseCase(true)
                 }
 //                scope.launch {
 //                    saveMyLifeRepository.setIsDangerModeEnabled(true)
