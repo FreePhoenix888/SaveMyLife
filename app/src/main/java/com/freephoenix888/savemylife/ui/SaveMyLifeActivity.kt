@@ -33,9 +33,9 @@ class SaveMyLifeActivity : AppCompatActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         saveMyLifeViewModel.viewModelScope.launch {
-            saveMyLifeViewModel.isMainServiceEnabled.collect { isMainSerivceEnabled ->
-                Log.d(null, "HomeScreenComposable: isMainServiceEnabled: $isMainSerivceEnabled")
-                if(isMainSerivceEnabled) {
+            saveMyLifeViewModel.isMainServiceEnabled.collect { isMainServiceEnabled ->
+                Log.d(null, "HomeScreenComposable: isMainServiceEnabled: $isMainServiceEnabled")
+                if(isMainServiceEnabled) {
                     Intent(this@SaveMyLifeActivity, MainService::class.java).also {
                         it.action = ActionConstants.StartMainService
                         Log.d(null, "HomeScreenComposable: starting main service")
