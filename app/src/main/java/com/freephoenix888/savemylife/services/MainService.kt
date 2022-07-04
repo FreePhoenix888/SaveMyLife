@@ -18,16 +18,12 @@ import androidx.lifecycle.LifecycleService
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
-import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
-import com.freephoenix888.savemylife.domain.useCases.GetIsDangerModeEnabledFlowUseCase
-import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalFlowUseCase
-import com.freephoenix888.savemylife.domain.useCases.GetMessageUseCase
-import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.*
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +35,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainService : LifecycleService() {
 
+    @Inject
+    lateinit var getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase
     @Inject
     lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
     @Inject
@@ -59,9 +57,11 @@ class MainService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        registerPowerButtonBroadcastReceiver()
         if (intent == null) {
             return START_STICKY
         }
+
         when (intent.action) {
             ActionConstants.StartMainService -> {
                 if (isFirstStart) {
@@ -71,9 +71,14 @@ class MainService : LifecycleService() {
             }
             else -> {}
         }
-
-        registerPowerButtonBroadcastReceiver()
-
+        coroutineScope.launch {
+            getIsMainServiceEnabledFlowUseCase().collect {
+                Log.d(null, "onStartCommand: getIsMainServiceEnabledFlowUseCase: $it")
+                if(!it) {
+                    applicationContext.stopService(Intent(applicationContext, MainService::class.java))
+                }
+            }
+        }
         coroutineScope.launch {
             getMessageSendingIntervalFlowUseCase().collect {
                 messageSendingInterval.value = it
@@ -98,19 +103,20 @@ class MainService : LifecycleService() {
         return START_STICKY
     }
 
+    override fun onDestroy() {
+        Log.d(null, "onDestroy: ")
+        super.onDestroy()
+//        val broadcastIntent = Intent(this, RestartBroadcastReceiver::class.java)
+//        sendBroadcast(broadcastIntent)
+        unregisterReceiver(powerButtonBroadcastReceiver)
+    }
+
     private fun registerPowerButtonBroadcastReceiver() {
         val filter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_SCREEN_OFF)
         }
         registerReceiver(powerButtonBroadcastReceiver, filter)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        val broadcastIntent = Intent(this, RestartBroadcastReceiver::class.java)
-        sendBroadcast(broadcastIntent)
-        unregisterReceiver(powerButtonBroadcastReceiver)
     }
 
     private fun startForegroundService() {
