@@ -3,6 +3,7 @@ package com.freephoenix888.savemylife.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.domain.models.PhoneNumberSettingsFormState
+import com.freephoenix888.savemylife.domain.useCases.DeletePhoneNumberUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
 import com.freephoenix888.savemylife.domain.useCases.InsertPhoneNumbersUseCase
 import com.freephoenix888.savemylife.ui.PhoneNumberSettingsFormEvent
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PhoneNumberSettingsViewModel @Inject constructor(
     private val insertPhoneNumbersUseCase: InsertPhoneNumbersUseCase,
+    private val deletePhoneNumberUseCase: DeletePhoneNumberUseCase,
     getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
 ) : ViewModel() {
 
@@ -31,27 +33,15 @@ class PhoneNumberSettingsViewModel @Inject constructor(
     private val _state = MutableStateFlow(PhoneNumberSettingsFormState())
     val state: StateFlow<PhoneNumberSettingsFormState> = _state
 
-    fun onEvent(event: PhoneNumberSettingsFormEvent) {
+    fun onEvent(event: PhoneNumberSettingsFormEvent) = viewModelScope.launch {
         when(event) {
             is PhoneNumberSettingsFormEvent.PhoneNumberAdded -> {
-                _state.value = state.value.copy(
-                    phoneNumberList = state.value.phoneNumberList.filter { it != event.phoneNumber } + event.phoneNumber
-                )
+                insertPhoneNumbersUseCase(listOf(event.phoneNumber))
             }
             is PhoneNumberSettingsFormEvent.PhoneNumberDeleted -> {
-                _state.value = state.value.copy(
-                    phoneNumberList = state.value.phoneNumberList.filter { it != event.phoneNumber }
-                )
-            }
-            is PhoneNumberSettingsFormEvent.Submit -> {
-                submitData()
+                deletePhoneNumberUseCase(event.phoneNumber)
             }
         }
-    }
 
-    fun submitData() {
-        viewModelScope.launch {
-            insertPhoneNumbersUseCase(state.value.phoneNumberList)
-        }
     }
 }

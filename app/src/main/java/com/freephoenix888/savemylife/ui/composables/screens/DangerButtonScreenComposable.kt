@@ -3,6 +3,7 @@ package com.freephoenix888.savemylife.ui.composables.screens
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -38,7 +39,8 @@ private fun DangerButtonScreenBodyComposable(
                 .padding(innerPadding)
                 .padding(50.dp),
             onClick = onSwitchIsDangerModeEnabled,
-            colors = ButtonDefaults.buttonColors(backgroundColor = if(dangerModeState) MaterialTheme.colors.error else MaterialTheme.colors.primary)
+            colors = ButtonDefaults.buttonColors(backgroundColor = if(dangerModeState) MaterialTheme.colors.error else MaterialTheme.colors.primary),
+            shape = RoundedCornerShape(20.dp)
         ) {
             Text(stringResource(R.string.all_i_am_in_danger))
         }

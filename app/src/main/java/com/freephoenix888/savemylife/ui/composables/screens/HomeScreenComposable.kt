@@ -1,13 +1,6 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.annotation.SuppressLint
-import android.content.Context.POWER_SERVICE
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.os.PowerManager
-import android.provider.Settings
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -19,11 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -40,33 +28,22 @@ fun HomeScreenComposable(
 ) {
     val context = LocalContext.current
     val isMainServiceEnabled by saveMyLifeViewModel.isMainServiceEnabled.collectAsState(initial = false)
-    HomeScreenBodyComposable(
-        onSettingsButtonClick = {
-            navController.navigate(SaveMyLifeScreenEnum.Settings.name)
-        },
-        isMainServiceEnabled = isMainServiceEnabled,
-        onSwitchIsMainServiceEnabled = {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val intent = Intent()
-                val packageName: String = context.packageName
-                val pm: PowerManager? = context.getSystemService(POWER_SERVICE) as PowerManager?
-                if (pm != null && !pm.isIgnoringBatteryOptimizations(packageName)) {
-                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                    intent.data = Uri.parse("package:$packageName")
-                    context.startActivity(intent)
-                }
-            }
-            saveMyLifeViewModel.switchIsMainServiceEnabled()
-        },
-    )
-}
+    val isFirstAppLaunch by saveMyLifeViewModel.isFirstAppLaunch.collectAsState(initial = false)
 
-@Composable
-fun HomeScreenBodyComposable(
-    isMainServiceEnabled: Boolean,
-    onSwitchIsMainServiceEnabled: () -> Unit,
-    onSettingsButtonClick: () -> Unit,
-) {
+    var isSettingsHintDialogOpened by remember { mutableStateOf(isFirstAppLaunch)}
+    if(isSettingsHintDialogOpened) {
+        AlertDialog(onDismissRequest = { isSettingsHintDialogOpened = false }, title = {
+            Text(stringResource(R.string.home_screen_switch_app_state))
+        }, text={
+            Text(stringResource(R.string.home_screen_do_not_forget_to_adjust_settings_for_you_before_using_the_app))
+
+        }, confirmButton = {
+            Button(onClick = { isSettingsHintDialogOpened = false}) {
+                Text(stringResource(R.string.all_ok))
+            }
+        })
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,7 +52,9 @@ fun HomeScreenBodyComposable(
                 },
                 actions = {
                     IconButton(
-                        onClick = onSettingsButtonClick,
+                        onClick = {
+                            navController.navigate(SaveMyLifeScreenEnum.Settings.name)
+                        },
                         modifier = Modifier
                     ) {
                         Icon(
@@ -95,7 +74,9 @@ fun HomeScreenBodyComposable(
                 .fillMaxSize(),
         ) {
             Button(
-                onClick = onSwitchIsMainServiceEnabled,
+                onClick = {
+                    saveMyLifeViewModel.switchIsMainServiceEnabled()
+                },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = if (isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error),
                 modifier = Modifier
@@ -109,40 +90,9 @@ fun HomeScreenBodyComposable(
             }
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = buildAnnotatedString {
-                    append("SaveMyLife is ")
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Black,
-                            color = if (isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error
-                        )
-                    ) {
-                        append(
-                            (if (isMainServiceEnabled) stringResource(R.string.home_screen_app_state_enabled) else stringResource(
-                                R.string.home_screen_app_state_disabled
-                            )).uppercase()
-                        )
-                    }
-                },
+                text = if(isMainServiceEnabled)  stringResource(R.string.home_screen_app_state_enabled) else stringResource(R.string.home_screen_app_state_disabled),
             )
         }
     }
-}
 
-@Preview(showBackground = true, widthDp = 320, heightDp = 480)
-@Composable
-private fun HomeScreenComposablePreview() {
-    val context = LocalContext.current
-    var dangerModeState by remember { mutableStateOf(false) }
-    HomeScreenBodyComposable(isMainServiceEnabled = dangerModeState,
-        onSwitchIsMainServiceEnabled = {
-            dangerModeState = !dangerModeState
-        },
-        onSettingsButtonClick = {
-            Toast.makeText(
-                context,
-                "Settings button clicked",
-                Toast.LENGTH_SHORT
-            ).show()
-        })
 }

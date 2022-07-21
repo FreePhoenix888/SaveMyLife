@@ -12,12 +12,12 @@ class ValidateMessageSendingIntervalInputUseCase @Inject constructor() : Validat
                 errorMessage = "Message sending interval must not be empty"
             )
         }
-        val messageSendingIntervalLongOrNull = input.toLongOrNull()
+        val messageSendingInterval = input.toLongOrNull()
             ?: return ValidationResult(
                 isValid = false,
                 errorMessage = "Message sending interval must be a number"
             )
-        if (messageSendingIntervalLongOrNull < 1) {
+        if (messageSendingInterval < 1) {
             return ValidationResult(
                 isValid = false,
                 errorMessage = "Message sending interval must be greater than 0"

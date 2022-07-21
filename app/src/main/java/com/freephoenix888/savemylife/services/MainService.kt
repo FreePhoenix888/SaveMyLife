@@ -1,9 +1,6 @@
 package com.freephoenix888.savemylife.services
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -15,8 +12,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.Utils
+import com.freephoenix888.savemylife.broadcastReceivers.DangerBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.Constants
@@ -37,22 +35,28 @@ class MainService : LifecycleService() {
 
     @Inject
     lateinit var getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase
+
     @Inject
     lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
+
     @Inject
     lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
+
     @Inject
     lateinit var getMessageUseCase: GetMessageUseCase
+
     @Inject
     lateinit var getMessageSendingIntervalFlowUseCase: GetMessageSendingIntervalFlowUseCase
 
     private var isFirstStart = true
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var isDangerModeEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    private var doInDangerJob: Job? = null
     private val messageSendingInterval = MutableStateFlow(MessageConstants.DEFAULT_SENDING_INTERVAL)
     private val phoneNumberList = MutableStateFlow(emptyList<PhoneNumber>())
     private val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
+
+    private var alarmManager: AlarmManager? = null
+    private var alarmIntent: PendingIntent? = null
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -71,31 +75,59 @@ class MainService : LifecycleService() {
             }
             else -> {}
         }
-        coroutineScope.launch {
-            getIsMainServiceEnabledFlowUseCase().collect {
-                Log.d(null, "onStartCommand: getIsMainServiceEnabledFlowUseCase: $it")
-                if(!it) {
-                    applicationContext.stopService(Intent(applicationContext, MainService::class.java))
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                getIsMainServiceEnabledFlowUseCase().collect {
+                    if (!it) {
+                        applicationContext.stopService(
+                            Intent(
+                                applicationContext,
+                                MainService::class.java
+                            )
+                        )
+                    }
                 }
             }
         }
-        coroutineScope.launch {
-            getMessageSendingIntervalFlowUseCase().collect {
-                messageSendingInterval.value = it
-                Log.d(null, "new interval in service: ${messageSendingInterval.value}")
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                getMessageSendingIntervalFlowUseCase().collect {
+                    messageSendingInterval.value = it
+                }
             }
         }
-        coroutineScope.launch {
-            getPhoneNumberListFlowUseCase().collect {
-                phoneNumberList.value = it
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                getPhoneNumberListFlowUseCase().collect {
+                    phoneNumberList.value = it
+                }
             }
         }
-        coroutineScope.launch {
-            getIsDangerModeEnabledFlowUseCase().collect {
-                isDangerModeEnabled.value = it
-                doInDangerJob?.cancel()
-                if (it) {
-                    doInDangerJob = doInDanger()
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                getIsDangerModeEnabledFlowUseCase().collect {
+                    isDangerModeEnabled.value = it
+                    alarmManager =
+                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    if (alarmIntent != null) {
+                        alarmManager?.cancel(alarmIntent)
+                    }
+                    if (it) {
+                        val dialogIntent =
+                            Intent(applicationContext, DangerBroadcastReceiver::class.java)
+                        alarmIntent = PendingIntent.getBroadcast(
+                            applicationContext,
+                            0,
+                            dialogIntent,
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+                        )
+                        alarmManager?.setRepeating(
+                            AlarmManager.RTC_WAKEUP,
+                            System.currentTimeMillis(),
+                            messageSendingInterval.value.inWholeMilliseconds,
+                            alarmIntent
+                        )
+                    }
                 }
             }
         }
@@ -106,8 +138,8 @@ class MainService : LifecycleService() {
     override fun onDestroy() {
         Log.d(null, "onDestroy: ")
         super.onDestroy()
-//        val broadcastIntent = Intent(this, RestartBroadcastReceiver::class.java)
-//        sendBroadcast(broadcastIntent)
+        val broadcastIntent = Intent(this, DangerBroadcastReceiver::class.java)
+        sendBroadcast(broadcastIntent)
         unregisterReceiver(powerButtonBroadcastReceiver)
     }
 
@@ -135,7 +167,8 @@ class MainService : LifecycleService() {
             .setOngoing(true)
             .setSmallIcon(R.drawable.ic_stat_name)
             .setLargeIcon(
-                BitmapFactory.decodeResource(applicationContext.resources, R.mipmap.ic_launcher))
+                BitmapFactory.decodeResource(applicationContext.resources, R.mipmap.ic_launcher)
+            )
             .setContentTitle("SaveMyLife")
             .setContentText("SaveMyLife is active")
             .setContentIntent(getDangerButtonActivityPendingIntent())
@@ -170,19 +203,4 @@ class MainService : LifecycleService() {
         )
         notificationManager.createNotificationChannel(channel)
     }
-
-    private fun doInDanger() = coroutineScope.launch {
-        while (true) {
-            for (phoneNumber in phoneNumberList.value) {
-                Utils.sendSms(
-                    context = applicationContext,
-                    phoneNumber = phoneNumber.phoneNumber,
-                    message = getMessageUseCase(phoneNumber)
-                )
-            }
-            delay(messageSendingInterval.value)
-        }
-    }
-
-
 }

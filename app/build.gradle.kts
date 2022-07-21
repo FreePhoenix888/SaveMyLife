@@ -142,6 +142,9 @@ dependencies {
     implementation("androidx.datastore:datastore-rxjava3:1.0.0")
     implementation("com.google.protobuf:protobuf-kotlin:3.19.1")
 
+    implementation("com.github.alorma:compose-settings-ui:0.7.2")
+    implementation("com.github.alorma:compose-settings-storage-preferences:0.7.2")
+
 }
 
 // Allow references to generated code

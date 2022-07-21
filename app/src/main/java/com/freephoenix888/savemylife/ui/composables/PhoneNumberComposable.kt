@@ -45,14 +45,6 @@ fun PhoneNumberComposable(
                 return@remember ImageDecoder.decodeBitmap(source).asImageBitmap()
             }
         }
-//        val inputStream = ContactsContract.Contacts.openContactPhotoInputStream(
-//            context.contentResolver, contact.contentUri
-//        )
-//        return@remember if (inputStream == null) {
-//            null
-//        } else {
-//            BitmapFactory.decodeStream(inputStream).asImageBitmap()
-//        }
     }
     Card(
         border = BorderStroke(

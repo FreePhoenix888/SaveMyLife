@@ -6,4 +6,5 @@ option java_multiple_files = true;
 message SaveMyLifePreferences {
   bool isMainServiceEnabled = 1;
   bool isDangerModeEnabled = 2;
+  bool isFirstAppLaunch = 3;
 }

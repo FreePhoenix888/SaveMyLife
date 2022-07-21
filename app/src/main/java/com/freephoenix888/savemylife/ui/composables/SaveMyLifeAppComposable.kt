@@ -45,16 +45,17 @@ private fun SaveMyLifeNavHostComposable(
             val phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel =
                 hiltViewModel()
             PhoneNumbersScreenComposable(
-                phoneNumberSettingsViewModel = phoneNumberSettingsViewModel
+                phoneNumberSettingsViewModel = phoneNumberSettingsViewModel,
+                navController = navController
             )
         }
         composable(SaveMyLifeScreenEnum.MessageSettings.name) {
             val emergencyMessageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()
-            MessageSettingsScreenComposable(messageSettingsViewModel = emergencyMessageSettingsViewModel)
+            MessageSettingsScreenComposable(messageSettingsViewModel = emergencyMessageSettingsViewModel, navController = navController)
         }
         composable(SaveMyLifeScreenEnum.LocationSettings.name) {
             val locationSettingsViewModel: LocationSettingsViewModel = hiltViewModel()
-            LocationSettingsScreenComposable(locationSettingsViewModel = locationSettingsViewModel)
+            LocationSettingsScreenComposable(locationSettingsViewModel = locationSettingsViewModel, navController = navController)
         }
         composable(
             route = SaveMyLifeScreenEnum.DangerButton.name,

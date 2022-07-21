@@ -36,11 +36,12 @@
             android:exported="true"
             />
 
-        <receiver android:name=".broadcastReceivers.RestartBroadcastReceiver"
+        <receiver android:name=".broadcastReceivers.DangerBroadcastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 

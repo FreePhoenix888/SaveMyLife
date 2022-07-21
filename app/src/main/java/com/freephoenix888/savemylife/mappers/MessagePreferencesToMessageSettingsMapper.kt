@@ -11,7 +11,7 @@ class MessagePreferencesToMessageSettingsMapper @Inject constructor(): Mapper<Me
     override fun map(input: MessagePreferences): MessageSettings {
         return MessageSettings(
             template = input.template.ifEmpty { MessageConstants.DEFAULT_TEMPLATE },
-            sendingInterval = if (input.sendingIntervalInSeconds == 0L) MessageConstants.DEFAULT_SENDING_INTERVAL else input.sendingIntervalInSeconds.toDuration(DurationUnit.SECONDS)
+            sendingInterval = if (input.sendingIntervalInMinutes == 0L) MessageConstants.DEFAULT_SENDING_INTERVAL else input.sendingIntervalInMinutes.toDuration(DurationUnit.MINUTES)
         )
     }
 }

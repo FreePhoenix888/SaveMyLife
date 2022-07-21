@@ -8,7 +8,7 @@ class MessageSettingsToMessageSettingsFormStateMapper @Inject constructor(): Map
     override fun map(input: MessageSettings): MessageSettingsFormState {
         return MessageSettingsFormState(
             template = input.template,
-            sendingIntervalInSeconds = input.sendingInterval.inWholeSeconds.toString()
+            sendingIntervalInMinutes = input.sendingInterval.inWholeSeconds.toString()
         )
     }
 }

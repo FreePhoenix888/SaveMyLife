@@ -2,29 +2,25 @@ package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.Manifest
 import android.os.Build
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Message
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.domain.models.MessageSettingsFormState
 import com.freephoenix888.savemylife.ui.MessageSettingsFormEvent
 import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
-import com.freephoenix888.savemylife.ui.composables.TextFieldWithError
+import com.freephoenix888.savemylife.ui.composables.TextFieldError
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -33,7 +29,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MessageSettingsScreenComposable(
-    messageSettingsViewModel: MessageSettingsViewModel = viewModel()
+    messageSettingsViewModel: MessageSettingsViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
 ) {
     if(Build.VERSION.SDK_INT >= 31) {
         val scheduleExactPermission = rememberPermissionState(permission = Manifest.permission.SCHEDULE_EXACT_ALARM)
@@ -47,43 +44,7 @@ fun MessageSettingsScreenComposable(
     }
 
     val context = LocalContext.current
-    val messageFormState by messageSettingsViewModel.state.collectAsState()
-    MessageSettingsScreenBodyComposable(
-        messageSettingsFormState = messageFormState,
-        onTemplateChange = {
-            messageSettingsViewModel.onEvent(MessageSettingsFormEvent.TemplateChanged(it))
-        },
-        onMessageTemplateInfoButtonClick = { /*TODO*/ },
-        onSendingIntervalInSecondsChange = {
-            messageSettingsViewModel.onEvent(MessageSettingsFormEvent.sendingIntervalInSecondsChanged(it))
-        },
-        onSubmit = {
-            messageSettingsViewModel.onEvent(MessageSettingsFormEvent.Submit)
-        },
-        onLaunchedEffect = {
-            messageSettingsViewModel.validationEvents.collect {
-                when(it) {
-                    is MessageSettingsViewModel.ValidationEvent.Success -> {
-                        Toast.makeText(context,
-                        "Setting are saved successfully",
-                        Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-    )
-}
-
-@Composable
-private fun MessageSettingsScreenBodyComposable(
-    messageSettingsFormState: MessageSettingsFormState,
-    onTemplateChange: (String) -> Unit,
-    onMessageTemplateInfoButtonClick: () -> Unit,
-    onSendingIntervalInSecondsChange: (String) -> Unit,
-    onSubmit: () -> Unit,
-    onLaunchedEffect: suspend () -> Unit
-) {
-    val context = LocalContext.current
+    val messageSettingsFormState by messageSettingsViewModel.state.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -92,105 +53,96 @@ private fun MessageSettingsScreenBodyComposable(
                     contentDescription = stringResource(R.string.all_message)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Message")
-            }, actions = {
+                Text(stringResource(R.string.all_message))
+            },                 navigationIcon = {
                 IconButton(onClick = {
-                    onSubmit()
-                }) {
+                    navController.navigateUp()
+                }, content = {
                     Icon(
-                        imageVector = Icons.Filled.Save,
-                        contentDescription = stringResource(R.string.all_save)
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.all_back)
                     )
-                }
+                })
             })
         },
         content = { innerPadding: PaddingValues ->
-            LaunchedEffect(key1 = context, block = {
-                onLaunchedEffect()
-            })
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
 
-                    Column(modifier = Modifier.weight(9f)) {
-                        TextFieldWithError(textFieldComposable = {
-                            OutlinedTextField(
-                                value = messageSettingsFormState.template,
-                                onValueChange = { onTemplateChange(it) },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Filled.Message,
-                                        contentDescription = "Message"
-                                    )
-                                },
-                                label = {
-                                    Text("Message template")
-                                },
-                                isError = messageSettingsFormState.templateErrorMessage != null
-                            )
-
-                        }, error = messageSettingsFormState.templateErrorMessage)
-
-                    }
-                    IconButton(
-                        onClick = onMessageTemplateInfoButtonClick,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = "String template information"
+            Column(modifier = Modifier.padding(innerPadding)) {
+                var isMessageTemplateDialogOpened by remember { mutableStateOf(false) }
+                SettingsMenuLink(icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Message,
+                        contentDescription = stringResource(R.string.message_settings_screen_message_template)
+                    )
+                },title = {
+                    Text("Message template")
+                }, onClick = {
+                    isMessageTemplateDialogOpened = true
+                })
+                if(isMessageTemplateDialogOpened) {
+                    AlertDialog(onDismissRequest = { isMessageTemplateDialogOpened = false }, title = {
+                        Text(stringResource(R.string.message_settings_screen_message_template))
+                    }, text={
+                        OutlinedTextField(
+                            value = messageSettingsFormState.template,
+                            onValueChange = { messageSettingsViewModel.onEvent(
+                                MessageSettingsFormEvent.TemplateChanged(it)) },
+                            isError = messageSettingsFormState.templateErrorMessage != null
                         )
-                    }
+                        messageSettingsFormState.templateErrorMessage?.let {
+                            TextFieldError(error = it)
+                        }
+                    }, dismissButton = {
+                        Button(onClick = {
+                            isMessageTemplateDialogOpened = false
+                        }) {
+                            Text(stringResource(R.string.all_cancel))
+                        }
+                    }, confirmButton = {
+                        Button(onClick = { isMessageTemplateDialogOpened = false}) {
+                            Text(stringResource(R.string.all_save))
+                        }
+                    })
                 }
 
-                Divider(modifier = Modifier.padding(vertical = 16.dp))
-
-                TextFieldWithError(textFieldComposable = {
-                    OutlinedTextField(
-                        value = messageSettingsFormState.sendingIntervalInSeconds,
-                        onValueChange = {
-                            onSendingIntervalInSecondsChange(it)
-                        },
-                        label = {
-                            Text("Sending interval in seconds")
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Timer,
-                                contentDescription = "Sending interval"
-                            )
-                        },
-                        isError = messageSettingsFormState.sendingIntervalInSecondsErrorMessage != null,
-                        modifier = Modifier.fillMaxWidth()
+                var isMessageSendingIntervalDialogOpened by remember { mutableStateOf(false) }
+                SettingsMenuLink(icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Timer,
+                        contentDescription = stringResource(R.string.message_settings_screen_sending_interval)
                     )
-                }, error = messageSettingsFormState.sendingIntervalInSecondsErrorMessage)
+                },title = {
+                    Text(stringResource(R.string.message_settings_screen_sending_interval))
+                }, onClick = {
+                    isMessageSendingIntervalDialogOpened = true
+                })
+                if(isMessageSendingIntervalDialogOpened) {
+                    AlertDialog(onDismissRequest = { isMessageSendingIntervalDialogOpened = false }, title = {
+                        Text(stringResource(R.string.message_settings_screen_sending_interval))
+                    }, text={
+                        OutlinedTextField(
+                            value = messageSettingsFormState.sendingIntervalInMinutes,
+                            onValueChange = { messageSettingsViewModel.onEvent(
+                                MessageSettingsFormEvent.SendingIntervalInMinutesChanged(it)) },
+                            isError = messageSettingsFormState.sendingIntervalInMinutesErrorMessage != null
+                        )
+                        messageSettingsFormState.sendingIntervalInMinutesErrorMessage?.let {
+                            TextFieldError(error = it)
+                        }
+                    }, dismissButton = {
+                        Button(onClick = {
+                            isMessageSendingIntervalDialogOpened = false
+                        }) {
+                            Text(stringResource(R.string.all_cancel))
+                        }
+                    }, confirmButton = {
+                        Button(onClick = { isMessageSendingIntervalDialogOpened = false}) {
+                            Text(stringResource(R.string.all_save))
+                        }
+                    })
+                }
             }
         })
-}
 
-@Preview(showBackground = true)
-@Composable
-private fun MessageSettingsScreenBodyComposablePreview() {
-    val context = LocalContext.current
-    var messageSettingsFormState by remember { mutableStateOf(MessageSettingsFormState()) }
-    MessageSettingsScreenBodyComposable(
-        messageSettingsFormState = messageSettingsFormState,
-        onTemplateChange = {
-            messageSettingsFormState = messageSettingsFormState.copy(template = it)
-        },
-        onMessageTemplateInfoButtonClick = {
-        },
-        onSendingIntervalInSecondsChange = {
-            messageSettingsFormState = messageSettingsFormState.copy(sendingIntervalInSeconds = it)
-        },
-        onSubmit = {},
-        onLaunchedEffect = {}
-    )
+
 }

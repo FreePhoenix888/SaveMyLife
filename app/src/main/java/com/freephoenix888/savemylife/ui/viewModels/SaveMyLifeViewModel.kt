@@ -2,10 +2,7 @@ package com.freephoenix888.savemylife.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.freephoenix888.savemylife.domain.useCases.GetIsDangerModeEnabledFlowUseCase
-import com.freephoenix888.savemylife.domain.useCases.GetIsMainServiceEnabledFlowUseCase
-import com.freephoenix888.savemylife.domain.useCases.SwitchIsDangerModeEnabledUseCase
-import com.freephoenix888.savemylife.domain.useCases.SwitchIsMainServiceEnabledUseCase
+import com.freephoenix888.savemylife.domain.useCases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,12 +10,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class   SaveMyLifeViewModel @Inject constructor(
-    val getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase,
+    getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase,
     val switchIsMainServiceEnabledUseCase: SwitchIsMainServiceEnabledUseCase,
-    val getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase,
-    val switchIsDangerModeEnabledUseCase: SwitchIsDangerModeEnabledUseCase
+    getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase,
+    val switchIsDangerModeEnabledUseCase: SwitchIsDangerModeEnabledUseCase,
+    getIsFirstAppLaunch: GetIsFirstAppLaunchFlowUseCase
 ) : ViewModel() {
-
+    val isFirstAppLaunch = getIsFirstAppLaunch()
     val isMainServiceEnabled = getIsMainServiceEnabledFlowUseCase()
     fun switchIsMainServiceEnabled() = viewModelScope.launch(Dispatchers.IO) {
         switchIsMainServiceEnabledUseCase()

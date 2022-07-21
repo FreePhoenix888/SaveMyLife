@@ -11,22 +11,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.Utils
-import com.freephoenix888.savemylife.domain.models.PhoneNumber
 import com.freephoenix888.savemylife.ui.PhoneNumberSettingsFormEvent
 import com.freephoenix888.savemylife.ui.composables.PhoneNumberComposable
 import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
@@ -38,7 +37,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PhoneNumbersScreenComposable(
-    phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel = viewModel()
+    phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current as AppCompatActivity
     val state by phoneNumberSettingsViewModel.state.collectAsState()
@@ -61,36 +61,6 @@ fun PhoneNumbersScreenComposable(
         )
         return
     }
-
-    ContactsSettingsScreenBodyComposable(
-        phoneNumberList = state.phoneNumberList,
-        onAddPhoneNumber = {
-            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberAdded(it))
-        },
-        onDeletePhoneNumber = {
-            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberDeleted(it))
-        },
-        onSubmit = {
-            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.Submit)
-        },
-        onLaunchedEffect = {
-
-        }
-    )
-}
-
-@Composable
-private fun ContactsSettingsScreenBodyComposable(
-    phoneNumberList: List<PhoneNumber>,
-    onAddPhoneNumber: (PhoneNumber) -> Unit,
-    onDeletePhoneNumber: (PhoneNumber) -> Unit,
-    onSubmit: () -> Unit,
-    onLaunchedEffect: suspend () -> Unit
-) {
-    val context = LocalContext.current
-    LaunchedEffect(key1 = context, block = {
-        onLaunchedEffect()
-    })
     val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
     val pickContactActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -98,8 +68,9 @@ private fun ContactsSettingsScreenBodyComposable(
             val contactUri = activityResult.data?.data ?: return@rememberLauncherForActivityResult
             val phoneNumber =
                 Utils.getPhoneNumberByContentUri(contentUri = contactUri, context = context)
-            onAddPhoneNumber(phoneNumber)
+            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberAdded(phoneNumber))
         })
+
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -108,15 +79,17 @@ private fun ContactsSettingsScreenBodyComposable(
                     contentDescription = stringResource(R.string.all_phone_numbers)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Phone numbers")
+                Text(stringResource(R.string.phone_number_settings_screen_phone_numbers))
             },
-                actions = {
+                navigationIcon = {
                     IconButton(onClick = {
-                        onSubmit()
-                    },
-                        content = {
-                            Icon(imageVector = Icons.Filled.Save, contentDescription = "Save")
-                        })
+                        navController.navigateUp()
+                    }, content = {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.all_back)
+                        )
+                    })
                 })
         },
         floatingActionButton = {
@@ -137,12 +110,14 @@ private fun ContactsSettingsScreenBodyComposable(
         ) {
             LazyColumn {
                 items(
-                    items = phoneNumberList,
+                    items = state.phoneNumberList,
                     key = { it.contentUri }
                 ) { phoneNumber ->
                     PhoneNumberComposable(
                         phoneNumber = phoneNumber,
-                        onDeletePhoneNumber = onDeletePhoneNumber,
+                        onDeletePhoneNumber = {
+                            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberDeleted(phoneNumber))
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -152,39 +127,4 @@ private fun ContactsSettingsScreenBodyComposable(
 
 }
 
-@Preview(showBackground = true, widthDp = 320, heightDp = 480)
-@Composable
-fun ContactsSettingsScreenBodyComposablePreview() {
-//    val emergencyContactsWithPhoneNumbers =
-//        remember { mutableStateListOf<ContactWithPhoneNumbers>(*ContactsConstants.fakeContactsWithPhoneNumbers.toTypedArray()) }
-//
-//    ContactsSettingsScreenBodyComposable(
-//        contactWithPhoneNumbersList = emergencyContactsWithPhoneNumbers,
-//        onDeleteContact = {
-//            val emergencyContactWithPhoneNumbersToRemove =
-//                emergencyContactsWithPhoneNumbers.first { emergencyContactWithPhoneNumbers ->
-//                    emergencyContactWithPhoneNumbers.contact.uri == it.uri
-//                }
-//            emergencyContactsWithPhoneNumbers.remove(emergencyContactWithPhoneNumbersToRemove)
-//        },
-//        onDeleteContactPhoneNumber = { contactPhoneNumber: ContactPhoneNumber ->
-//            val emergencyContactWithPhoneNumbersToDeleteIndex =
-//                emergencyContactsWithPhoneNumbers.indexOfFirst { emergencyContactWithPhoneNumbers ->
-//                    emergencyContactWithPhoneNumbers.contact.uri == contactPhoneNumber.contactUri
-//                }
-//            val updatedContactWithPhoneNumbers =
-//                emergencyContactsWithPhoneNumbers.get(emergencyContactWithPhoneNumbersToDeleteIndex).copy(
-//                    phoneNumbers = emergencyContactsWithPhoneNumbers.get(
-//                        emergencyContactWithPhoneNumbersToDeleteIndex
-//                    ).phoneNumbers.filter { phoneNumber ->
-//                        phoneNumber != contactPhoneNumber.phoneNumber
-//                    }
-//                )
-//            emergencyContactsWithPhoneNumbers.removeAt(emergencyContactWithPhoneNumbersToDeleteIndex)
-//            emergencyContactsWithPhoneNumbers.add(updatedContactWithPhoneNumbers)
-//        },
-//        onAddContactWithPhoneNumbers = {
-//            emergencyContactsWithPhoneNumbers.add(it)
-//        }
-//    )
-}
+
