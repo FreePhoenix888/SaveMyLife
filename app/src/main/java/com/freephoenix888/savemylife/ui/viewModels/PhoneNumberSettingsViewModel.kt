@@ -2,11 +2,10 @@ package com.freephoenix888.savemylife.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.freephoenix888.savemylife.domain.models.PhoneNumberSettingsFormState
+import com.freephoenix888.savemylife.domain.models.PhoneNumber
 import com.freephoenix888.savemylife.domain.useCases.DeletePhoneNumberUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
 import com.freephoenix888.savemylife.domain.useCases.InsertPhoneNumbersUseCase
-import com.freephoenix888.savemylife.ui.PhoneNumberSettingsFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,25 +22,19 @@ class PhoneNumberSettingsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getPhoneNumberListFlowUseCase().collect {
-                _state.value = _state.value.copy(
-                    phoneNumberList = it
-                )
+                _phoneNumbers.value = it
             }
         }
     }
 
-    private val _state = MutableStateFlow(PhoneNumberSettingsFormState())
-    val state: StateFlow<PhoneNumberSettingsFormState> = _state
+    private val _phoneNumbers = MutableStateFlow<List<PhoneNumber>>(listOf())
+    val phoneNumbers: StateFlow<List<PhoneNumber>> = _phoneNumbers
 
-    fun onEvent(event: PhoneNumberSettingsFormEvent) = viewModelScope.launch {
-        when(event) {
-            is PhoneNumberSettingsFormEvent.PhoneNumberAdded -> {
-                insertPhoneNumbersUseCase(listOf(event.phoneNumber))
-            }
-            is PhoneNumberSettingsFormEvent.PhoneNumberDeleted -> {
-                deletePhoneNumberUseCase(event.phoneNumber)
-            }
-        }
+    fun addPhoneNumber(phoneNumber: PhoneNumber) = viewModelScope.launch {
+                insertPhoneNumbersUseCase(listOf(phoneNumber))
+    }
 
+    fun removePhoneNumber(phoneNumber: PhoneNumber) = viewModelScope.launch {
+        deletePhoneNumberUseCase(phoneNumber)
     }
 }

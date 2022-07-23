@@ -11,20 +11,20 @@ import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.composables.screens.*
 import com.freephoenix888.savemylife.ui.theme.SaveMyLifeTheme
-import com.freephoenix888.savemylife.ui.viewModels.LocationSettingsViewModel
+import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 @Composable
-fun SaveMyLifeAppComposable() {
+fun SaveMyLifeApp() {
     SaveMyLifeTheme {
-        SaveMyLifeNavHostComposable()
+        SaveMyLifeNavHost()
     }
 }
 
 @Composable
-private fun SaveMyLifeNavHostComposable(
+private fun SaveMyLifeNavHost(
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -33,29 +33,31 @@ private fun SaveMyLifeNavHostComposable(
     ) {
         composable(SaveMyLifeScreenEnum.Home.name) {
             val saveMyLifeViewModel: SaveMyLifeViewModel = hiltViewModel()
-            HomeScreenComposable(
+            HomeScreen(
                 saveMyLifeViewModel = saveMyLifeViewModel,
                 navController = navController
             )
         }
         composable(SaveMyLifeScreenEnum.Settings.name) {
-            SettingsScreenComposable(navController = navController)
+            val locationSharingSettingsViewModel: LocationSharingSettingsViewModel = hiltViewModel()
+            SettingsScreen(navController = navController,
+            locationSharingSettingsViewModel = locationSharingSettingsViewModel)
         }
         composable(SaveMyLifeScreenEnum.SmsSettings.name) {
             val phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel =
                 hiltViewModel()
-            PhoneNumbersScreenComposable(
+            PhoneNumbersScreen(
                 phoneNumberSettingsViewModel = phoneNumberSettingsViewModel,
                 navController = navController
             )
         }
         composable(SaveMyLifeScreenEnum.MessageSettings.name) {
             val emergencyMessageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()
-            MessageSettingsScreenComposable(messageSettingsViewModel = emergencyMessageSettingsViewModel, navController = navController)
+            MessageSettingsScreen(messageSettingsViewModel = emergencyMessageSettingsViewModel, navController = navController)
         }
         composable(SaveMyLifeScreenEnum.LocationSettings.name) {
-            val locationSettingsViewModel: LocationSettingsViewModel = hiltViewModel()
-            LocationSettingsScreenComposable(locationSettingsViewModel = locationSettingsViewModel, navController = navController)
+            val locationSharingSettingsViewModel: LocationSharingSettingsViewModel = hiltViewModel()
+            LocationSettingsScreen(locationSharingSettingsViewModel = locationSharingSettingsViewModel, navController = navController)
         }
         composable(
             route = SaveMyLifeScreenEnum.DangerButton.name,
@@ -64,7 +66,7 @@ private fun SaveMyLifeNavHostComposable(
             })
         ) {
             val saveMyLifeViewModel: SaveMyLifeViewModel = hiltViewModel()
-            DangerButtonScreenComposable(saveMyLifeViewModel = saveMyLifeViewModel)
+            DangerButtonScreen(saveMyLifeViewModel = saveMyLifeViewModel)
         }
     }
 }
@@ -72,5 +74,5 @@ private fun SaveMyLifeNavHostComposable(
 @Preview
 @Composable
 private fun SaveMyLifeAppPreview() {
-    SaveMyLifeAppComposable()
+    SaveMyLifeApp()
 }

@@ -24,7 +24,7 @@ class MessageDataStoreLocalDataSource @Inject constructor(private val dataStore:
     override suspend fun setSendingInterval(newSendingInterval: Duration) {
         dataStore.updateData {
             it.toBuilder()
-                .setSendingIntervalInMinutes(newSendingInterval.inWholeSeconds)
+                .setSendingIntervalInMinutes(newSendingInterval.inWholeMinutes)
                 .build()
         }
     }

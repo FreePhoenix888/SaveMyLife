@@ -15,7 +15,7 @@ import com.google.accompanist.permissions.PermissionState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun RequestPermissionComposable(
+fun RequestPermission(
     permissionState: PermissionState,
     text: String
 ) {

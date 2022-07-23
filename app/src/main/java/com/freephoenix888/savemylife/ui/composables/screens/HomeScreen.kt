@@ -22,7 +22,7 @@ import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 @SuppressLint("BatteryLife")
 @Composable
-fun HomeScreenComposable(
+fun HomeScreen(
     navController: NavController,
     saveMyLifeViewModel: SaveMyLifeViewModel = viewModel()
 ) {

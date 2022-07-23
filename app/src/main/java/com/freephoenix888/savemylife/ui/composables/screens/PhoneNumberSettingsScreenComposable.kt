@@ -26,9 +26,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.Utils
-import com.freephoenix888.savemylife.ui.PhoneNumberSettingsFormEvent
-import com.freephoenix888.savemylife.ui.composables.PhoneNumberComposable
-import com.freephoenix888.savemylife.ui.composables.RequestPermissionComposable
+import com.freephoenix888.savemylife.ui.composables.PhoneNumber
+import com.freephoenix888.savemylife.ui.composables.RequestPermission
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -36,16 +35,16 @@ import com.google.accompanist.permissions.rememberPermissionState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PhoneNumbersScreenComposable(
+fun PhoneNumbersScreen(
     phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current as AppCompatActivity
-    val state by phoneNumberSettingsViewModel.state.collectAsState()
+    val phoneNumbers by phoneNumberSettingsViewModel.phoneNumbers.collectAsState()
     val readContactsPermissionState =
         rememberPermissionState(permission = android.Manifest.permission.READ_CONTACTS)
     if (readContactsPermissionState.status != PermissionStatus.Granted) {
-        RequestPermissionComposable(
+        RequestPermission(
             permissionState = readContactsPermissionState,
             text = stringResource(R.string.phone_numbers_settings_screen_read_contacts_permission_request)
         )
@@ -55,7 +54,7 @@ fun PhoneNumbersScreenComposable(
     val sendSmsPermissionState =
         rememberPermissionState(permission = android.Manifest.permission.SEND_SMS)
     if(sendSmsPermissionState.status != PermissionStatus.Granted) {
-        RequestPermissionComposable(
+        RequestPermission(
             permissionState = sendSmsPermissionState,
             text = stringResource(R.string.phone_numbers_settings_screen_send_sms_permission_request)
         )
@@ -68,7 +67,7 @@ fun PhoneNumbersScreenComposable(
             val contactUri = activityResult.data?.data ?: return@rememberLauncherForActivityResult
             val phoneNumber =
                 Utils.getPhoneNumberByContentUri(contentUri = contactUri, context = context)
-            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberAdded(phoneNumber))
+            phoneNumberSettingsViewModel.addPhoneNumber(phoneNumber = phoneNumber)
         })
 
     Scaffold(
@@ -110,13 +109,13 @@ fun PhoneNumbersScreenComposable(
         ) {
             LazyColumn {
                 items(
-                    items = state.phoneNumberList,
+                    items = phoneNumbers,
                     key = { it.contentUri }
                 ) { phoneNumber ->
-                    PhoneNumberComposable(
+                    PhoneNumber(
                         phoneNumber = phoneNumber,
                         onDeletePhoneNumber = {
-                            phoneNumberSettingsViewModel.onEvent(PhoneNumberSettingsFormEvent.PhoneNumberDeleted(phoneNumber))
+                            phoneNumberSettingsViewModel.removePhoneNumber(phoneNumber = phoneNumber)
                         },
                         modifier = Modifier.fillMaxWidth()
                     )

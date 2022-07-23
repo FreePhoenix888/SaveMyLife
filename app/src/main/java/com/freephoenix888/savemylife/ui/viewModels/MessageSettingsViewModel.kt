@@ -1,15 +1,14 @@
 package com.freephoenix888.savemylife.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.freephoenix888.savemylife.domain.models.MessageSettingsFormState
+import com.freephoenix888.savemylife.domain.models.ValidationResult
 import com.freephoenix888.savemylife.domain.useCases.*
 import com.freephoenix888.savemylife.mappers.MessageSettingsToMessageSettingsFormStateMapper
-import com.freephoenix888.savemylife.ui.MessageSettingsFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.DurationUnit
@@ -24,50 +23,50 @@ class MessageSettingsViewModel @Inject constructor(
     private val validateMessageSendingIntervalInputUseCase: ValidateMessageSendingIntervalInputUseCase,
     private val messageSettingsToMessageSettingsFormStateMapper: MessageSettingsToMessageSettingsFormStateMapper
 ) : ViewModel() {
-    private val _state: MutableStateFlow<MessageSettingsFormState> = MutableStateFlow(MessageSettingsFormState())
-    val state: StateFlow<MessageSettingsFormState> = _state
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getMessageSettingsFlowUseCase().collect {
-                _state.value = messageSettingsToMessageSettingsFormStateMapper.map(it)
+                messageTemplate.value = it.template
+                Log.d(null, "Sending interval: ${it.sendingInterval}")
+                Log.d(null, "Sending interval in whole minutes: ${it.sendingInterval.inWholeMinutes}")
+                sendingInterval.value = it.sendingInterval.inWholeMinutes.toString()
             }
         }
     }
 
-    fun onEvent(event: MessageSettingsFormEvent) {
-        when(event) {
-            is MessageSettingsFormEvent.TemplateChanged -> {
-                _state.value = _state.value.copy(template = event.template, templateErrorMessage = null)
+    val messageTemplate = MutableStateFlow("")
+    val messageTemplateErrorMessage = MutableStateFlow<String?>(null)
+    fun onMessageTemplateChange(newMessageTemplate: String) {
+        messageTemplate.value = newMessageTemplate
+        when(val validationResult = validateMessageTemplateInputUseCase(newMessageTemplate)) {
+            is ValidationResult.Error -> {
+                messageTemplateErrorMessage.value = validationResult.message
             }
-            is MessageSettingsFormEvent.SendingIntervalInMinutesChanged -> {
-                _state.value = _state.value.copy(sendingIntervalInMinutes = event.sendingIntervalInMinutes, sendingIntervalInMinutesErrorMessage = null)
-            }
-            is MessageSettingsFormEvent.Submit -> {
-                submitData()
+            is ValidationResult.Success -> {
+                messageTemplateErrorMessage.value = null
             }
         }
     }
+    fun submitMessageTemplate() = viewModelScope.launch {
+        setMessageTemplateUseCase(messageTemplate.value)
+    }
 
-    private fun submitData() {
-        val templateValidationResult = validateMessageTemplateInputUseCase(state.value.template)
-        val sendingIntervalValidationResult = validateMessageSendingIntervalInputUseCase(state.value.sendingIntervalInMinutes)
-        val validationResults = listOf(
-            templateValidationResult,
-            sendingIntervalValidationResult
-        )
-        val hasError = validationResults.any { !it.isValid }
-        if(hasError) {
-            _state.value = _state.value.copy(
-                templateErrorMessage = templateValidationResult.errorMessage,
-                sendingIntervalInMinutesErrorMessage = sendingIntervalValidationResult.errorMessage
-            )
-            return
+    val sendingInterval = MutableStateFlow("")
+    val sendingIntervalErrorMessage = MutableStateFlow<String?>(null)
+    fun onSendingIntervalChange(newSendingInterval: String) {
+        sendingInterval.value = newSendingInterval
+        when(val validationResult = validateMessageSendingIntervalInputUseCase(newSendingInterval)) {
+            is ValidationResult.Error -> {
+                sendingIntervalErrorMessage.value = validationResult.message
+            }
+            is ValidationResult.Success -> {
+                sendingIntervalErrorMessage.value = null
+            }
         }
-
-        viewModelScope.launch {
-            setMessageTemplateUseCase(state.value.template)
-            setMessageSendingIntervalUseCase(state.value.sendingIntervalInMinutes.toLong().toDuration(DurationUnit.MINUTES))
-        }
+    }
+    fun submitSendingInterval() = viewModelScope.launch {
+        Log.d(null, "submitSendingInterval: ${sendingInterval.value.toLong().toDuration(DurationUnit.MINUTES)}")
+        Log.d(null, "submitSendingInterval: ${sendingInterval.value.toLong()}")
+        setMessageSendingIntervalUseCase(sendingInterval.value.toLong().toDuration(DurationUnit.MINUTES))
     }
 }

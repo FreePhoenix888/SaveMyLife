@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.services.MainService
-import com.freephoenix888.savemylife.ui.composables.SaveMyLifeAppComposable
-import com.freephoenix888.savemylife.ui.viewModels.LocationSettingsViewModel
+import com.freephoenix888.savemylife.ui.composables.SaveMyLifeApp
+import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
@@ -27,7 +27,7 @@ class SaveMyLifeActivity : AppCompatActivity()  {
     private val saveMyLifeViewModel: SaveMyLifeViewModel by viewModels()
     private val phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel by viewModels()
     private val emergencyMessageSettingsViewModel: MessageSettingsViewModel by viewModels()
-    private val locationSettingsViewModel: LocationSettingsViewModel by viewModels()
+    private val locationSharingSettingsViewModel: LocationSharingSettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class SaveMyLifeActivity : AppCompatActivity()  {
             }
         }
         setContent {
-            SaveMyLifeAppComposable()
+            SaveMyLifeApp()
         }
     }
 

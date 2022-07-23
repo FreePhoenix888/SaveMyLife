@@ -7,21 +7,27 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShareLocation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
+import com.freephoenix888.savemylife.ui.composables.settings.SettingLink
+import com.freephoenix888.savemylife.ui.composables.settings.SettingSwitch
+import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
 
 @Composable
-fun SettingsScreenComposable(
-    navController: NavController
+fun SettingsScreen(
+    navController: NavController,
+    locationSharingSettingsViewModel: LocationSharingSettingsViewModel
 ) {
 //    val settingLinkList = listOf(
 //        SettingLink(
@@ -66,9 +72,9 @@ fun SettingsScreenComposable(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            SettingsMenuLink(icon = {
+            SettingLink(icon = {
                 Icon(
-                    imageVector = Icons.Filled.Message,
+                    imageVector = Icons.Filled.Phone,
                     contentDescription = stringResource(R.string.all_message)
                 )
             }, title = {
@@ -76,7 +82,7 @@ fun SettingsScreenComposable(
             }, onClick = {
                 navController.navigate(SaveMyLifeScreenEnum.SmsSettings.name)
             })
-            SettingsMenuLink(icon = {
+            SettingLink(icon = {
                 Icon(
                     imageVector = Icons.Filled.Message,
                     contentDescription = stringResource(R.string.all_message)
@@ -86,16 +92,24 @@ fun SettingsScreenComposable(
             }, onClick = {
                 navController.navigate(SaveMyLifeScreenEnum.MessageSettings.name)
             })
-            SettingsMenuLink(icon = {
-                Icon(
-                    imageVector = Icons.Filled.ShareLocation,
-                    contentDescription = stringResource(R.string.all_location)
-                )
+
+            val isLocationSharingEnabled by locationSharingSettingsViewModel.isLocationSharingEnabled.collectAsState()
+            SettingSwitch(isChecked = isLocationSharingEnabled, onCheckedChange = {
+                locationSharingSettingsViewModel.setIsLocationSharingEnabled(it)            }, icon = {
+                Icon(imageVector = Icons.Filled.ShareLocation, contentDescription = stringResource(R.string.location_settings_screen_location_sharing))
             }, title = {
-                Text(stringResource(R.string.all_location))
-            }, onClick = {
-                navController.navigate(SaveMyLifeScreenEnum.LocationSettings.name)
+                Text(stringResource(R.string.location_settings_screen_location_sharing))
             })
+//            SettingLink(icon = {
+//                Icon(
+//                    imageVector = Icons.Filled.ShareLocation,
+//                    contentDescription = stringResource(R.string.all_location)
+//                )
+//            }, title = {
+//                Text(stringResource(R.string.all_location))
+//            }, onClick = {
+//                navController.navigate(SaveMyLifeScreenEnum.LocationSettings.name)
+//            })
         }
     }
 

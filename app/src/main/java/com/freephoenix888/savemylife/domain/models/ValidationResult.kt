@@ -1,6 +1,6 @@
 package com.freephoenix888.savemylife.domain.models
 
-data class ValidationResult(
-    val isValid: Boolean,
-    val errorMessage: String? = null
-)
+sealed class ValidationResult {
+    object Success : ValidationResult()
+    data class Error(val message: String) : ValidationResult()
+}

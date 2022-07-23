@@ -15,11 +15,11 @@ import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 @Composable
-fun DangerButtonScreenComposable(
+fun DangerButtonScreen(
     saveMyLifeViewModel: SaveMyLifeViewModel = viewModel(),
 ) {
     val dangerModeState by saveMyLifeViewModel.isDangerModeEnabled.collectAsState(initial = false)
-    DangerButtonScreenBodyComposable(
+    DangerButtonScreenBody(
         dangerModeState = dangerModeState,
         onSwitchIsDangerModeEnabled = {
             saveMyLifeViewModel.switchIsDangerModeEnabled()
@@ -28,7 +28,7 @@ fun DangerButtonScreenComposable(
 }
 
 @Composable
-private fun DangerButtonScreenBodyComposable(
+private fun DangerButtonScreenBody(
     dangerModeState: Boolean,
     onSwitchIsDangerModeEnabled: () -> Unit
 ) {
@@ -50,9 +50,9 @@ private fun DangerButtonScreenBodyComposable(
 
 @Preview(showBackground = true, widthDp = 300, heightDp = 300)
 @Composable
-private fun DangerButtonScreenBodyComposablePreview() {
+private fun DangerButtonScreenBodyPreview() {
     var dangerModeState by remember { mutableStateOf(false)}
-    DangerButtonScreenBodyComposable(
+    DangerButtonScreenBody(
         dangerModeState = dangerModeState,
         onSwitchIsDangerModeEnabled = {
         dangerModeState = !dangerModeState

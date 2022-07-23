@@ -26,7 +26,7 @@ import com.freephoenix888.savemylife.constants.PhoneNumberConstants
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
 
 @Composable
-fun PhoneNumberComposable(
+fun PhoneNumber(
     phoneNumber: PhoneNumber,
     onDeletePhoneNumber: (PhoneNumber) -> Unit,
     modifier: Modifier = Modifier
@@ -101,10 +101,10 @@ fun PhoneNumberComposable(
 
 @Preview(showBackground = true)
 @Composable
-private fun PhoneNumberComposablePreview() {
+private fun PhoneNumberPreview() {
     val contact by remember { mutableStateOf(PhoneNumberConstants.FAKE_PHONE_NUMBERS) }
     val phoneNumber by remember { mutableStateOf(PhoneNumberConstants.FAKE_PHONE_NUMBERS[0]) }
-    PhoneNumberComposable(
+    PhoneNumber(
         phoneNumber = phoneNumber,
         onDeletePhoneNumber = {},
     )
