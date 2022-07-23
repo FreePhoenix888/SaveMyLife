@@ -36,7 +36,7 @@ class MessageSettingsViewModel @Inject constructor(
 
     val messageTemplate = MutableStateFlow("")
     val messageTemplateErrorMessage = MutableStateFlow<String?>(null)
-    fun onMessageTemplateChange(newMessageTemplate: String) {
+    fun onMessageTemplateChange(newMessageTemplate: String) = viewModelScope.launch{
         messageTemplate.value = newMessageTemplate
         when(val validationResult = validateMessageTemplateInputUseCase(newMessageTemplate)) {
             is ValidationResult.Error -> {

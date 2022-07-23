@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class GetLocationSettingsFlowUseCase @Inject constructor(val locationRepository: LocationRepository) {
     operator fun invoke(): Flow<LocationSettings> {
-        return locationRepository.settings
+        return locationRepository.locationSharingSettings
     }
 }

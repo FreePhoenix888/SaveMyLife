@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LocationRepository @Inject constructor(private val locationLocalDataSource: LocationLocalDataSource, private val locationPreferencesToLocationSettingsMapper: LocationPreferencesToLocationSettingsMapper) {
-    val settings = locationLocalDataSource.preferences.map {
+    val locationSharingSettings = locationLocalDataSource.preferences.map {
         locationPreferencesToLocationSettingsMapper.map(it)
     }
 
