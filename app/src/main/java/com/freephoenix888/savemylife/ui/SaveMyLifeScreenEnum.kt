@@ -5,6 +5,7 @@ enum class SaveMyLifeScreenEnum {
     Settings,
     SmsSettings,
     MessageSettings,
+    MessageTemplateSettings,
     LocationSettings,
-    DangerButton
+    DangerButton,
 }
