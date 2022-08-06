@@ -1,6 +1,5 @@
 package com.freephoenix888.savemylife.ui.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.domain.models.ValidationResult
@@ -8,7 +7,9 @@ import com.freephoenix888.savemylife.domain.useCases.*
 import com.freephoenix888.savemylife.mappers.MessageSettingsToMessageSettingsFormStateMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.DurationUnit
@@ -21,23 +22,21 @@ class MessageSettingsViewModel @Inject constructor(
     private val validateMessageTemplateInputUseCase: ValidateMessageTemplateInputUseCase,
     private val setMessageSendingIntervalUseCase: SetMessageSendingIntervalUseCase,
     private val validateMessageSendingIntervalInputUseCase: ValidateMessageSendingIntervalInputUseCase,
+    private val getIsMessageCommandsEnabledUseCase: GetIsMessageCommandsEnabledUseCase,
+    private val setIsMessageCommandsEnabledUseCase: SetIsMessageCommandsEnabledUseCase,
     private val messageSettingsToMessageSettingsFormStateMapper: MessageSettingsToMessageSettingsFormStateMapper
 ) : ViewModel() {
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            getMessageSettingsFlowUseCase().collect {
-                messageTemplate.value = it.template
-                Log.d(null, "Sending interval: ${it.sendingInterval}")
-                Log.d(null, "Sending interval in whole minutes: ${it.sendingInterval.inWholeMinutes}")
-                sendingInterval.value = it.sendingInterval.inWholeMinutes.toString()
-            }
-        }
-    }
+    fun getIsSaveableFlow(flow1: Flow<String?>, flow2: Flow<Boolean>) = combine(flow = flow1, flow2 = flow2, transform = { errorMessage, hasNotSavedChanged ->
+            (errorMessage == null) && hasNotSavedChanged
+        })
 
     val messageTemplate = MutableStateFlow("")
     val messageTemplateErrorMessage = MutableStateFlow<String?>(null)
-    fun onMessageTemplateChange(newMessageTemplate: String) = viewModelScope.launch{
+    val isMessageTemplateHasNotSavedChanged = MutableStateFlow(false)
+    val isMessageTemplateSaveable: Flow<Boolean> = getIsSaveableFlow(flow1 = messageTemplateErrorMessage, flow2 = isMessageTemplateHasNotSavedChanged)
+        fun onMessageTemplateChange(newMessageTemplate: String) = viewModelScope.launch{
         messageTemplate.value = newMessageTemplate
+        isMessageTemplateHasNotSavedChanged.value = true
         when(val validationResult = validateMessageTemplateInputUseCase(newMessageTemplate)) {
             is ValidationResult.Error -> {
                 messageTemplateErrorMessage.value = validationResult.message
@@ -49,12 +48,17 @@ class MessageSettingsViewModel @Inject constructor(
     }
     fun submitMessageTemplate() = viewModelScope.launch {
         setMessageTemplateUseCase(messageTemplate.value)
+        isMessageTemplateHasNotSavedChanged.value = false
     }
 
     val sendingInterval = MutableStateFlow("")
     val sendingIntervalErrorMessage = MutableStateFlow<String?>(null)
+    val isSendingIntervalHasNotSavedChanges = MutableStateFlow(false)
+    val isSendingIntervalSaveable: Flow<Boolean> = getIsSaveableFlow(flow1 = sendingIntervalErrorMessage, flow2 = isSendingIntervalHasNotSavedChanges)
+
     fun onSendingIntervalChange(newSendingInterval: String) {
         sendingInterval.value = newSendingInterval
+        isSendingIntervalHasNotSavedChanges.value = true
         when(val validationResult = validateMessageSendingIntervalInputUseCase(newSendingInterval)) {
             is ValidationResult.Error -> {
                 sendingIntervalErrorMessage.value = validationResult.message
@@ -65,8 +69,22 @@ class MessageSettingsViewModel @Inject constructor(
         }
     }
     fun submitSendingInterval() = viewModelScope.launch {
-        Log.d(null, "submitSendingInterval: ${sendingInterval.value.toLong().toDuration(DurationUnit.MINUTES)}")
-        Log.d(null, "submitSendingInterval: ${sendingInterval.value.toLong()}")
         setMessageSendingIntervalUseCase(sendingInterval.value.toLong().toDuration(DurationUnit.MINUTES))
+        isSendingIntervalHasNotSavedChanges.value = false
+    }
+
+    var isMessageCommandsEnabled = MutableStateFlow(false)
+    fun setIsMessageCommandsEnabled(newIsMessageCommandsEnabled: Boolean) = viewModelScope.launch {
+        setIsMessageCommandsEnabledUseCase(newIsMessageCommandsEnabled)
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            getMessageSettingsFlowUseCase().collect {
+                messageTemplate.value = it.template
+                sendingInterval.value = it.sendingInterval.inWholeMinutes.toString()
+                isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
+            }
+        }
     }
 }
