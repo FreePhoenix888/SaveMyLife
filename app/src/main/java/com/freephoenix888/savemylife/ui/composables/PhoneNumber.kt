@@ -50,8 +50,7 @@ fun PhoneNumber(
         border = BorderStroke(
             width = 1.dp,
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.2f)
-        ),
-        modifier = Modifier.padding(16.dp)
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically

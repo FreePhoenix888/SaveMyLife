@@ -10,8 +10,8 @@ import androidx.compose.material.icons.filled.ShareLocation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
+import com.freephoenix888.savemylife.ui.composables.settings.SettingSwitch
 import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -69,10 +70,10 @@ fun LocationSettingsScreen(
             TopAppBar(title = {
                 Icon(
                     imageVector = Icons.Filled.ShareLocation,
-                    contentDescription = stringResource(R.string.location_settings_screen_location_sharing)
+                    contentDescription = stringResource(R.string.all_location_sharing)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.location_settings_screen_location_sharing))
+                Text(stringResource(R.string.all_location_sharing))
             },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -83,22 +84,24 @@ fun LocationSettingsScreen(
                             contentDescription = "Back"
                         )
                     })
-                },
-            actions = {
-                Switch(checked = isLocationSharingEnabled, onCheckedChange = {
-                    locationSharingSettingsViewModel.setIsLocationSharingEnabled(it)
                 })
-            })
         }
     ) { innerPadding: PaddingValues ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(dimensionResource(R.dimen.settings_screen_padding))
+                ,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            SettingSwitch(isChecked = isLocationSharingEnabled, onCheckedChange = {
+                locationSharingSettingsViewModel.setIsLocationSharingEnabled(it)            }, icon = {
+                Icon(imageVector = Icons.Filled.ShareLocation, contentDescription = stringResource(R.string.all_location_sharing))
+            }, title = {
+                Text(stringResource(R.string.all_location_sharing))
+            })
 
-
+            Text("Location sharing allows you to use {LOCATION_URL} variable in your message template to share your location with your emergency contacts.")
         }
     }
 

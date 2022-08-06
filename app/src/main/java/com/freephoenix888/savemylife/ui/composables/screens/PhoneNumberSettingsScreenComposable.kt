@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -103,10 +104,13 @@ fun PhoneNumbersScreen(
         }) { innerPadding: PaddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(dimensionResource(R.dimen.settings_screen_padding))
                 .fillMaxSize()
         ) {
+            Text("Emergency contacts will receive a message when danger mode is activated")
             LazyColumn {
                 items(
                     items = phoneNumbers,
