@@ -5,4 +5,5 @@ import kotlin.time.Duration
 data class MessageSettings(
     val template: String,
     val sendingInterval: Duration,
+    val isMessageCommandsEnabled: Boolean
 )
