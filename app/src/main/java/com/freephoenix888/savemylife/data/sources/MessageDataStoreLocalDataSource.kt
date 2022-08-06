@@ -29,4 +29,12 @@ class MessageDataStoreLocalDataSource @Inject constructor(private val dataStore:
         }
     }
 
+    override suspend fun setIsMessageCommandsEnabled(newIsMessageCommandsEnabled: Boolean) {
+        dataStore.updateData {
+            it.toBuilder()
+                .setIsMessageCommandsEnabled(newIsMessageCommandsEnabled)
+                .build()
+        }
+    }
+
 }
