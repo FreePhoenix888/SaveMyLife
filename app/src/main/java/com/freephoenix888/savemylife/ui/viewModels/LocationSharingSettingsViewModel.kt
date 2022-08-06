@@ -28,10 +28,6 @@ class LocationSharingSettingsViewModel @Inject constructor(
 
     val isLocationSharingEnabled = MutableStateFlow(false)
     fun setIsLocationSharingEnabled(newIsLocationSharingEnabled: Boolean) = viewModelScope.launch {
-        isLocationSharingEnabled.value = newIsLocationSharingEnabled
+        setIsLocationSharingEnabledUseCase(newIsLocationSharingEnabled)
     }
-    fun submitIsLocationSharingEnabled() = viewModelScope.launch {
-        setIsLocationSharingEnabledUseCase(isLocationSharingEnabled.value)
-    }
-
 }
