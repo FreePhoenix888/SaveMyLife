@@ -16,10 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.broadcastReceivers.DangerBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
-import com.freephoenix888.savemylife.constants.ActionConstants
-import com.freephoenix888.savemylife.constants.Constants
-import com.freephoenix888.savemylife.constants.MessageConstants
-import com.freephoenix888.savemylife.constants.NotificationConstants
+import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
+import com.freephoenix888.savemylife.constants.*
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
 import com.freephoenix888.savemylife.domain.useCases.*
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
@@ -32,6 +30,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainService : LifecycleService() {
+
+    companion object{
+        private val TAG = MainService::class.java.simpleName
+    }
 
     @Inject
     lateinit var getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase
@@ -136,11 +138,10 @@ class MainService : LifecycleService() {
     }
 
     override fun onDestroy() {
-        Log.d(null, "onDestroy: ")
-        super.onDestroy()
-        val broadcastIntent = Intent(this, DangerBroadcastReceiver::class.java)
-        sendBroadcast(broadcastIntent)
+        Log.d(TAG, "onDestroy: ")
+        sendBroadcast(Intent(applicationContext, RestartBroadcastReceiver::class.java))
         unregisterReceiver(powerButtonBroadcastReceiver)
+        super.onDestroy()
     }
 
     private fun registerPowerButtonBroadcastReceiver() {
@@ -162,6 +163,9 @@ class MainService : LifecycleService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
         }
+        val dangerButtonPendingIntent = Intent(Intent.ACTION_VIEW, DeepLinks.dangerButton, applicationContext, SaveMyLifeActivity::class.java).let {
+            TaskStackBuilder.create(applicationContext).addNextIntentWithParentStack(it).getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+        }
         val notificationBuilder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_ID)
             .setAutoCancel(false)
             .setOngoing(true)
@@ -172,6 +176,7 @@ class MainService : LifecycleService() {
             .setContentTitle("SaveMyLife")
             .setContentText("SaveMyLife is active")
             .setContentIntent(getDangerButtonActivityPendingIntent())
+            .setContentIntent(dangerButtonPendingIntent)
         return notificationBuilder.build()
     }
 
