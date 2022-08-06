@@ -19,11 +19,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.enums.MessageCommands
+import com.freephoenix888.savemylife.ui.composables.RequestPermission
 import com.freephoenix888.savemylife.ui.composables.settings.SettingSwitch
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MessageCommandsSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavHostController) {
+    val receiveSmsPermissionState = rememberPermissionState(android.Manifest.permission.RECEIVE_SMS)
+    if(receiveSmsPermissionState.status != PermissionStatus.Granted){
+        RequestPermission(permissionState = receiveSmsPermissionState, text = "Receive SMS permissions is required to use message commands.")
+        return
+    }
+
+
     val isMessageCommandsEnabled by messageSettingsViewModel.isMessageCommandsEnabled.collectAsState()
     Scaffold(
         topBar = {
