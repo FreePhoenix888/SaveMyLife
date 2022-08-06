@@ -18,7 +18,7 @@
     <string name="phone_number_settings_screen_add_phone_number">Add phone number</string>
     <string name="phone_number_settings_screen_delete_phone_number">Delete phone number</string>
     <string name="phone_numbers_settings_screen_contact_image">Contact image</string>
-    <string name="location_settings_screen_location_sharing">Location sharing</string>
+    <string name="all_location_sharing">Location sharing</string>
     <string name="coarse_location_settings_screen_location_permission_request">Coarse location permission is required to share your location with your emergency contacts.</string>
     <string name="fine_location_settings_screen_location_permission_request">Fine location permission is required to share your location with your emergency contacts.</string>
     <string name="background_location_settings_screen_location_permission_request">Background location permission is required to share your location with your emergency contacts.</string>
