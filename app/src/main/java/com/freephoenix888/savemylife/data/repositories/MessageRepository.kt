@@ -20,4 +20,9 @@ class MessageRepository @Inject constructor(private val localStorage: MessageLoc
     suspend fun setSendingInterval(newSendingInterval: Duration) {
         localStorage.setSendingInterval(newSendingInterval)
     }
+
+    suspend fun setIsMessageCommandsEnabled(newIsMessageCommandsEnabled: Boolean) {
+        localStorage.setIsMessageCommandsEnabled(newIsMessageCommandsEnabled)
+
+    }
 }
