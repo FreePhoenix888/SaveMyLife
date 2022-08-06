@@ -10,4 +10,7 @@ interface MessageLocalDataSource {
     suspend fun setMessageTemplate(newMessageTemplate: String)
 
     suspend fun setSendingInterval(newSendingInterval: Duration)
+
+    suspend fun setIsMessageCommandsEnabled(newIsMessageCommandsEnabled: Boolean)
+
 }
