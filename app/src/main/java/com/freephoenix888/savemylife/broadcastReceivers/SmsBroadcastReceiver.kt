@@ -4,11 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
-import android.util.Log
+import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.domain.useCases.GetUserLocationUrlUseCase
+import com.freephoenix888.savemylife.enums.MessageCommands
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SmsBroadcastReceiver : BroadcastReceiver() {
@@ -27,28 +30,25 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (!intent.action.equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) return
-        val extractMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
-
-
-        extractMessages.forEach { smsMessage ->
-            Log.v(TAG, smsMessage.displayMessageBody)
-            Log.v(TAG, smsMessage.toString())
-            Log.v(TAG, smsMessage.displayOriginatingAddress)
-//            when (smsMessage.messageBody) {
-//                "/${MessageCommands.LOCATION.name.lowercase()}" -> {
-//                    if (smsMessage.originatingAddress != null) {
-//                        scope.launch(Dispatchers.IO) {
-//                            Utils.sendSms(
-//                                context,
-//                                phoneNumber = smsMessage.originatingAddress!!,
-//                                message = getUserLocationUrlUseCase()
-//                            )
-//                        }
-//                    }
-//
-//                }
-//            }
-
+        val smsMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
+        for (smsMessage in smsMessages) {
+            val isCommand = smsMessage.messageBody.startsWith("/")
+            if (!isCommand) {
+                continue
+            }
+            when (smsMessage.messageBody.substring(1).lowercase()) {
+                MessageCommands.LOCATION.name.lowercase() -> {
+                    scope.launch(Dispatchers.IO) {
+                        smsMessage.originatingAddress?.let { originatingAddress ->
+                            Utils.sendSms(
+                                context,
+                                phoneNumber = originatingAddress,
+                                message = getUserLocationUrlUseCase()
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
