@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
@@ -138,7 +137,6 @@ class MainService : LifecycleService() {
     }
 
     override fun onDestroy() {
-        Log.d(TAG, "onDestroy: ")
         sendBroadcast(Intent(applicationContext, RestartBroadcastReceiver::class.java))
         unregisterReceiver(powerButtonBroadcastReceiver)
         super.onDestroy()

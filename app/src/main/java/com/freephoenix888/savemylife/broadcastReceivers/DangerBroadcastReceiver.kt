@@ -3,7 +3,6 @@ package com.freephoenix888.savemylife.broadcastReceivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.domain.useCases.GetMessageUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
@@ -29,7 +28,6 @@ class DangerBroadcastReceiver : BroadcastReceiver() {
     coroutineScope.launch {
         val phoneNumbers = getPhoneNumberListFlowUseCase().first()
         for (phoneNumber in phoneNumbers) {
-            Log.d(null, "doInDanger: phone number: $phoneNumber")
             Utils.sendSms(
                 context = applicationContext,
                 phoneNumber = phoneNumber.phoneNumber,
