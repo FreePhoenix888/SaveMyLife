@@ -2,6 +2,7 @@ package com.freephoenix888.savemylife.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.freephoenix888.savemylife.constants.MessageTemplateVariables
 import com.freephoenix888.savemylife.domain.models.ValidationResult
 import com.freephoenix888.savemylife.domain.useCases.*
 import com.freephoenix888.savemylife.mappers.MessageSettingsToMessageSettingsFormStateMapper
@@ -22,9 +23,10 @@ class MessageSettingsViewModel @Inject constructor(
     private val validateMessageTemplateInputUseCase: ValidateMessageTemplateInputUseCase,
     private val setMessageSendingIntervalUseCase: SetMessageSendingIntervalUseCase,
     private val validateMessageSendingIntervalInputUseCase: ValidateMessageSendingIntervalInputUseCase,
-    private val getIsMessageCommandsEnabledUseCase: GetIsMessageCommandsEnabledUseCase,
+    private val getIsMessageCommandsEnabledFlowUseCase: GetIsMessageCommandsEnabledFlowUseCase,
     private val setIsMessageCommandsEnabledUseCase: SetIsMessageCommandsEnabledUseCase,
-    private val messageSettingsToMessageSettingsFormStateMapper: MessageSettingsToMessageSettingsFormStateMapper
+    private val messageSettingsToMessageSettingsFormStateMapper: MessageSettingsToMessageSettingsFormStateMapper,
+    private val getIsLocationSharingEnabledFlowUseCase: GetIsLocationSharingEnabledFlowUseCase,
 ) : ViewModel() {
     fun getIsSaveableFlow(flow1: Flow<String?>, flow2: Flow<Boolean>) = combine(flow = flow1, flow2 = flow2, transform = { errorMessage, hasNotSavedChanged ->
             (errorMessage == null) && hasNotSavedChanged
@@ -78,6 +80,8 @@ class MessageSettingsViewModel @Inject constructor(
         setIsMessageCommandsEnabledUseCase(newIsMessageCommandsEnabled)
     }
 
+    val isLocationSharingEnabled = MutableStateFlow(false)
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getMessageSettingsFlowUseCase().collect {
@@ -86,5 +90,24 @@ class MessageSettingsViewModel @Inject constructor(
                 isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
             }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            getIsLocationSharingEnabledFlowUseCase().collect() {
+                isLocationSharingEnabled.value = it
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            getIsMessageCommandsEnabledFlowUseCase()
+        }
     }
+
+    fun isMessageTemplateVariableAvailable(messageTemplateVariable: MessageTemplateVariables): Boolean {
+        return when(messageTemplateVariable) {
+            MessageTemplateVariables.LOCATION_URL -> isLocationSharingEnabled.value
+            MessageTemplateVariables.MESSAGE_COMMANDS -> isMessageCommandsEnabled.value
+            else -> true
+        }
+
+    }
+
+
 }
