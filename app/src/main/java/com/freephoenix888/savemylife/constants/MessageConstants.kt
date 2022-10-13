@@ -6,7 +6,8 @@ import kotlin.time.toDuration
 
 enum class MessageTemplateVariables {
     CONTACT_NAME,
-    LOCATION_URL
+    LOCATION_URL,
+    MESSAGE_COMMANDS
 }
 
 object MessageConstants {

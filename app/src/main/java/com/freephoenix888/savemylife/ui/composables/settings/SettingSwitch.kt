@@ -3,9 +3,9 @@ package com.freephoenix888.savemylife.ui.composables.settings
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,11 +50,11 @@ internal fun SettingsSwitchPreview() {
     MaterialTheme {
         var isChecked by remember { mutableStateOf(false)}
         SettingSwitch(
-            isChecked = isChecked,
-            icon = { Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear") },
-            title = { Text(text = "Hello") },
-            subtitle = { Text(text = "This is a longer text") },
-            onCheckedChange = { isChecked = it }
-        )
+                isChecked = isChecked,
+                icon = { Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear") },
+                title = { Text(text = "Hello") },
+                subtitle = { Text(text = "This is a longer text") },
+                onCheckedChange = { isChecked = it }
+            )
     }
 }

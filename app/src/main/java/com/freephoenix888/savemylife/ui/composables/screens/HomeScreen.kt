@@ -3,10 +3,10 @@ package com.freephoenix888.savemylife.ui.composables.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +20,7 @@ import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("BatteryLife")
 @Composable
 fun HomeScreen(
@@ -78,7 +79,7 @@ fun HomeScreen(
                     saveMyLifeViewModel.switchIsMainServiceEnabled()
                 },
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(backgroundColor = if (isMainServiceEnabled) MaterialTheme.colors.primary else MaterialTheme.colors.error),
+                colors = ButtonDefaults.buttonColors(containerColor = if (isMainServiceEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error),
                 modifier = Modifier
                     .size(150.dp)
             ) {

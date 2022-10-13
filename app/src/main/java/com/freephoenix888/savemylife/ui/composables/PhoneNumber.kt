@@ -6,10 +6,10 @@ import android.provider.MediaStore
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonRemove
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +49,7 @@ fun PhoneNumber(
     Card(
         border = BorderStroke(
             width = 1.dp,
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.2f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
         )
     ) {
         Row(
@@ -76,11 +76,11 @@ fun PhoneNumber(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = phoneNumber.contactName, style = MaterialTheme.typography.body1,
+                    text = phoneNumber.contactName, style = MaterialTheme.typography.bodyLarge,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = phoneNumber.phoneNumber, style = MaterialTheme.typography.body1,
+                    text = phoneNumber.phoneNumber, style = MaterialTheme.typography.bodyLarge,
                 )
             }
             IconButton(

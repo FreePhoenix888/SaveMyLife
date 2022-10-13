@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,6 +27,7 @@ fun DangerButtonScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DangerButtonScreenBody(
     dangerModeState: Boolean,
@@ -39,7 +40,7 @@ private fun DangerButtonScreenBody(
                 .padding(innerPadding)
                 .padding(50.dp),
             onClick = onSwitchIsDangerModeEnabled,
-            colors = ButtonDefaults.buttonColors(backgroundColor = if(dangerModeState) MaterialTheme.colors.error else MaterialTheme.colors.primary),
+            colors = ButtonDefaults.buttonColors(containerColor = if(dangerModeState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(20.dp)
         ) {
             Text(stringResource(R.string.all_i_am_in_danger))

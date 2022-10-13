@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.provider.Telephony
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
@@ -16,6 +17,7 @@ import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.broadcastReceivers.DangerBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
+import com.freephoenix888.savemylife.broadcastReceivers.SmsBroadcastReceiver
 import com.freephoenix888.savemylife.constants.*
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
 import com.freephoenix888.savemylife.domain.useCases.*
@@ -35,6 +37,9 @@ class MainService : LifecycleService() {
     }
 
     @Inject
+    lateinit var getMessageSettingsFlowUseCase: GetMessageSettingsFlowUseCase
+
+    @Inject
     lateinit var getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase
 
     @Inject
@@ -46,12 +51,12 @@ class MainService : LifecycleService() {
     @Inject
     lateinit var getMessageUseCase: GetMessageUseCase
 
-    @Inject
-    lateinit var getMessageSendingIntervalFlowUseCase: GetMessageSendingIntervalFlowUseCase
-
+    private var smsBroadcastReceiver: SmsBroadcastReceiver? = null
     private var isFirstStart = true
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private var isDangerModeEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val isDangerModeEnabled = MutableStateFlow(false)
+    private val isMessageCommandsEnabled = MutableStateFlow(false)
+    private val messageTemplate = MutableStateFlow("")
     private val messageSendingInterval = MutableStateFlow(MessageConstants.DEFAULT_SENDING_INTERVAL)
     private val phoneNumberList = MutableStateFlow(emptyList<PhoneNumber>())
     private val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
@@ -76,7 +81,7 @@ class MainService : LifecycleService() {
             }
             else -> {}
         }
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.IO) {
                 getIsMainServiceEnabledFlowUseCase().collect {
                     if (!it) {
@@ -90,21 +95,14 @@ class MainService : LifecycleService() {
                 }
             }
         }
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                getMessageSendingIntervalFlowUseCase().collect {
-                    messageSendingInterval.value = it
-                }
-            }
-        }
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.IO) {
                 getPhoneNumberListFlowUseCase().collect {
                     phoneNumberList.value = it
                 }
             }
         }
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.IO) {
                 getIsDangerModeEnabledFlowUseCase().collect {
                     isDangerModeEnabled.value = it
@@ -132,6 +130,21 @@ class MainService : LifecycleService() {
                 }
             }
         }
+        lifecycleScope.launch(Dispatchers.IO) {
+            getMessageSettingsFlowUseCase().collect {
+                messageSendingInterval.value = it.sendingInterval
+                isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
+                messageTemplate.value = it.template
+
+                if(it.isMessageCommandsEnabled && smsBroadcastReceiver != null){
+                    smsBroadcastReceiver = SmsBroadcastReceiver()
+                    val filter = IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
+                    registerReceiver(smsBroadcastReceiver, filter, 2)
+                } else if (smsBroadcastReceiver != null) {
+                    unregisterReceiver(smsBroadcastReceiver)
+                }
+            }
+        }
 
         return START_STICKY
     }
@@ -139,6 +152,9 @@ class MainService : LifecycleService() {
     override fun onDestroy() {
         sendBroadcast(Intent(applicationContext, RestartBroadcastReceiver::class.java))
         unregisterReceiver(powerButtonBroadcastReceiver)
+        if(smsBroadcastReceiver != null) {
+            unregisterReceiver(smsBroadcastReceiver)
+        }
         super.onDestroy()
     }
 

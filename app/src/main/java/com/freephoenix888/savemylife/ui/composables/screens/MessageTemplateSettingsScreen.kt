@@ -2,11 +2,11 @@ package com.freephoenix888.savemylife.ui.composables.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -18,10 +18,9 @@ import com.freephoenix888.savemylife.ui.composables.TextFieldError
 import com.freephoenix888.savemylife.ui.composables.TextFieldWithErorr
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavHostController) {
-
-
 
     val messageTemplate by messageSettingsViewModel.messageTemplate.collectAsState()
     val messageTemplateErrorMessage by messageSettingsViewModel.messageTemplateErrorMessage.collectAsState()
@@ -96,7 +95,7 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                Text("You can use the following \"variables\" in your message:", style = MaterialTheme.typography.h6)
+                Text("You can use the following \"variables\" in your message:", style = MaterialTheme.typography.headlineSmall)
                 SelectionContainer() {
                     Column() {
                         for (messageTemplateVariable in MessageTemplateVariables.values()) {
@@ -109,8 +108,8 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
                         }
                     }
                 }
-                Text("Syntax: {VARIABLE_NAME}", style = MaterialTheme.typography.body2)
-                Text("Example: {CONTACT_NAME}", style = MaterialTheme.typography.body2)
+                Text("Syntax: {VARIABLE_NAME}", style = MaterialTheme.typography.bodyMedium)
+                Text("Example: {CONTACT_NAME}", style = MaterialTheme.typography.bodyMedium)
             }
 
         })

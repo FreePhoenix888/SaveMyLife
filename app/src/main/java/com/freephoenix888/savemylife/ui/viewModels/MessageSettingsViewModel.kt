@@ -85,8 +85,8 @@ class MessageSettingsViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getMessageSettingsFlowUseCase().collect {
-                messageTemplate.value = it.template
-                sendingInterval.value = it.sendingInterval.inWholeMinutes.toString()
+                onMessageTemplateChange(it.template)
+                onSendingIntervalChange(it.sendingInterval.inWholeMinutes.toString())
                 isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
             }
         }
