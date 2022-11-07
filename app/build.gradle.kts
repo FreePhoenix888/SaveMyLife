@@ -47,6 +47,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -145,8 +146,7 @@ dependencies {
     implementation("com.github.alorma:compose-settings-ui:0.7.2")
     implementation("com.github.alorma:compose-settings-storage-preferences:0.7.2")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.0.10")
 }
 
 // Allow references to generated code

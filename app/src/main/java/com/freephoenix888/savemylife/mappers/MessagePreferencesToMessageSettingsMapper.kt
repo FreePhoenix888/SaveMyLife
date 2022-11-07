@@ -10,7 +10,7 @@ import kotlin.time.toDuration
 class MessagePreferencesToMessageSettingsMapper @Inject constructor(): Mapper<MessagePreferences, MessageSettings> {
     override fun map(input: MessagePreferences): MessageSettings {
         return MessageSettings(
-            template = input.template.ifEmpty { MessageConstants.DEFAULT_TEMPLATE },
+            template = input.template,
             sendingInterval = if (input.sendingIntervalInMinutes == 0L) MessageConstants.DEFAULT_SENDING_INTERVAL else input.sendingIntervalInMinutes.toDuration(DurationUnit.MINUTES),
             isMessageCommandsEnabled = input.isMessageCommandsEnabled
         )

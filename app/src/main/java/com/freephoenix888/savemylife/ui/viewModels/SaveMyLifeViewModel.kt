@@ -14,7 +14,7 @@ class   SaveMyLifeViewModel @Inject constructor(
     val switchIsMainServiceEnabledUseCase: SwitchIsMainServiceEnabledUseCase,
     getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase,
     val switchIsDangerModeEnabledUseCase: SwitchIsDangerModeEnabledUseCase,
-    getIsFirstAppLaunch: GetIsFirstAppLaunchFlowUseCase
+    getIsFirstAppLaunch: GetIsFirstAppLaunchFlowUseCase,
 ) : ViewModel() {
     val isFirstAppLaunch = getIsFirstAppLaunch()
     val isMainServiceEnabled = getIsMainServiceEnabledFlowUseCase()

@@ -1,6 +1,6 @@
 package com.freephoenix888.savemylife.constants
 
-import com.freephoenix888.savemylife.enums.MessageCommand
+import com.freephoenix888.savemylife.enums.messageCommandsAndDescriptionsString
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -16,12 +16,15 @@ object MessageConstants {
     const val DEFAULT_TEMPLATE: String = "{CONTACT_NAME}, I AM IN DANGER! My location: {LOCATION_URL}"
     const val FAKE_CONTACT_NAME: String = "John"
     const val FAKE_LOCATION_URL: String = "https://goo.gl/maps/ZNs7dUj4yPbFMgGv6"
-    val FAKE_MESSAGE: String =
-                        """
-                            ${FAKE_CONTACT_NAME}, I AM IN DANGER!
+    val FAKE_MESSAGE_TEMPLATE: String =
+        """
+                            {CONTACT_NAME}, I AM IN DANGER!
                             My location:
-                            $FAKE_LOCATION_URL
+                            {LOCATION_URL}
                             You can send these commands:
-                            /${MessageCommand.LOCATION.name.lowercase()} - to get my current location
+                            {MESSAGE_COMMANDS}
                         """.trimIndent()
+    val FAKE_MESSAGE: String =  FAKE_MESSAGE_TEMPLATE.replace("{CONTACT_NAME}", FAKE_CONTACT_NAME)
+        .replace("{LOCATION_URL}", FAKE_LOCATION_URL)
+        .replace("{MESSAGE_COMMANDS}", messageCommandsAndDescriptionsString)
 }

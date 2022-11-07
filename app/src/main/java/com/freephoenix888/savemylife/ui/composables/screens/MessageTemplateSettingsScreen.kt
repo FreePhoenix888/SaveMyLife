@@ -125,7 +125,7 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
                             body = messageTemplate.replace("{${MessageTemplateVariables.CONTACT_NAME}}", MessageConstants.FAKE_CONTACT_NAME)
                                 .replace("{${MessageTemplateVariables.LOCATION_URL}}", MessageConstants.FAKE_LOCATION_URL)
                                 .replace("{${MessageTemplateVariables.MESSAGE_COMMANDS}}", MessageCommand.values().joinToString { messageCommand -> "/${messageCommand.name.lowercase()}\n" }).trimEnd(),
-                            position = MessagePosition.LEFT,
+                            position = MessagePosition.RIGHT,
                             time = "12:00 PM"
                         )
                     )

@@ -22,7 +22,7 @@ import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.ui.composables.*
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
-import kotlinx.datetime.*
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,12 +106,12 @@ fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettin
                 MessageCard(message = Message(
                     body = MessageConstants.FAKE_MESSAGE,
                     position = MessagePosition.RIGHT,
-                    time = LocalTime(hour = 12, minute = 0).toString()
+                    time = LocalTime.of(24, 0).toString()
                 ))
                 MessageCard(message = Message(
                     body = MessageConstants.FAKE_MESSAGE,
                     position = MessagePosition.RIGHT,
-                    time = LocalTime(hour = 12, minute = 30).toString()
+                    time = LocalTime.of(24, 30).toString()
                 ))
                 ProvideTextStyle(value = TextStyle(color = Color.White.copy(alpha = 0.7f))) {
                     Text("Specifies an interval in minutes between messages sent to the emergency contacts.", modifier = Modifier.padding(vertical = 4.dp))
