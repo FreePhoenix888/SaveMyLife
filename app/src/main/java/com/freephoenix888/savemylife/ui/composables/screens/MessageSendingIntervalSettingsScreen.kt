@@ -1,9 +1,8 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
-import androidx.compose.foundation.Image
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -14,17 +13,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.ui.composables.TextFieldError
-import com.freephoenix888.savemylife.ui.composables.TextFieldWithErorr
+import com.freephoenix888.savemylife.constants.MessageConstants
+import com.freephoenix888.savemylife.ui.composables.*
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
+import kotlinx.datetime.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,13 +56,19 @@ fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettin
 
     }
 
+    BackHandler(enabled = isMessageSendingIntervalSaveable) {
+        isNotSavedChangesWarningDialogOpened = true
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                        Row{
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
                             Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message sending interval")
-                            Spacer(modifier = Modifier.width(8.dp))
                             Text("Message sending interval")
                         }
                 },
@@ -99,12 +103,16 @@ fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettin
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text("Message sending interval", style = MaterialTheme.typography.displaySmall)
-                Image(painter = painterResource(R.drawable.message_commands_example), contentDescription = "Message commands example", modifier = Modifier
-                    .clip(
-                        RoundedCornerShape(24.dp)
-                    )
-                    .fillMaxWidth()
-                    .height(500.dp))
+                MessageCard(message = Message(
+                    body = MessageConstants.FAKE_MESSAGE,
+                    position = MessagePosition.RIGHT,
+                    time = LocalTime(hour = 12, minute = 0).toString()
+                ))
+                MessageCard(message = Message(
+                    body = MessageConstants.FAKE_MESSAGE,
+                    position = MessagePosition.RIGHT,
+                    time = LocalTime(hour = 12, minute = 30).toString()
+                ))
                 ProvideTextStyle(value = TextStyle(color = Color.White.copy(alpha = 0.7f))) {
                     Text("Specifies an interval in minutes between messages sent to the emergency contacts.", modifier = Modifier.padding(vertical = 4.dp))
                     TextFieldWithErorr(textField = {
@@ -127,8 +135,6 @@ fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettin
                         Text("Be careful, low message sending interval will reduce battery life.", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
-
             }
-
         })
 }

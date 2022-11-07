@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -50,12 +51,17 @@ fun MessageSettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Icon(
-                    imageVector = Icons.Filled.Message,
-                    contentDescription = stringResource(R.string.all_message)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.all_message))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Icon(
+                        imageVector = Icons.Filled.Message,
+                        contentDescription = stringResource(R.string.all_message)
+                    )
+                    Text(stringResource(R.string.all_message))
+                }
+
             },                 navigationIcon = {
                 IconButton(onClick = {
                     navController.navigateUp()

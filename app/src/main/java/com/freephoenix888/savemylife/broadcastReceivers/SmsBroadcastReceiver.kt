@@ -6,7 +6,7 @@ import android.content.Intent
 import android.provider.Telephony
 import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.domain.useCases.GetUserLocationUrlUseCase
-import com.freephoenix888.savemylife.enums.MessageCommands
+import com.freephoenix888.savemylife.enums.MessageCommand
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +37,7 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
                 continue
             }
             when (smsMessage.messageBody.substring(1).lowercase()) {
-                MessageCommands.LOCATION.name.lowercase() -> {
+                MessageCommand.LOCATION.name.lowercase() -> {
                     scope.launch(Dispatchers.IO) {
                         smsMessage.originatingAddress?.let { originatingAddress ->
                             Utils.sendSms(

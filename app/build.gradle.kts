@@ -19,12 +19,12 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.freephoenix888.savemylife"
         minSdk = 21
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -84,7 +84,7 @@ dependencies {
     // Integration with activities
     implementation("androidx.activity:activity-compose:1.4.0")
     // Compose Material Design
-    implementation("androidx.compose.material:material:1.1.1")
+    implementation("androidx.compose.material3:material3:1.0.0")
     // Animations
     implementation("androidx.compose.animation:animation:1.1.1")
     // Tooling support (Previews, etc.)
@@ -144,6 +144,8 @@ dependencies {
 
     implementation("com.github.alorma:compose-settings-ui:0.7.2")
     implementation("com.github.alorma:compose-settings-storage-preferences:0.7.2")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 
 }
 

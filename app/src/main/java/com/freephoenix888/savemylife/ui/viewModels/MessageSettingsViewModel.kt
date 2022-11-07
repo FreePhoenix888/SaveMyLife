@@ -28,18 +28,28 @@ class MessageSettingsViewModel @Inject constructor(
     private val messageSettingsToMessageSettingsFormStateMapper: MessageSettingsToMessageSettingsFormStateMapper,
     private val getIsLocationSharingEnabledFlowUseCase: GetIsLocationSharingEnabledFlowUseCase,
 ) : ViewModel() {
-    fun getIsSaveableFlow(flow1: Flow<String?>, flow2: Flow<Boolean>) = combine(flow = flow1, flow2 = flow2, transform = { errorMessage, hasNotSavedChanged ->
+
+    fun getIsSaveableFlow(flow1: Flow<String?>, flow2: Flow<Boolean>) =
+        combine(flow = flow1, flow2 = flow2, transform = { errorMessage, hasNotSavedChanged ->
             (errorMessage == null) && hasNotSavedChanged
         })
 
     val messageTemplate = MutableStateFlow("")
     val messageTemplateErrorMessage = MutableStateFlow<String?>(null)
     val isMessageTemplateHasNotSavedChanged = MutableStateFlow(false)
-    val isMessageTemplateSaveable: Flow<Boolean> = getIsSaveableFlow(flow1 = messageTemplateErrorMessage, flow2 = isMessageTemplateHasNotSavedChanged)
-        fun onMessageTemplateChange(newMessageTemplate: String) = viewModelScope.launch{
+    val isMessageTemplateSaveable: Flow<Boolean> = getIsSaveableFlow(
+        flow1 = messageTemplateErrorMessage,
+        flow2 = isMessageTemplateHasNotSavedChanged
+    )
+
+    fun onMessageTemplateChange(newMessageTemplate: String) = viewModelScope.launch {
         messageTemplate.value = newMessageTemplate
         isMessageTemplateHasNotSavedChanged.value = true
-        when(val validationResult = validateMessageTemplateInputUseCase(newMessageTemplate)) {
+        validateMessageTemplate(messageTemplate = newMessageTemplate)
+    }
+
+    fun validateMessageTemplate(messageTemplate: String) = viewModelScope.launch {
+        when (val validationResult = validateMessageTemplateInputUseCase(messageTemplate)) {
             is ValidationResult.Error -> {
                 messageTemplateErrorMessage.value = validationResult.message
             }
@@ -48,6 +58,7 @@ class MessageSettingsViewModel @Inject constructor(
             }
         }
     }
+
     fun submitMessageTemplate() = viewModelScope.launch {
         setMessageTemplateUseCase(messageTemplate.value)
         isMessageTemplateHasNotSavedChanged.value = false
@@ -56,12 +67,20 @@ class MessageSettingsViewModel @Inject constructor(
     val sendingInterval = MutableStateFlow("")
     val sendingIntervalErrorMessage = MutableStateFlow<String?>(null)
     val isSendingIntervalHasNotSavedChanges = MutableStateFlow(false)
-    val isSendingIntervalSaveable: Flow<Boolean> = getIsSaveableFlow(flow1 = sendingIntervalErrorMessage, flow2 = isSendingIntervalHasNotSavedChanges)
+    val isSendingIntervalSaveable: Flow<Boolean> = getIsSaveableFlow(
+        flow1 = sendingIntervalErrorMessage,
+        flow2 = isSendingIntervalHasNotSavedChanges
+    )
 
     fun onSendingIntervalChange(newSendingInterval: String) {
         sendingInterval.value = newSendingInterval
         isSendingIntervalHasNotSavedChanges.value = true
-        when(val validationResult = validateMessageSendingIntervalInputUseCase(newSendingInterval)) {
+        validateSendingInterval(sendingInterval.value)
+    }
+
+    fun validateSendingInterval(sendingInterval: String) {
+        when (val validationResult =
+            validateMessageSendingIntervalInputUseCase(sendingInterval)) {
             is ValidationResult.Error -> {
                 sendingIntervalErrorMessage.value = validationResult.message
             }
@@ -70,8 +89,11 @@ class MessageSettingsViewModel @Inject constructor(
             }
         }
     }
+
     fun submitSendingInterval() = viewModelScope.launch {
-        setMessageSendingIntervalUseCase(sendingInterval.value.toLong().toDuration(DurationUnit.MINUTES))
+        setMessageSendingIntervalUseCase(
+            sendingInterval.value.toLong().toDuration(DurationUnit.MINUTES)
+        )
         isSendingIntervalHasNotSavedChanges.value = false
     }
 
@@ -85,8 +107,12 @@ class MessageSettingsViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getMessageSettingsFlowUseCase().collect {
-                onMessageTemplateChange(it.template)
-                onSendingIntervalChange(it.sendingInterval.inWholeMinutes.toString())
+                messageTemplate.value = it.template
+                validateMessageTemplate(messageTemplate.value)
+
+                sendingInterval.value = it.sendingInterval.inWholeMinutes.toString()
+                validateMessageTemplate(sendingInterval.value)
+
                 isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
             }
         }
@@ -101,7 +127,7 @@ class MessageSettingsViewModel @Inject constructor(
     }
 
     fun isMessageTemplateVariableAvailable(messageTemplateVariable: MessageTemplateVariables): Boolean {
-        return when(messageTemplateVariable) {
+        return when (messageTemplateVariable) {
             MessageTemplateVariables.LOCATION_URL -> isLocationSharingEnabled.value
             MessageTemplateVariables.MESSAGE_COMMANDS -> isMessageCommandsEnabled.value
             else -> true

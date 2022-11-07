@@ -48,12 +48,16 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = stringResource(R.string.all_settings)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(stringResource(R.string.all_settings))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = stringResource(R.string.all_settings)
+                    )
+                    Text(stringResource(R.string.all_settings))
+                }
             },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {

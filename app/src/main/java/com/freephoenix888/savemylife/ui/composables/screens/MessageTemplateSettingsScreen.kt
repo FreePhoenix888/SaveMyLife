@@ -1,21 +1,24 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Message
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.freephoenix888.savemylife.R
+import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.constants.MessageTemplateVariables
-import com.freephoenix888.savemylife.ui.composables.TextFieldError
-import com.freephoenix888.savemylife.ui.composables.TextFieldWithErorr
+import com.freephoenix888.savemylife.enums.MessageCommand
+import com.freephoenix888.savemylife.ui.composables.*
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,14 +52,21 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
             Text("You have unsaved changes")
         })
     }
+    BackHandler(enabled = isMessageTemplateSaveable) {
+        isNotSavedChangedWarningDialogOpened = true
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
                         Icon(imageVector = Icons.Filled.Message, contentDescription = "Message template")
-                        Spacer(modifier = Modifier.width(8.dp))
                         Text("Message Template")
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -71,7 +81,7 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
                 },
                 actions = {
                     IconButton(onClick = { messageSettingsViewModel.submitMessageTemplate() }, enabled = isMessageTemplateSaveable) {
-                        Icon(imageVector = Icons.Filled.Save, contentDescription = "Save")
+                        Icon(imageVector = Icons.Filled.Check, contentDescription = "Save")
                     }
                 }
             )
@@ -79,7 +89,8 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
         content = { innerPadding ->
             Column(modifier = Modifier
                 .padding(innerPadding)
-                .padding(dimensionResource(R.dimen.settings_screen_padding))) {
+                .padding(dimensionResource(R.dimen.settings_screen_padding)),
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 TextFieldWithErorr(textField = {
                     OutlinedTextField(
                         value = messageTemplate,
@@ -93,25 +104,33 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
                     return@let { TextFieldError(error = it) }
                 })
 
-                Spacer(modifier = Modifier.height(18.dp))
-
-                Text("You can use the following \"variables\" in your message:", style = MaterialTheme.typography.headlineSmall)
-                SelectionContainer() {
-                    Column() {
-                        for (messageTemplateVariable in MessageTemplateVariables.values()) {
-                            Button(onClick = {
-                                messageSettingsViewModel.onMessageTemplateChange("${messageTemplate}{${messageTemplateVariable.name}}")
-                            }, content = {
-                                Text(messageTemplateVariable.name)
-                            })
-//                            Text(messageTemplateVariable.name, fontFamily = FontFamily.Monospace)
+                Column() {
+                    Text("You can use the following \"variables\" in your message:", style = MaterialTheme.typography.headlineSmall)
+                    SelectionContainer() {
+                        Column() {
+                            for (messageTemplateVariable in MessageTemplateVariables.values()) {
+                                Button(onClick = {
+                                    messageSettingsViewModel.onMessageTemplateChange("${messageTemplate}{${messageTemplateVariable.name}}")
+                                }, content = {
+                                    Text(messageTemplateVariable.name)
+                                })
+                            }
                         }
                     }
                 }
-                Text("Syntax: {VARIABLE_NAME}", style = MaterialTheme.typography.bodyMedium)
-                Text("Example: {CONTACT_NAME}", style = MaterialTheme.typography.bodyMedium)
+                Column {
+                    Text("Your message will look like this:",  style = MaterialTheme.typography.headlineSmall)
+                    MessageCard(
+                        message = Message(
+                            body = messageTemplate.replace("{${MessageTemplateVariables.CONTACT_NAME}}", MessageConstants.FAKE_CONTACT_NAME)
+                                .replace("{${MessageTemplateVariables.LOCATION_URL}}", MessageConstants.FAKE_LOCATION_URL)
+                                .replace("{${MessageTemplateVariables.MESSAGE_COMMANDS}}", MessageCommand.values().joinToString { messageCommand -> "/${messageCommand.name.lowercase()}\n" }).trimEnd(),
+                            position = MessagePosition.LEFT,
+                            time = "12:00 PM"
+                        )
+                    )
+                }
             }
-
         })
 
 

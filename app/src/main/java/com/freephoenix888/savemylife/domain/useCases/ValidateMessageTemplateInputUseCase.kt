@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 class ValidateMessageTemplateInputUseCase @Inject constructor(val getIsLocationSharingEnabledFlowUseCase: GetIsLocationSharingEnabledFlowUseCase) {
     suspend operator fun invoke(input: String): ValidationResult {
-        val isLocationSharingEnabled = getIsLocationSharingEnabledFlowUseCase.invoke().first()
         return if (input.isEmpty()) {
             ValidationResult.Error("Message template must not be empty")
         } else if (input.contains("{${MessageTemplateVariables.LOCATION_URL.name}}") && !getIsLocationSharingEnabledFlowUseCase().first()){

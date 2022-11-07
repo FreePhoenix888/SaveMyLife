@@ -74,12 +74,17 @@ fun PhoneNumbersScreen(
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Icon(
-                    imageVector = Icons.Filled.Phone,
-                    contentDescription = stringResource(R.string.all_phone_numbers)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(stringResource(R.string.phone_number_settings_screen_phone_numbers))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Icon(
+                        imageVector = Icons.Filled.Phone,
+                        contentDescription = stringResource(R.string.all_phone_numbers)
+                    )
+                    Text(stringResource(R.string.phone_number_settings_screen_phone_numbers))
+                }
+
             },
                 navigationIcon = {
                     IconButton(onClick = {

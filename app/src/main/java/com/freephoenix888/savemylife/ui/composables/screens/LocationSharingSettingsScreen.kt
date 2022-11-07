@@ -76,12 +76,14 @@ fun LocationSettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Row(verticalAlignment = Alignment.CenterVertically){
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
                     Icon(
                         imageVector = Icons.Filled.ShareLocation,
                         contentDescription = stringResource(R.string.all_location_sharing)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(R.string.all_location_sharing))
                 }
             },
