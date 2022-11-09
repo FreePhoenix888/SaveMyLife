@@ -1,26 +1,44 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
+import kotlin.math.roundToInt
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
-import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class
+)
 @SuppressLint("BatteryLife")
 @Composable
 fun HomeScreen(
@@ -93,6 +111,72 @@ fun HomeScreen(
             Text(
                 text = if(isMainServiceEnabled)  stringResource(R.string.home_screen_app_state_enabled) else stringResource(R.string.home_screen_app_state_disabled),
             )
+
+            val width = 200.dp
+            val squareSize = 48.dp
+
+            val swipeableState = rememberSwipeableState(0) {
+                Log.d(null, "Swipeable state (0 or 1): $it")
+                return@rememberSwipeableState true
+            }
+            val swiperTrackWidthPx = with(LocalDensity.current) { width.toPx() }
+            val swiperThumbWidthPx = with(LocalDensity.current) { squareSize.toPx() }
+            val anchors = mapOf(0f to 0, swiperTrackWidthPx-swiperThumbWidthPx to 1) // Maps anchor points (in px) to states
+
+//            Box(
+//                modifier = Modifier
+//                    .width(width)
+//                    .swipeable(
+//                        state = swipeableState,
+//                        anchors = anchors,
+//                        thresholds = { _, _ -> FractionalThreshold(1f) },
+//                        orientation = Orientation.Horizontal
+//                    )
+//                    .background(color = Color.LightGray, shape = RoundedCornerShape(50))
+//            ) {
+//                IconButton(
+//                    modifier = Modifier
+//                        .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
+//                        .size(squareSize)
+//                        .background(color = Color.DarkGray, shape = RoundedCornerShape(50)),
+//            enabled = swipeableState.currentValue == 1,
+//                    onClick = {
+//
+//                    },
+//                    colors = IconButtonDefaults.iconButtonColors(contentColor = Color.Red)
+//                ) {
+//                    Icon(imageVector = Icons.Default.Campaign, contentDescription = "Enable danger mode")
+////                    Text("\uD83D\uDEA8", color = Color.Black)
+//                }
+//            }
+
+            Spacer(
+                modifier = Modifier.height(80.dp)
+            )
+
+            Box(
+                modifier = Modifier
+                    .width(width)
+                    .background(color = Color.LightGray, shape = RoundedCornerShape(50))
+            ) {
+                Icon(imageVector = Icons.Default.Campaign, contentDescription = "Enable danger mode",
+                    modifier = Modifier
+                        .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
+                        .size(squareSize)
+                        .background(color = Color.DarkGray, shape = RoundedCornerShape(50))
+                        .swipeable(
+                            state = swipeableState,
+                            anchors = anchors,
+                            thresholds = { _, _ -> FractionalThreshold(1f) },
+                            orientation = Orientation.Horizontal
+                        ),
+//                    tint = LocalContentColor.current
+                    tint = MaterialTheme.colorScheme.primary.copy(alpha = (swipeableState.offset.value/(swiperTrackWidthPx-swiperThumbWidthPx)).coerceIn(0.5f, 1f))
+                )
+                Text("Danger mode")
+            }
+
+
         }
     }
 
