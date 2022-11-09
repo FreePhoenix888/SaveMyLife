@@ -14,7 +14,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.broadcastReceivers.DangerBroadcastReceiver
+import com.freephoenix888.savemylife.broadcastReceivers.AlarmBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.SmsBroadcastReceiver
@@ -43,7 +43,7 @@ class MainService : LifecycleService() {
     lateinit var getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase
 
     @Inject
-    lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
+    lateinit var getIsAlarmModeEnabledFlowUseCase: GetIsAlarmModeEnabledFlowUseCase
 
     @Inject
     lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
@@ -54,7 +54,7 @@ class MainService : LifecycleService() {
     private var smsBroadcastReceiver: SmsBroadcastReceiver? = null
     private var isFirstStart = true
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val isDangerModeEnabled = MutableStateFlow(false)
+    private val isAlarmModeEnabled = MutableStateFlow(false)
     private val isMessageCommandsEnabled = MutableStateFlow(false)
     private val messageTemplate = MutableStateFlow("")
     private val messageSendingInterval = MutableStateFlow(MessageConstants.DEFAULT_SENDING_INTERVAL)
@@ -105,8 +105,8 @@ class MainService : LifecycleService() {
         }
         lifecycleScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.IO) {
-                getIsDangerModeEnabledFlowUseCase().collect {
-                    isDangerModeEnabled.value = it
+                getIsAlarmModeEnabledFlowUseCase().collect {
+                    isAlarmModeEnabled.value = it
                     alarmManager =
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                     if (alarmIntent != null) {
@@ -114,7 +114,7 @@ class MainService : LifecycleService() {
                     }
                     if (it) {
                         val dialogIntent =
-                            Intent(applicationContext, DangerBroadcastReceiver::class.java)
+                            Intent(applicationContext, AlarmBroadcastReceiver::class.java)
                         alarmIntent = PendingIntent.getBroadcast(
                             applicationContext,
                             0,
@@ -178,7 +178,7 @@ class MainService : LifecycleService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
         }
-        val dangerButtonPendingIntent = Intent(Intent.ACTION_VIEW, DeepLinks.dangerButton, applicationContext, SaveMyLifeActivity::class.java).let {
+        val alarmButtonPendingIntent = Intent(Intent.ACTION_VIEW, DeepLinks.alarmButton, applicationContext, SaveMyLifeActivity::class.java).let {
             TaskStackBuilder.create(applicationContext).addNextIntentWithParentStack(it).getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
         }
         val notificationBuilder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_ID)
@@ -190,15 +190,15 @@ class MainService : LifecycleService() {
             )
             .setContentTitle("SaveMyLife")
             .setContentText("SaveMyLife is active")
-            .setContentIntent(getDangerButtonActivityPendingIntent())
-            .setContentIntent(dangerButtonPendingIntent)
+            .setContentIntent(getAlarmButtonActivityPendingIntent())
+            .setContentIntent(alarmButtonPendingIntent)
         return notificationBuilder.build()
     }
 
-    private fun getDangerButtonActivityPendingIntent(): PendingIntent {
-        val dangerButtonIntent = Intent(
+    private fun getAlarmButtonActivityPendingIntent(): PendingIntent {
+        val alarmButtonIntent = Intent(
             Intent.ACTION_VIEW,
-            "${Constants.APP_URI}/screen/${SaveMyLifeScreenEnum.DangerButton.name}".toUri(),
+            "${Constants.APP_URI}/screen/${SaveMyLifeScreenEnum.AlarmButton.name}".toUri(),
             applicationContext,
             SaveMyLifeActivity::class.java
         )
@@ -208,7 +208,7 @@ class MainService : LifecycleService() {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
         val pendingIntent = TaskStackBuilder.create(applicationContext).run {
-            addNextIntentWithParentStack(dangerButtonIntent)
+            addNextIntentWithParentStack(alarmButtonIntent)
             getPendingIntent(0, flags)
         }
         return pendingIntent ?: throw Throwable("Unable to create pending intent")

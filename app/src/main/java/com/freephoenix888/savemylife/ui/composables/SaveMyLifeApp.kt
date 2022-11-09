@@ -54,13 +54,13 @@ fun SaveMyLifeApp() {
 //            LocationSettingsScreen(locationSharingSettingsViewModel = locationSharingSettingsViewModel, navController = navController)
 //        }
 //        composable(
-//            route = SaveMyLifeScreenEnum.DangerButton.name,
+//            route = SaveMyLifeScreenEnum.AlarmButton.name,
 //            deepLinks = listOf(navDeepLink {
-//                uriPattern = "${Constants.APP_URI}/screen/${SaveMyLifeScreenEnum.DangerButton.name}"
+//                uriPattern = "${Constants.APP_URI}/screen/${SaveMyLifeScreenEnum.AlarmButton.name}"
 //            })
 //        ) {
 //            val saveMyLifeViewModel: SaveMyLifeViewModel = hiltViewModel()
-//            DangerButtonScreen(saveMyLifeViewModel = saveMyLifeViewModel)
+//            AlarmButtonScreen(saveMyLifeViewModel = saveMyLifeViewModel)
 //        }
 //        composable(route = SaveMyLifeScreenEnum.MessageTemplateSettings.name) {
 //            val messageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()

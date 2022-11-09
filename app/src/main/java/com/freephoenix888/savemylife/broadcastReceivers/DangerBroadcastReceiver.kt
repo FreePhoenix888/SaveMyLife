@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 private const val TAG = "RestartBroadcastReceiver"
 @AndroidEntryPoint
-class DangerBroadcastReceiver : BroadcastReceiver() {
+class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     @Inject lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase

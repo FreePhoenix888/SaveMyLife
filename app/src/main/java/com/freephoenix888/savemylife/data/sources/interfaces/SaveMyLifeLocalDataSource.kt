@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface SaveMyLifeLocalDataSource {
     val preferences: Flow<SaveMyLifePreferences>
     suspend fun setIsMainServiceEnabled(newState: Boolean)
-    suspend fun setIsDangerModeEnabled(newState: Boolean)
+    suspend fun setIsAlarmModeEnabled(newState: Boolean)
 }

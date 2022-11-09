@@ -13,12 +13,12 @@ enum class MessageTemplateVariables {
 
 object MessageConstants {
     val DEFAULT_SENDING_INTERVAL: Duration =  (30L).toDuration(DurationUnit.MINUTES)
-    const val DEFAULT_TEMPLATE: String = "{CONTACT_NAME}, I AM IN DANGER! My location: {LOCATION_URL}"
+    const val DEFAULT_TEMPLATE: String = "{CONTACT_NAME}, I AM IN ALARM! My location: {LOCATION_URL}"
     const val FAKE_CONTACT_NAME: String = "John"
     const val FAKE_LOCATION_URL: String = "https://goo.gl/maps/ZNs7dUj4yPbFMgGv6"
     val FAKE_MESSAGE_TEMPLATE: String =
         """
-                            {CONTACT_NAME}, I AM IN DANGER!
+                            {CONTACT_NAME}, I AM IN ALARM!
                             My location:
                             {LOCATION_URL}
                             You can send these commands:

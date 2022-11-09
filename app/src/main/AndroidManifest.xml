@@ -37,7 +37,7 @@
             android:exported="true"
             />
 
-        <receiver android:name=".broadcastReceivers.DangerBroadcastReceiver"
+        <receiver android:name=".broadcastReceivers.AlarmBroadcastReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:exported="true">
             <intent-filter>

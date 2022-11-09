@@ -4,5 +4,5 @@ import androidx.core.net.toUri
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 
 object DeepLinks {
-    val dangerButton = "${Constants.APP_URI}/${SaveMyLifeScreenEnum.DangerButton.name}".toUri()
+    val alarmButton = "${Constants.APP_URI}/${SaveMyLifeScreenEnum.AlarmButton.name}".toUri()
 }

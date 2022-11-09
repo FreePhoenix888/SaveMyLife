@@ -115,7 +115,7 @@ fun PhoneNumbersScreen(
                 .padding(dimensionResource(R.dimen.settings_screen_padding))
                 .fillMaxSize()
         ) {
-            Text("Emergency contacts will receive a message when danger mode is activated")
+            Text("Emergency contacts will receive a message when alarm mode is activated")
             LazyColumn {
                 items(
                     items = phoneNumbers,

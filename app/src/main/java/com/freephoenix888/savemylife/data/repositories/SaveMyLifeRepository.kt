@@ -13,7 +13,7 @@ class SaveMyLifeRepository @Inject constructor (private val saveMyLifeLocalDataS
         saveMyLifeLocalDataSource.setIsMainServiceEnabled(state)
     }
 
-    suspend fun setIsDangerModeEnabled(state: Boolean) {
-        saveMyLifeLocalDataSource.setIsDangerModeEnabled(state)
+    suspend fun setIsAlarmModeEnabled(state: Boolean) {
+        saveMyLifeLocalDataSource.setIsAlarmModeEnabled(state)
     }
 }

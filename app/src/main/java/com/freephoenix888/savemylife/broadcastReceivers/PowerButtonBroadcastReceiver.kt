@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.freephoenix888.savemylife.domain.useCases.SetIsDangerModeEnabledUseCase
+import com.freephoenix888.savemylife.domain.useCases.SetIsAlarmModeEnabledUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +24,7 @@ class PowerButtonBroadcastReceiver :
     lateinit var applicationContext: Context
 
     @Inject
-    lateinit var setIsDangerModeEnabledUseCase: SetIsDangerModeEnabledUseCase
+    lateinit var setIsAlarmModeEnabledUseCase: SetIsAlarmModeEnabledUseCase
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -44,7 +44,7 @@ class PowerButtonBroadcastReceiver :
             }
             if (_count == 5) {
                 scope.launch {
-                    setIsDangerModeEnabledUseCase(true)
+                    setIsAlarmModeEnabledUseCase(true)
                 }
             }
             ++_count

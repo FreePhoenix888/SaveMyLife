@@ -15,23 +15,23 @@ import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 @Composable
-fun DangerButtonScreen(
+fun AlarmButtonScreen(
     saveMyLifeViewModel: SaveMyLifeViewModel = viewModel(),
 ) {
-    val dangerModeState by saveMyLifeViewModel.isDangerModeEnabled.collectAsState(initial = false)
-    DangerButtonScreenBody(
-        dangerModeState = dangerModeState,
-        onSwitchIsDangerModeEnabled = {
-            saveMyLifeViewModel.switchIsDangerModeEnabled()
+    val alarmModeState by saveMyLifeViewModel.isAlarmModeEnabled.collectAsState(initial = false)
+    AlarmButtonScreenBody(
+        alarmModeState = alarmModeState,
+        onSwitchIsAlarmModeEnabled = {
+            saveMyLifeViewModel.switchIsAlarmModeEnabled()
         }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DangerButtonScreenBody(
-    dangerModeState: Boolean,
-    onSwitchIsDangerModeEnabled: () -> Unit
+private fun AlarmButtonScreenBody(
+    alarmModeState: Boolean,
+    onSwitchIsAlarmModeEnabled: () -> Unit
 ) {
     Scaffold { innerPadding: PaddingValues ->
         Button(
@@ -39,11 +39,11 @@ private fun DangerButtonScreenBody(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(50.dp),
-            onClick = onSwitchIsDangerModeEnabled,
-            colors = ButtonDefaults.buttonColors(containerColor = if(dangerModeState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary),
+            onClick = onSwitchIsAlarmModeEnabled,
+            colors = ButtonDefaults.buttonColors(containerColor = if(alarmModeState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(20.dp)
         ) {
-            Text(stringResource(R.string.all_i_am_in_danger))
+            Text(stringResource(R.string.all_i_am_in_alarm))
         }
     }
 }
@@ -51,11 +51,11 @@ private fun DangerButtonScreenBody(
 
 @Preview(showBackground = true, widthDp = 300, heightDp = 300)
 @Composable
-private fun DangerButtonScreenBodyPreview() {
-    var dangerModeState by remember { mutableStateOf(false)}
-    DangerButtonScreenBody(
-        dangerModeState = dangerModeState,
-        onSwitchIsDangerModeEnabled = {
-        dangerModeState = !dangerModeState
+private fun AlarmButtonScreenBodyPreview() {
+    var alarmModeState by remember { mutableStateOf(false)}
+    AlarmButtonScreenBody(
+        alarmModeState = alarmModeState,
+        onSwitchIsAlarmModeEnabled = {
+        alarmModeState = !alarmModeState
     })
 }

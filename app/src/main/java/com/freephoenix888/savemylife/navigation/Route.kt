@@ -5,5 +5,5 @@ enum class Route {
     Home,
     Settings,
     MessageSettings,
-    DangerButton
+    AlarmButton
 }

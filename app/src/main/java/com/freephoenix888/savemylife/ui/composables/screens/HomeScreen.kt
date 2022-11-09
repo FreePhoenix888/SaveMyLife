@@ -12,7 +12,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Campaign
-import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberSwipeableState
@@ -32,11 +31,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.SaveMyLifeScreenEnum
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
     ExperimentalFoundationApi::class
 )
 @SuppressLint("BatteryLife")
@@ -49,15 +50,15 @@ fun HomeScreen(
     val isMainServiceEnabled by saveMyLifeViewModel.isMainServiceEnabled.collectAsState(initial = false)
     val isFirstAppLaunch by saveMyLifeViewModel.isFirstAppLaunch.collectAsState(initial = false)
 
-    var isSettingsHintDialogOpened by remember { mutableStateOf(isFirstAppLaunch)}
-    if(isSettingsHintDialogOpened) {
+    var isSettingsHintDialogOpened by remember { mutableStateOf(isFirstAppLaunch) }
+    if (isSettingsHintDialogOpened) {
         AlertDialog(onDismissRequest = { isSettingsHintDialogOpened = false }, title = {
             Text(stringResource(R.string.home_screen_switch_app_state))
-        }, text={
+        }, text = {
             Text(stringResource(R.string.home_screen_do_not_forget_to_adjust_settings_for_you_before_using_the_app))
 
         }, confirmButton = {
-            Button(onClick = { isSettingsHintDialogOpened = false}) {
+            Button(onClick = { isSettingsHintDialogOpened = false }) {
                 Text(stringResource(R.string.all_ok))
             }
         })
@@ -109,8 +110,13 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = if(isMainServiceEnabled)  stringResource(R.string.home_screen_app_state_enabled) else stringResource(R.string.home_screen_app_state_disabled),
+                text = if (isMainServiceEnabled) stringResource(R.string.home_screen_app_state_enabled) else stringResource(
+                    R.string.home_screen_app_state_disabled
+                ),
             )
+
+            Spacer(modifier = Modifier.height(50.dp))
+
 
             val width = 200.dp
             val squareSize = 48.dp
@@ -121,7 +127,10 @@ fun HomeScreen(
             }
             val swiperTrackWidthPx = with(LocalDensity.current) { width.toPx() }
             val swiperThumbWidthPx = with(LocalDensity.current) { squareSize.toPx() }
-            val anchors = mapOf(0f to 0, swiperTrackWidthPx-swiperThumbWidthPx to 1) // Maps anchor points (in px) to states
+            val anchors = mapOf(
+                0f to 0,
+                swiperTrackWidthPx - swiperThumbWidthPx to 1
+            ) // Maps anchor points (in px) to states
 
 //            Box(
 //                modifier = Modifier
@@ -145,35 +154,52 @@ fun HomeScreen(
 //                    },
 //                    colors = IconButtonDefaults.iconButtonColors(contentColor = Color.Red)
 //                ) {
-//                    Icon(imageVector = Icons.Default.Campaign, contentDescription = "Enable danger mode")
+//                    Icon(imageVector = Icons.Default.Campaign, contentDescription = "Enable alarm mode")
 ////                    Text("\uD83D\uDEA8", color = Color.Black)
 //                }
 //            }
 
-            Spacer(
-                modifier = Modifier.height(80.dp)
-            )
-
-            Box(
+            Surface(
                 modifier = Modifier
                     .width(width)
-                    .background(color = Color.LightGray, shape = RoundedCornerShape(50))
+                    .height(squareSize)
+//                    .background(color = Color.LightGray, shape = RoundedCornerShape(50))
+,
+                color = Color.LightGray,
+                contentColor = Color.Black,
+//                contentAlignment = Alignment.Center
+                shape = RoundedCornerShape(50),
+//                color = MaterialTheme.colorScheme.primaryContainer,
+
             ) {
-                Icon(imageVector = Icons.Default.Campaign, contentDescription = "Enable danger mode",
-                    modifier = Modifier
-                        .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
-                        .size(squareSize)
-                        .background(color = Color.DarkGray, shape = RoundedCornerShape(50))
-                        .swipeable(
-                            state = swipeableState,
-                            anchors = anchors,
-                            thresholds = { _, _ -> FractionalThreshold(1f) },
-                            orientation = Orientation.Horizontal
-                        ),
+                Box(modifier = Modifier) {
+                    Text(
+                        "Alarm mode", textAlign = TextAlign.Center, modifier = Modifier.align(
+                            Alignment.Center
+                        )
+                    )
+                    Icon(imageVector = Icons.Default.Campaign,
+                        contentDescription = "Enable alarm mode",
+                        modifier = Modifier
+                            .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
+                            .size(squareSize)
+                            .background(color = Color.DarkGray, shape = RoundedCornerShape(50))
+                            .swipeable(
+                                state = swipeableState,
+                                anchors = anchors,
+                                thresholds = { _, _ -> FractionalThreshold(1f) },
+                                orientation = Orientation.Horizontal
+                            ),
 //                    tint = LocalContentColor.current
-                    tint = MaterialTheme.colorScheme.primary.copy(alpha = (swipeableState.offset.value/(swiperTrackWidthPx-swiperThumbWidthPx)).coerceIn(0.5f, 1f))
-                )
-                Text("Danger mode")
+                        tint = MaterialTheme.colorScheme.primary.copy(
+                            alpha = (swipeableState.offset.value / (swiperTrackWidthPx - swiperThumbWidthPx)).coerceIn(
+                                0.5f,
+                                1f
+                            )
+                        )
+                    )
+
+                }
             }
 
 

@@ -5,7 +5,7 @@
     <string name="all_message">Message</string>
     <string name="all_phone_numbers">Phone numbers</string>
     <string name="all_location">Location</string>
-    <string name="all_i_am_in_danger">I AM IN DANGER</string>
+    <string name="all_i_am_in_alarm">I AM IN ALARM</string>
     <string name="all_grant_permissions">Grant permissions</string>
     <string name="all_ok">OK</string>
     <string name="all_save">Save</string>

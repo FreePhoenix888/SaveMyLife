@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.freephoenix888.savemylife.constants.DeepLinks
 import com.freephoenix888.savemylife.navigation.Route
-import com.freephoenix888.savemylife.ui.composables.screens.DangerButtonScreen
+import com.freephoenix888.savemylife.ui.composables.screens.AlarmButtonScreen
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 
 @Composable
@@ -19,12 +19,12 @@ fun SaveMyLifeNavGraph(
         homeNavGraph(navController = navController)
         settingsNavGraph(navController = navController)
         composable(
-            route = Route.DangerButton.name,
+            route = Route.AlarmButton.name,
             deepLinks = listOf(navDeepLink {
-                uriPattern = DeepLinks.dangerButton.toString()
+                uriPattern = DeepLinks.alarmButton.toString()
             })
         ) {
             val saveMyLifeViewModel: SaveMyLifeViewModel = hiltViewModel()
-            DangerButtonScreen(saveMyLifeViewModel = saveMyLifeViewModel)
+            AlarmButtonScreen(saveMyLifeViewModel = saveMyLifeViewModel)
         }    }
 }

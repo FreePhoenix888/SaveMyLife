@@ -12,8 +12,8 @@ import javax.inject.Inject
 class   SaveMyLifeViewModel @Inject constructor(
     getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase,
     val switchIsMainServiceEnabledUseCase: SwitchIsMainServiceEnabledUseCase,
-    getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase,
-    val switchIsDangerModeEnabledUseCase: SwitchIsDangerModeEnabledUseCase,
+    getIsAlarmModeEnabledFlowUseCase: GetIsAlarmModeEnabledFlowUseCase,
+    val switchIsAlarmModeEnabledUseCase: SwitchIsAlarmModeEnabledUseCase,
     getIsFirstAppLaunch: GetIsFirstAppLaunchFlowUseCase,
 ) : ViewModel() {
     val isFirstAppLaunch = getIsFirstAppLaunch()
@@ -22,8 +22,8 @@ class   SaveMyLifeViewModel @Inject constructor(
         switchIsMainServiceEnabledUseCase()
     }
 
-    val isDangerModeEnabled = getIsDangerModeEnabledFlowUseCase()
-    fun switchIsDangerModeEnabled() = viewModelScope.launch(Dispatchers.IO) {
-        switchIsDangerModeEnabledUseCase()
+    val isAlarmModeEnabled = getIsAlarmModeEnabledFlowUseCase()
+    fun switchIsAlarmModeEnabled() = viewModelScope.launch(Dispatchers.IO) {
+        switchIsAlarmModeEnabledUseCase()
     }
 }
