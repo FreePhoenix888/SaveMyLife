@@ -86,6 +86,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.4.0")
     // Compose Material Design
     implementation("androidx.compose.material3:material3:1.0.0")
+    implementation("androidx.compose.material:material:1.3.0")
     // Animations
     implementation("androidx.compose.animation:animation:1.1.1")
     // Tooling support (Previews, etc.)
@@ -147,6 +148,8 @@ dependencies {
     implementation("com.github.alorma:compose-settings-storage-preferences:0.7.2")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.0.10")
+
+
 }
 
 // Allow references to generated code
