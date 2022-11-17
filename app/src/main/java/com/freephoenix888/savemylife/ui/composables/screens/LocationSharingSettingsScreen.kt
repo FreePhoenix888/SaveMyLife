@@ -1,7 +1,9 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.Manifest
-import android.os.Build
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,10 +30,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
+import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
 import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 
 
@@ -40,39 +45,39 @@ fun LocationSettingsScreen(
     locationSharingSettingsViewModel: LocationSharingSettingsViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    val coarseLocationPermissionState =
-        rememberPermissionState(permission = Manifest.permission.ACCESS_COARSE_LOCATION)
-    if (coarseLocationPermissionState.status != PermissionStatus.Granted) {
-        RequestPermission(
-            permissionState = coarseLocationPermissionState,
-            text = stringResource(R.string.coarse_location_settings_screen_location_permission_request)
-        )
-        return
-    }
-
-    val fineLocationPermissionState =
-        rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-    if (fineLocationPermissionState.status != PermissionStatus.Granted) {
+    val fineLocationPermissionState = rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+    if(!fineLocationPermissionState.status.isGranted) {
         RequestPermission(
             permissionState = fineLocationPermissionState,
-            text = stringResource(R.string.fine_location_settings_screen_location_permission_request)
+            permissionHumanReadableName = "Fine location",
+            description ="Fine location permission is required to share your fine location with your emergency contacts."
         )
         return
     }
 
-    if (Build.VERSION.SDK_INT >= 29) {
-        val backgroundLocationPermissionState =
-            rememberPermissionState(permission = Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        if (backgroundLocationPermissionState.status != PermissionStatus.Granted) {
-            RequestPermission(
-                permissionState = backgroundLocationPermissionState,
-                text = stringResource(R.string.background_location_settings_screen_location_permission_request)
-            )
-            return
-        }
+    val coarseLocationPermissionState = rememberPermissionState(permission = Manifest.permission.ACCESS_COARSE_LOCATION)
+    if(!coarseLocationPermissionState.status.isGranted) {
+        RequestPermission(
+            permissionState = fineLocationPermissionState,
+            permissionHumanReadableName = "Coarse location",
+            description = stringResource(R.string.coarse_location_settings_screen_location_permission_request)
+        )
+        return
+    }
+
+    val backgroundLocationPermissionState =
+        rememberPermissionState(permission = Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    if(!backgroundLocationPermissionState.status.isGranted) {
+        RequestPermission(
+            permissionState = backgroundLocationPermissionState,
+            permissionHumanReadableName = "Background location",
+            description = stringResource(R.string.background_location_settings_screen_location_permission_request)
+        )
+        return
     }
 
     val isLocationSharingEnabled by locationSharingSettingsViewModel.isLocationSharingEnabled.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(title = {

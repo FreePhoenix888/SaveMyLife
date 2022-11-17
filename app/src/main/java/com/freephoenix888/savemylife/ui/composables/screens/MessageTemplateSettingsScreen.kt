@@ -20,6 +20,9 @@ import com.freephoenix888.savemylife.constants.MessageTemplateVariables
 import com.freephoenix888.savemylife.enums.MessageCommand
 import com.freephoenix888.savemylife.ui.composables.*
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,7 +129,7 @@ fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewM
                                 .replace("{${MessageTemplateVariables.LOCATION_URL}}", MessageConstants.FAKE_LOCATION_URL)
                                 .replace("{${MessageTemplateVariables.MESSAGE_COMMANDS}}", MessageCommand.values().joinToString { messageCommand -> "/${messageCommand.name.lowercase()}\n" }).trimEnd(),
                             position = MessagePosition.RIGHT,
-                            time = "12:00 PM"
+                            time = LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
                         )
                     )
                 }

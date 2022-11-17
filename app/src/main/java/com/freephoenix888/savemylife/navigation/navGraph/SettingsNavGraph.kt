@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.freephoenix888.savemylife.navigation.Route
-import com.freephoenix888.savemylife.navigation.Screen
 import com.freephoenix888.savemylife.ui.composables.screens.LocationSettingsScreen
 import com.freephoenix888.savemylife.ui.composables.screens.PhoneNumbersScreen
 import com.freephoenix888.savemylife.ui.composables.screens.SettingsScreen
@@ -16,15 +15,15 @@ import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 fun NavGraphBuilder.settingsNavGraph(
     navController: NavHostController
 ) {
-    navigation(route = Route.Settings.name, startDestination = Screen.Settings.route) {
-        composable(Screen.Settings.route) {
+    navigation(route = Route.Home.Settings.SettingsRoute.name, startDestination = Route.Home.Settings.SettingsRoot.name) {
+        composable(Route.Home.Settings.SettingsRoot.name) {
             val locationSharingSettingsViewModel: LocationSharingSettingsViewModel = hiltViewModel()
             SettingsScreen(navController = navController,
                 locationSharingSettingsViewModel = locationSharingSettingsViewModel)
         }
         messageSettingsNavGraph(navController = navController)
 
-        composable(Screen.PhoneNumbersSettings.route) {
+        composable(Route.Home.Settings.PhoneNumbersSettings.name) {
             val phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel =
                 hiltViewModel()
             PhoneNumbersScreen(
@@ -33,7 +32,7 @@ fun NavGraphBuilder.settingsNavGraph(
             )
         }
 
-        composable(Screen.LocationSharingSettings.route) {
+        composable(Route.Home.Settings.LocationSharingSettings.name) {
             val locationSharingSettingsViewModel: LocationSharingSettingsViewModel = hiltViewModel()
             LocationSettingsScreen(
                 locationSharingSettingsViewModel = locationSharingSettingsViewModel,

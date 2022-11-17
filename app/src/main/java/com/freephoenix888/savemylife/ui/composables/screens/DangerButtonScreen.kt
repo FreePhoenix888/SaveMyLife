@@ -43,7 +43,7 @@ private fun AlarmButtonScreenBody(
             colors = ButtonDefaults.buttonColors(containerColor = if(alarmModeState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(20.dp)
         ) {
-            Text(stringResource(R.string.all_i_am_in_alarm))
+            Text(stringResource(R.string.all_i_am_in_danger))
         }
     }
 }

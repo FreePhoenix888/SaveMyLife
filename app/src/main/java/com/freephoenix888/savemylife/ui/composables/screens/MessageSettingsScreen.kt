@@ -1,7 +1,5 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
-import android.Manifest
-import android.os.Build
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -18,13 +16,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.navigation.Screen
-import com.freephoenix888.savemylife.ui.composables.RequestPermission
+import com.freephoenix888.savemylife.navigation.Route
 import com.freephoenix888.savemylife.ui.composables.settings.SettingLink
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberPermissionState
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -32,16 +27,11 @@ fun MessageSettingsScreen(
     messageSettingsViewModel: MessageSettingsViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    if(Build.VERSION.SDK_INT >= 31) {
-        val scheduleExactPermission = rememberPermissionState(permission = Manifest.permission.SCHEDULE_EXACT_ALARM)
-        if(scheduleExactPermission.status != PermissionStatus.Granted){
-            RequestPermission(
-                permissionState = scheduleExactPermission,
-                text = stringResource(R.string.message_settings_screen_schedule_exact_alarm_permission_request)
-            )
-            return
-        }
-    }
+//    RequestPermission(
+//        permissions = listOf(Manifest.permission.SCHEDULE_EXACT_ALARM),
+//        permissionHumanReadableName = "",
+//        description = stringResource(R.string.message_settings_screen_schedule_exact_alarm_permission_request)
+//    )
 
     val context = LocalContext.current
     val messageTemplate by messageSettingsViewModel.messageTemplate.collectAsState()
@@ -79,15 +69,15 @@ fun MessageSettingsScreen(
                 var isMessageTemplateDialogOpened by remember { mutableStateOf(false) }
 
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Message, contentDescription = "Message template")} ,title = {Text("Message template")}, onClick = {
-                    navController.navigate(Screen.MessageTemplateSettings.route)
+                    navController.navigate(Route.Home.Settings.MessageSettings.MessageTemplateSettings.name)
                 })
 
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message sending interval")} ,title = {Text("Message sending interval")}, onClick = {
-                    navController.navigate(Screen.MessageSendingIntervalSettings.route)
+                    navController.navigate(Route.Home.Settings.MessageSettings.MessageSendingIntervalSettings.name)
                 })
 
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message commands")} ,title = {Text("Message commands")}, onClick = {
-                    navController.navigate(Screen.MessageCommandsSettings.route)
+                    navController.navigate(Route.Home.Settings.MessageSettings.MessageCommandsSettings.name)
                 })
                 //                if(isMessageTemplateDialogOpened) {
 //                    AlertDialog(onDismissRequest = { isMessageTemplateDialogOpened = false }, title = {

@@ -61,8 +61,14 @@ android {
 
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
+    val core_version = "1.6.0"
+    implementation("androidx.core:core-ktx:$core_version")
+
+    val appcompatVersion = "1.5.1"
+    implementation("androidx.appcompat:appcompat:$appcompatVersion")
+    // For loading and tinting drawables on older versions of the platform
+    implementation("androidx.appcompat:appcompat-resources:$appcompatVersion")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
     implementation("androidx.activity:activity-ktx:1.4.0")
@@ -86,7 +92,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.4.0")
     // Compose Material Design
     implementation("androidx.compose.material3:material3:1.0.0")
-    implementation("androidx.compose.material:material:1.3.0")
+//    implementation("androidx.compose.material:material:1.3.0")
     // Animations
     implementation("androidx.compose.animation:animation:1.1.1")
     // Tooling support (Previews, etc.)
@@ -102,7 +108,9 @@ dependencies {
     // View model
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
     // Accompanist
-    implementation("com.google.accompanist:accompanist-permissions:0.24.9-beta")
+    val accompanistVersion = "0.27.0"
+    implementation("com.google.accompanist:accompanist-permissions:${accompanistVersion}")
+    implementation("com.google.accompanist:accompanist-flowlayout:${accompanistVersion}")
 
     val workVersion = "2.7.1"
     // Kotlin + coroutines
@@ -147,7 +155,14 @@ dependencies {
     implementation("com.github.alorma:compose-settings-ui:0.7.2")
     implementation("com.github.alorma:compose-settings-storage-preferences:0.7.2")
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.0.10")
+    // AndroidX Savedstate
+    val savedStateVersion = "1.2.0"
+    // Java language implementation
+    implementation("androidx.savedstate:savedstate:${savedStateVersion}")
+    // Kotlin
+    implementation("androidx.savedstate:savedstate-ktx:${savedStateVersion}")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
 
 }

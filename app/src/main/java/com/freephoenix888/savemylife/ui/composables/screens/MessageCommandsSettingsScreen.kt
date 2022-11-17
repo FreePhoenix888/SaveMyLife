@@ -1,5 +1,6 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
+import android.Manifest
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,14 +28,12 @@ import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.enums.MessageCommand
 import com.freephoenix888.savemylife.enums.getMessageCommandDescription
-import com.freephoenix888.savemylife.ui.composables.Message
-import com.freephoenix888.savemylife.ui.composables.MessageCard
-import com.freephoenix888.savemylife.ui.composables.MessagePosition
-import com.freephoenix888.savemylife.ui.composables.RequestPermission
+import com.freephoenix888.savemylife.ui.composables.*
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.*
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -42,15 +41,25 @@ fun MessageCommandsSettingsScreen(
     messageSettingsViewModel: MessageSettingsViewModel,
     navController: NavHostController
 ) {
-    val receiveSmsPermissionState = rememberPermissionState(android.Manifest.permission.RECEIVE_SMS)
-    if (receiveSmsPermissionState.status != PermissionStatus.Granted) {
+        val receiveSmsPermissionsState = rememberPermissionState(permission = Manifest.permission.RECEIVE_SMS)
+    if (!receiveSmsPermissionsState.status.isGranted) {
         RequestPermission(
-            permissionState = receiveSmsPermissionState,
-            text = "Receive SMS permissions is required to use message commands."
+            permissionState = receiveSmsPermissionsState,
+            permissionHumanReadableName = "Receive sms",
+            description = "Receive sms permission is used to use find message commands from your messages."
         )
         return
     }
 
+    val sendSmsPermissionsState = rememberPermissionState(permission = Manifest.permission.SEND_SMS)
+    if (!sendSmsPermissionsState.status.isGranted) {
+        RequestPermission(
+            permissionState = sendSmsPermissionsState,
+            permissionHumanReadableName = "Send sms",
+            description = "Send sms permission is used to respond to message commands of your emergency contacts."
+        )
+        return
+    }
 
     val isMessageCommandsEnabled by messageSettingsViewModel.isMessageCommandsEnabled.collectAsState()
     Scaffold(
@@ -103,21 +112,21 @@ fun MessageCommandsSettingsScreen(
                     message = Message(
                         body = MessageConstants.FAKE_MESSAGE,
                         position = MessagePosition.LEFT,
-                        time = "12:00 PM"
+                        time = LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
                     )
                 )
                 MessageCard(
                     message = Message(
                         body = "/${MessageCommand.LOCATION.name.lowercase()}",
                         position = MessagePosition.RIGHT,
-                        time = "12:15 PM"
+                        time = LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
                     )
                 )
                 MessageCard(
                     message = Message(
                         body = MessageConstants.FAKE_LOCATION_URL,
                         position = MessagePosition.LEFT,
-                        time = "12:15 PM"
+                        time = LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
                     )
                 )
                 ProvideTextStyle(value = TextStyle(color = Color.White.copy(alpha = 0.7f))) {

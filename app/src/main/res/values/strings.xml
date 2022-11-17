@@ -5,8 +5,8 @@
     <string name="all_message">Message</string>
     <string name="all_phone_numbers">Phone numbers</string>
     <string name="all_location">Location</string>
-    <string name="all_i_am_in_alarm">I AM IN ALARM</string>
-    <string name="all_grant_permissions">Grant permissions</string>
+    <string name="all_i_am_in_danger">I am in danger</string>
+    <string name="all_grant_permission">Grant permission</string>
     <string name="all_ok">OK</string>
     <string name="all_save">Save</string>
     <string name="home_screen_app_state_enabled">SaveMyLife is enabled</string>
@@ -19,14 +19,14 @@
     <string name="phone_number_settings_screen_delete_phone_number">Delete phone number</string>
     <string name="phone_numbers_settings_screen_contact_image">Contact image</string>
     <string name="all_location_sharing">Location sharing</string>
-    <string name="coarse_location_settings_screen_location_permission_request">Coarse location permission is required to share your location with your emergency contacts.</string>
-    <string name="fine_location_settings_screen_location_permission_request">Fine location permission is required to share your location with your emergency contacts.</string>
-    <string name="background_location_settings_screen_location_permission_request">Background location permission is required to share your location with your emergency contacts.</string>
-    <string name="message_settings_screen_schedule_exact_alarm_permission_request">Schedule exact alarm permission is required to  with your emergency contacts.</string>
+    <string name="coarse_location_settings_screen_location_permission_request">Coarse location permission is used to share your coarse location with your emergency contacts.</string>
+    <string name="background_location_settings_screen_location_permission_request">Background location permission is used to share your location with your emergency contacts.</string>
+    <string name="message_settings_screen_schedule_exact_alarm_permission_request">Schedule exact alarm permission is used to  with your emergency contacts.</string>
     <string name="home_screen_do_not_forget_to_adjust_settings_for_you_before_using_the_app">Do not forget to adjust settings for you before using the app</string>
     <string name="all_back">Back</string>
     <string name="message_settings_screen_message_template">Message template</string>
     <string name="all_cancel">Cancel</string>
     <string name="message_settings_screen_sending_interval">Sending interval</string>
     <string name="phone_number_settings_screen_phone_numbers">Phone numbers</string>
+    <string name="home_screen_post_notifications_permission_request">Notifications permission is used to send you important notifications</string>
 </resources>

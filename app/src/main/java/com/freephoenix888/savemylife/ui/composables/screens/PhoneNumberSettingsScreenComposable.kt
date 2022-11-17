@@ -1,5 +1,6 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
+import android.Manifest
 import android.content.Intent
 import android.provider.ContactsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -31,7 +32,7 @@ import com.freephoenix888.savemylife.ui.composables.PhoneNumber
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -40,27 +41,30 @@ fun PhoneNumbersScreen(
     phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    val context = LocalContext.current as AppCompatActivity
-    val phoneNumbers by phoneNumberSettingsViewModel.phoneNumbers.collectAsState()
-    val readContactsPermissionState =
-        rememberPermissionState(permission = android.Manifest.permission.READ_CONTACTS)
-    if (readContactsPermissionState.status != PermissionStatus.Granted) {
+    val readContactsPermissionState = rememberPermissionState(permission = android.Manifest.permission.READ_CONTACTS)
+    if(!readContactsPermissionState.status.isGranted) {
         RequestPermission(
             permissionState = readContactsPermissionState,
-            text = stringResource(R.string.phone_numbers_settings_screen_read_contacts_permission_request)
+            permissionHumanReadableName = "Read contacts",
+            description = stringResource(R.string.phone_numbers_settings_screen_read_contacts_permission_request)
         )
         return
     }
 
-    val sendSmsPermissionState =
-        rememberPermissionState(permission = android.Manifest.permission.SEND_SMS)
-    if(sendSmsPermissionState.status != PermissionStatus.Granted) {
+    val sendSmsPermissionsState = rememberPermissionState(permission = Manifest.permission.SEND_SMS)
+    if (!sendSmsPermissionsState.status.isGranted) {
         RequestPermission(
-            permissionState = sendSmsPermissionState,
-            text = stringResource(R.string.phone_numbers_settings_screen_send_sms_permission_request)
+            permissionState = sendSmsPermissionsState,
+            permissionHumanReadableName = "Send sms",
+            description = "Receive sms permission is used to use find message commands from your messages."
         )
         return
     }
+
+    val context = LocalContext.current as AppCompatActivity
+    val phoneNumbers by phoneNumberSettingsViewModel.phoneNumbers.collectAsState()
+
+
     val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
     val pickContactActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
