@@ -99,7 +99,104 @@ class MainService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        showOverlay()
+    }
+
+    init {
+        lifecycleScope.launchWhenStarted {
+            withContext(Dispatchers.IO) {
+                getIsAlarmModeEnabledFlowUseCase().collect() {
+                    Log.d(TAG, "getIsAlarmModeEnabledFlowUseCase: start $it")
+                    alarmManager =
+                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    if (alarmIntent != null) {
+                        alarmManager?.cancel(alarmIntent)
+                    }
+                    if(!it) {
+                        isAlarmModeEnabled.value = it
+                        return@collect
+                    }
+                    withContext(Dispatchers.Main) {
+                        showOverlay()
+                    }
+                    while(alarmModeBeforeStartTimerInSeconds.value != 0) {
+                        delay(1000)
+                        alarmModeBeforeStartTimerInSeconds.value = alarmModeBeforeStartTimerInSeconds.value - 1
+                    }
+                    if(alarmModeEnsuringView.windowToken != null) {
+                        windowManager.removeView(alarmModeEnsuringView)
+                    }
+
+                    alarmModeBeforeStartTimerInSeconds.value = 5
+
+                    if(!getIsAlarmModeEnabledFlowUseCase().first()) {
+                        return@collect
+                    }
+
+                    val dialogIntent =
+                        Intent(applicationContext, AlarmBroadcastReceiver::class.java)
+                    alarmIntent = PendingIntent.getBroadcast(
+                        applicationContext,
+                        0,
+                        dialogIntent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+                    )
+                    alarmManager?.setRepeating(
+                        AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis(),
+                        messageSendingInterval.value.inWholeMilliseconds,
+                        alarmIntent
+                    )
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            withContext(Dispatchers.IO) {
+                getIsMainServiceEnabledFlowUseCase().collect {
+                    if (!it) {
+                        applicationContext.stopService(
+                            Intent(
+                                applicationContext,
+                                MainService::class.java
+                            )
+                        )
+                    }
+                }
+            }
+
+        }
+        lifecycleScope.launchWhenStarted {
+            withContext(Dispatchers.IO) {
+                getPhoneNumberListFlowUseCase().collect {
+                    phoneNumberList.value = it
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            withContext(Dispatchers.IO) {
+                getMessageSettingsFlowUseCase().collect {
+                    messageSendingInterval.value = it.sendingInterval
+                    isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
+                    messageTemplate.value = it.template
+
+                    if(it.isMessageCommandsEnabled && smsBroadcastReceiver != null){
+                        smsBroadcastReceiver = SmsBroadcastReceiver()
+                        val filter = IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
+                        registerReceiver(smsBroadcastReceiver, filter, 2)
+                    } else if (smsBroadcastReceiver != null) {
+                        unregisterReceiver(smsBroadcastReceiver)
+                    }
+                }
+
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            withContext(Dispatchers.IO) {
+                alarmModeBeforeStartTimerInSeconds.collect {
+                    Log.d(TAG, "NEW TIMER VALUE: $it")
+                }
+            }
+        }
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -119,71 +216,6 @@ class MainService : LifecycleService() {
             }
             else -> {}
         }
-        lifecycleScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.IO) {
-                getIsMainServiceEnabledFlowUseCase().collect {
-                    if (!it) {
-                        applicationContext.stopService(
-                            Intent(
-                                applicationContext,
-                                MainService::class.java
-                            )
-                        )
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.IO) {
-                getPhoneNumberListFlowUseCase().collect {
-                    phoneNumberList.value = it
-                }
-            }
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.IO) {
-                getIsAlarmModeEnabledFlowUseCase().collect {
-                    isAlarmModeEnabled.value = it
-                    alarmManager =
-                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    if (alarmIntent != null) {
-                        alarmManager?.cancel(alarmIntent)
-                    }
-                    if (it) {
-                        val dialogIntent =
-                            Intent(applicationContext, AlarmBroadcastReceiver::class.java)
-                        alarmIntent = PendingIntent.getBroadcast(
-                            applicationContext,
-                            0,
-                            dialogIntent,
-                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-                        )
-                        alarmManager?.setRepeating(
-                            AlarmManager.RTC_WAKEUP,
-                            System.currentTimeMillis(),
-                            messageSendingInterval.value.inWholeMilliseconds,
-                            alarmIntent
-                        )
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            getMessageSettingsFlowUseCase().collect {
-                messageSendingInterval.value = it.sendingInterval
-                isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
-                messageTemplate.value = it.template
-
-                if(it.isMessageCommandsEnabled && smsBroadcastReceiver != null){
-                    smsBroadcastReceiver = SmsBroadcastReceiver()
-                    val filter = IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
-                    registerReceiver(smsBroadcastReceiver, filter, 2)
-                } else if (smsBroadcastReceiver != null) {
-                    unregisterReceiver(smsBroadcastReceiver)
-                }
-            }
-        }
-
         return START_STICKY
     }
 
@@ -301,33 +333,49 @@ class MainService : LifecycleService() {
         }
 
         val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
             layoutFlag,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_SPLIT_TOUCH or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS /*focus*/,
             PixelFormat.TRANSLUCENT
         )
 
-        val composeView = ComposeView(this)
-        composeView.setContent {
-            Text(
-                text = "Hello",
-                color = Color.Black,
-                fontSize = 50.sp,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .background(Color.Green)
-            )
+        alarmModeEnsuringView.setContent {
+            val alarmModeBeforeStartTimerInSeconds = alarmModeBeforeStartTimerInSeconds.collectAsState()
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Alarm mode will be enabled in ${alarmModeBeforeStartTimerInSeconds.value}")
+                Button(onClick = {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        setIsAlarmModeEnabledFlowUseCase(false)
+                        if(alarmModeEnsuringView.windowToken != null) {
+                            windowManager.removeView(alarmModeEnsuringView)
+                        }
+                    }
+                }) {
+                    Text("Cancel")
+                }
+            }
         }
 
-        val viewModelStore = ViewModelStore()
         val lifecycleOwner = MyLifecycleOwner()
         lifecycleOwner.performRestore(null)
         lifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        ViewTreeLifecycleOwner.set(composeView, lifecycleOwner)
-        ViewTreeViewModelStoreOwner.set(composeView) { viewModelStore }
-        composeView.setViewTreeSavedStateRegistryOwner(lifecycleOwner)
+        ViewTreeLifecycleOwner.set(alarmModeEnsuringView, lifecycleOwner)
+        alarmModeEnsuringView.setViewTreeSavedStateRegistryOwner(lifecycleOwner)
+        val viewModelStore = ViewModelStore()
+        ViewTreeViewModelStoreOwner.set(alarmModeEnsuringView) { viewModelStore }
+        val coroutineContext = AndroidUiDispatcher.CurrentThread
+        val runRecomposeScope = CoroutineScope(coroutineContext)
+        val recomposer = Recomposer(coroutineContext)
+        alarmModeEnsuringView.compositionContext = recomposer
+        runRecomposeScope.launch {
+            recomposer.runRecomposeAndApplyChanges()
+        }
 
-        windowManager.addView(composeView, params)
+        windowManager.addView(alarmModeEnsuringView, params)
     }
 }
