@@ -36,7 +36,7 @@ fun MessageSettingsScreen(
     val context = LocalContext.current
     val messageTemplate by messageSettingsViewModel.messageTemplate.collectAsState()
     val messageTemplateErrorMessage by messageSettingsViewModel.messageTemplateErrorMessage.collectAsState()
-    val sendingIntervalInMinutes by messageSettingsViewModel.sendingInterval.collectAsState()
+    val sendingIntervalInMinutes by messageSettingsViewModel.sendingIntervalUiState.collectAsState()
     val sendingIntervalErrorMessage by messageSettingsViewModel.sendingIntervalErrorMessage.collectAsState()
     Scaffold(
         topBar = {
