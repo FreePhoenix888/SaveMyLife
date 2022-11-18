@@ -79,10 +79,13 @@ class SaveMyLifeActivity : AppCompatActivity() {
 
         saveMyLifeViewModel.viewModelScope.launch {
             saveMyLifeViewModel.isMainServiceEnabled.collect { isMainServiceEnabled ->
-                if (isMainServiceEnabled) {
-                    Intent(this@SaveMyLifeActivity, MainService::class.java).also {
+                Intent(this@SaveMyLifeActivity, MainService::class.java).also {
+                    if (isMainServiceEnabled) {
                         it.action = ActionConstants.StartMainService
                         startService(it)
+                    } else {
+                        it.action = ActionConstants.StopMainService
+                        stopService(it)
                     }
                 }
             }
