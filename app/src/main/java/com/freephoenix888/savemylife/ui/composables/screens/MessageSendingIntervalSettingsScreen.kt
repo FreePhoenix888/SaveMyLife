@@ -30,6 +30,7 @@ import java.time.format.FormatStyle
 @Composable
 fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavHostController) {
     val messageSendingInterval by messageSettingsViewModel.sendingInterval.collectAsState()
+    val messageSendingIntervalUiState by messageSettingsViewModel.sendingIntervalUiState.collectAsState()
     val messageSendingIntervalErrorMessage by messageSettingsViewModel.sendingIntervalErrorMessage.collectAsState()
     val isMessageSendingIntervalSaveable by messageSettingsViewModel.isSendingIntervalSaveable.collectAsState(false)
 
