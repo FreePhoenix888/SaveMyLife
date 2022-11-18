@@ -219,23 +219,6 @@ fun HomeScreen(
                    Icon(imageVector = Icons.Filled.Info, contentDescription = "Alarm mode info")
                }
            }
-
-            if(isAlarmModePopupWarningEnabled) {
-                Popup(alignment = Alignment.Center) {
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Alarm mode will be enabled in $alarmModePopupWarningTimer")
-                        Button(onClick = {
-                            isAlarmModeEnabledSwitchState = false
-                        }) {
-                            Text("Cancel")
-                        }
-                    }
-                }
-            }
         }
     }
 
