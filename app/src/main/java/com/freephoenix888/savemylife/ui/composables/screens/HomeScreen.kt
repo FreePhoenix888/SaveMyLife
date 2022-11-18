@@ -160,9 +160,12 @@ fun HomeScreen(
                 mutableStateOf(5)
             }
 
+            val alarmModeButtonOnClick: () -> Unit = {
+            saveMyLifeViewModel.switchIsAlarmModeEnabled()
+            }
            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier
-               .clickable {
-                   isAlarmModeEnabledSwitchState = !isAlarmModeEnabledSwitchState
+               .clickable(enabled = isMainServiceEnabled, role = Role.Switch) {
+                   alarmModeButtonOnClick()
                }
                .background(
                    color = MaterialTheme.colorScheme.error.copy(alpha = 0.3f),
@@ -170,8 +173,8 @@ fun HomeScreen(
                )
                .padding(30.dp)){
                Text("Alarm mode")
-               Switch(checked = isAlarmModeEnabledSwitchState, onCheckedChange = {
-                   isAlarmModeEnabledSwitchState = it
+               Switch(checked = isAlarmModeEnabled, onCheckedChange = {
+                   alarmModeButtonOnClick()
                }, enabled = isMainServiceEnabled, thumbContent = {
                    Icon(imageVector = Icons.Filled.Campaign, contentDescription = "Alarm mode")
                })
