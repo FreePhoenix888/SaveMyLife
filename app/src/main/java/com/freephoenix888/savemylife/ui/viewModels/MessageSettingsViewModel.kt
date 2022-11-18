@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -64,7 +65,8 @@ class MessageSettingsViewModel @Inject constructor(
         isMessageTemplateHasNotSavedChanged.value = false
     }
 
-    val sendingInterval = MutableStateFlow("")
+    val sendingInterval = MutableStateFlow(Duration.ZERO)
+    val sendingIntervalUiState = MutableStateFlow("")
     val sendingIntervalErrorMessage = MutableStateFlow<String?>(null)
     val isSendingIntervalHasNotSavedChanges = MutableStateFlow(false)
     val isSendingIntervalSaveable: Flow<Boolean> = getIsSaveableFlow(
@@ -73,9 +75,9 @@ class MessageSettingsViewModel @Inject constructor(
     )
 
     fun onSendingIntervalChange(newSendingInterval: String) {
-        sendingInterval.value = newSendingInterval
+        sendingIntervalUiState.value = newSendingInterval
         isSendingIntervalHasNotSavedChanges.value = true
-        validateSendingInterval(sendingInterval.value)
+        validateSendingInterval(sendingIntervalUiState.value)
     }
 
     fun validateSendingInterval(sendingInterval: String) {
@@ -92,7 +94,7 @@ class MessageSettingsViewModel @Inject constructor(
 
     fun submitSendingInterval() = viewModelScope.launch {
         setMessageSendingIntervalUseCase(
-            sendingInterval.value.toLong().toDuration(DurationUnit.MINUTES)
+            sendingIntervalUiState.value.toLong().toDuration(DurationUnit.MINUTES)
         )
         isSendingIntervalHasNotSavedChanges.value = false
     }
@@ -110,8 +112,9 @@ class MessageSettingsViewModel @Inject constructor(
                 messageTemplate.value = it.template
                 validateMessageTemplate(messageTemplate.value)
 
-                sendingInterval.value = it.sendingInterval.inWholeMinutes.toString()
-                validateMessageTemplate(sendingInterval.value)
+                sendingInterval.value = it.sendingInterval
+                sendingIntervalUiState.value = sendingInterval.value.inWholeMinutes.toString()
+                validateMessageTemplate(sendingIntervalUiState.value)
 
                 isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
             }
