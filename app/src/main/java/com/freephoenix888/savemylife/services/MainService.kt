@@ -92,6 +92,10 @@ class MainService : LifecycleService() {
                 as WindowManager
     }
 
+    private val alarmModeEnsuringView by lazy {
+        ComposeView(this)
+    }
+
 
     override fun onCreate() {
         super.onCreate()
