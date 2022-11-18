@@ -124,7 +124,7 @@ fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettin
                     TextFieldWithErorr(textField = {
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = messageSendingInterval,
+                            value = messageSendingIntervalUiState,
                             onValueChange = { messageSettingsViewModel.onSendingIntervalChange(it) },
                             isError = messageSendingIntervalErrorMessage != null,
                             leadingIcon = {
