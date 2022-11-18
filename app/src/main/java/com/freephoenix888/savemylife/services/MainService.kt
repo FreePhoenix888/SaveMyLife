@@ -85,6 +85,8 @@ class MainService : LifecycleService() {
     private var alarmManager: AlarmManager? = null
     private var alarmIntent: PendingIntent? = null
 
+    private val alarmModeBeforeStartTimerInSeconds = MutableStateFlow(5)
+
     private val windowManager by lazy {
         applicationContext.getSystemService(Context.WINDOW_SERVICE)
                 as WindowManager
