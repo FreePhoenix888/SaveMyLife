@@ -126,7 +126,8 @@ fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettin
                             isError = messageSendingIntervalErrorMessage != null,
                             leadingIcon = {
                                 Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message sending interval")
-                            }
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                     }, error = messageSendingIntervalErrorMessage?.let {
                         return@let { TextFieldError(error = it) }
