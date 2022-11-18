@@ -73,6 +73,7 @@ fun HomeScreen(
                     Uri.parse("package:${Constants.APP_PACKAGE_NAME}")
                 )
                 context.startActivity(intent)
+                permissionState.launchPermissionRequest()
             },
             permissionHumanReadableName = "On top of other applications",
             description = "Overlay permission is used to show you an overlay window when alarm mode is enabled to let you cancel it if you did it unintentionally",
