@@ -36,7 +36,7 @@ class GetUserLocationUrlUseCase @Inject constructor(
         withContext(Dispatchers.IO) {
             Tasks.await(locationTask)
             val location = locationTask.result
-            locationUrl = "https://www.google.com/maps/${location.latitude},${location.longitude}"
+            locationUrl = "https://maps.google.com/?q=${location.latitude},${location.longitude}"
         }
         return locationUrl
     }
