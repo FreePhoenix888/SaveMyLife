@@ -64,6 +64,9 @@ class MainService : LifecycleService() {
     lateinit var getIsAlarmModeEnabledFlowUseCase: GetIsAlarmModeEnabledFlowUseCase
 
     @Inject
+    lateinit var setIsAlarmModeEnabledFlowUseCase: SetIsAlarmModeEnabledFlowUseCase
+
+    @Inject
     lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
 
     @Inject
