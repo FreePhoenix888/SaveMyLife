@@ -160,28 +160,6 @@ fun HomeScreen(
                 mutableStateOf(5)
             }
 
-            var isAlarmModeEnabledSwitchState by remember {
-                mutableStateOf(isAlarmModeEnabled)
-            }
-
-            LaunchedEffect(key1 = isAlarmModeEnabledSwitchState, block = {
-                if(!isAlarmModeEnabledSwitchState) {
-                    saveMyLifeViewModel.setIsAlarmModeEnabled(false)
-                    isAlarmModePopupWarningEnabled = false
-                    alarmModePopupWarningTimer = 5
-                } else  {
-                    isAlarmModePopupWarningEnabled = true
-                    while (alarmModePopupWarningTimer != 0) {
-                        delay(1000)
-                        --alarmModePopupWarningTimer
-
-                    }
-                    alarmModePopupWarningTimer = 5
-                    saveMyLifeViewModel.setIsAlarmModeEnabled(true)
-                    isAlarmModePopupWarningEnabled = false
-                }
-            })
-
            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier
                .clickable {
                    isAlarmModeEnabledSwitchState = !isAlarmModeEnabledSwitchState
