@@ -79,13 +79,17 @@ class SaveMyLifeActivity : AppCompatActivity() {
 
         saveMyLifeViewModel.viewModelScope.launch {
             saveMyLifeViewModel.isMainServiceEnabled.collect { isMainServiceEnabled ->
-                Intent(this@SaveMyLifeActivity, MainService::class.java).also {
-                    if (isMainServiceEnabled) {
-                        it.action = ActionConstants.StartMainService
-                        startService(it)
+                Intent(this@SaveMyLifeActivity, MainService::class.java).also { mainServiceIntent ->
+                    Log.d(null, "activity onCreate  saveMyLifeViewModel.isMainServiceEnabled.collect")
+                    if(isMainServiceEnabled){
+                        if(Build.VERSION.SDK_INT >= 26) {
+                            this@SaveMyLifeActivity.startForegroundService(mainServiceIntent)
+                        } else {
+                            this@SaveMyLifeActivity.startService(mainServiceIntent)
+                        }
+
                     } else {
-                        it.action = ActionConstants.StopMainService
-                        stopService(it)
+                        this@SaveMyLifeActivity.stopService(mainServiceIntent)
                     }
                 }
             }
