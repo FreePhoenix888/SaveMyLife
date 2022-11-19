@@ -338,7 +338,7 @@ class MainService : LifecycleService() {
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             layoutFlag,
-            WindowManager.LayoutParams.FLAG_SPLIT_TOUCH or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS /*focus*/,
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_SPLIT_TOUCH or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS /*focus*/,
             PixelFormat.TRANSLUCENT
         )
 
