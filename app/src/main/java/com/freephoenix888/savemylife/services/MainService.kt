@@ -98,6 +98,8 @@ class MainService : LifecycleService() {
 
 
     override fun onCreate() {
+        startForegroundService()
+        registerPowerButtonBroadcastReceiver()
         super.onCreate()
     }
 
