@@ -1,6 +1,6 @@
 package com.freephoenix888.savemylife.constants
 
-import com.freephoenix888.savemylife.enums.messageCommandsAndDescriptionsString
+import com.freephoenix888.savemylife.enums.MessageCommand
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -26,5 +26,7 @@ object MessageConstants {
                         """.trimIndent()
     val FAKE_MESSAGE: String =  FAKE_MESSAGE_TEMPLATE.replace("{CONTACT_NAME}", FAKE_CONTACT_NAME)
         .replace("{LOCATION_URL}", FAKE_LOCATION_URL)
-        .replace("{MESSAGE_COMMANDS}", messageCommandsAndDescriptionsString)
+        .replace("{MESSAGE_COMMANDS}", MessageCommand.values().joinToString {
+            return@joinToString "${it.name} - ${it.description}"
+        })
 }
