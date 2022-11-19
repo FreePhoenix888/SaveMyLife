@@ -27,7 +27,6 @@ import androidx.navigation.NavHostController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.enums.MessageCommand
-import com.freephoenix888.savemylife.enums.getMessageCommandDescription
 import com.freephoenix888.savemylife.ui.composables.*
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 import com.google.accompanist.permissions.*
@@ -145,7 +144,7 @@ fun MessageCommandsSettingsScreen(
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold)) {
                                     append("/${messageCommand.name.lowercase()}")
                                 }
-                                append(" - ${getMessageCommandDescription(messageCommand)}")
+                                append(" - ${messageCommand.description}")
                             })
                         }
                     }
