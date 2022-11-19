@@ -378,6 +378,9 @@ class MainService : LifecycleService() {
             recomposer.runRecomposeAndApplyChanges()
         }
 
+        val vibratorManager = getSystemService(VibratorManager::class.java) as VibratorManager
+        vibratorManager.vibrate(CombinedVibration.createParallel(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)))
+
         windowManager.addView(alarmModeEnsuringView, params)
     }
 }
