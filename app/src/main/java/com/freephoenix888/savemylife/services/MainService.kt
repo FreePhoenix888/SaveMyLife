@@ -8,6 +8,10 @@ import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Build
+import android.os.CombinedVibration
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.provider.Settings
 import android.provider.Telephony
 import android.util.Log
@@ -31,9 +35,7 @@ import com.freephoenix888.savemylife.MyLifecycleOwner
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.broadcastReceivers.AlarmBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
-import com.freephoenix888.savemylife.broadcastReceivers.RestartBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.SmsBroadcastReceiver
-import com.freephoenix888.savemylife.constants.ActionConstants
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants.CHANNEL_ID
