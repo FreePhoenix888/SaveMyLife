@@ -104,7 +104,7 @@ class MainService : LifecycleService() {
     }
 
     init {
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
                 getIsAlarmModeEnabledFlowUseCase().collect() {
                     Log.d(TAG, "getIsAlarmModeEnabledFlowUseCase: start $it")
@@ -151,7 +151,7 @@ class MainService : LifecycleService() {
                 }
             }
         }
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
                 getIsMainServiceEnabledFlowUseCase().collect {
                     if (!it) {
@@ -166,14 +166,14 @@ class MainService : LifecycleService() {
             }
 
         }
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
                 getPhoneNumberListFlowUseCase().collect {
                     phoneNumberList.value = it
                 }
             }
         }
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
                 getMessageSettingsFlowUseCase().collect {
                     messageSendingInterval.value = it.sendingInterval
@@ -191,7 +191,7 @@ class MainService : LifecycleService() {
 
             }
         }
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
                 alarmModeBeforeStartTimerInSeconds.collect {
                     Log.d(TAG, "NEW TIMER VALUE: $it")
