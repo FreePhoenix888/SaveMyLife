@@ -247,12 +247,12 @@ class MainService : LifecycleService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
-        val notifyIntent = Intent(this, SaveMyLifeActivity::class.java).apply {
+        val saveMyLifeActivityIntent = Intent(this, SaveMyLifeActivity::class.java)/*.apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val notifyPendingIntent = PendingIntent.getActivity(
-            this, 0, notifyIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        }*/
+        val saveMyLifeActivityPendingIntent = PendingIntent.getActivity(
+            this, 0, saveMyLifeActivityIntent,
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
         )
         val notificationBuilder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_ID)
             .setAutoCancel(false)
@@ -263,7 +263,7 @@ class MainService : LifecycleService() {
             )
             .setContentTitle("SaveMyLife")
             .setContentText("SaveMyLife is active")
-            .setContentIntent(notifyPendingIntent)
+            .setContentIntent(saveMyLifeActivityPendingIntent)
         return notificationBuilder.build()
     }
 
