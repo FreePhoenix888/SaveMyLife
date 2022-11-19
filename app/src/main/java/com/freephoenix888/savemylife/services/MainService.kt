@@ -310,7 +310,7 @@ class MainService : LifecycleService() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val name = NotificationConstants.CHANNEL_NAME
                 val descriptionText = "Hi"
-                val importance = NotificationManager.IMPORTANCE_DEFAULT
+                val importance = NotificationManager.IMPORTANCE_HIGH
                 val channel =
                     NotificationChannel(NotificationConstants.CHANNEL_ID, name, importance).apply {
                         description = descriptionText
