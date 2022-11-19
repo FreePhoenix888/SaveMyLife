@@ -31,23 +31,24 @@ class PowerButtonBroadcastReceiver :
     val TAG = this::class.java.simpleName
 
     private var _count = 0
-    private val _timer = Timer().schedule(5000) {
-        _count = 0
-    }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d(TAG, "onReceive: ${_count}")
         val intentAction = intent?.action ?: return
-        if (intentAction == Intent.ACTION_SCREEN_OFF || intentAction == Intent.ACTION_SCREEN_ON) {
-            if (_count == 0) {
-                _timer.run()
-            }
-            if (_count == 5) {
-                scope.launch {
-                    setIsAlarmModeEnabledUseCase(true)
-                }
-            }
-            ++_count
+        val isScreenOnOrOff = intentAction == Intent.ACTION_SCREEN_OFF || intentAction == Intent.ACTION_SCREEN_ON
+        if (!isScreenOnOrOff) {
+            return
         }
+        if (_count == 0) {
+            Timer().schedule(5000) {
+                _count = 0
+            }
+        }
+        if (_count == 5) {
+            scope.launch {
+                setIsAlarmModeEnabledUseCase(true)
+            }
+        }
+        _count++
+
     }
 }
