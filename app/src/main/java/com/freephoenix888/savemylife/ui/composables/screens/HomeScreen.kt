@@ -2,11 +2,13 @@ package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context.POWER_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
 import android.provider.Settings
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,25 +21,21 @@ import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.window.Popup
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.navigation.Route
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
+import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.permissions.*
-import kotlinx.coroutines.delay
 
 
 @OptIn(
@@ -50,9 +48,23 @@ fun HomeScreen(
     saveMyLifeViewModel: SaveMyLifeViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val powerManager = context.getSystemService(POWER_SERVICE) as PowerManager
+
     val isMainServiceEnabled by saveMyLifeViewModel.isMainServiceEnabled.collectAsState(initial = false)
     val isFirstAppLaunch by saveMyLifeViewModel.isFirstAppLaunch.collectAsState(initial = false)
     val isAlarmModeEnabled by saveMyLifeViewModel.isAlarmModeEnabled.collectAsState(initial = false)
+    var isIgnoreBatteryOptimizationEnabled by remember {
+        mutableStateOf(
+            if(Build.VERSION.SDK_INT >= 23) powerManager.isIgnoringBatteryOptimizations(context.packageName) else true
+        )
+    }
+    var isDisplayOverOtherAppsFeatureEnabled by remember {
+        mutableStateOf(
+            if(Build.VERSION.SDK_INT >= 23) Settings.canDrawOverlays(context) else true
+        )
+    }
+
+
 
     val notificationsPermissionState = rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
     if(!notificationsPermissionState.status.isGranted) {
@@ -64,22 +76,50 @@ fun HomeScreen(
         return
     }
 
-    if(Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(context)) {
-        val overlayPermissionState = rememberPermissionState(permission = Manifest.permission.SYSTEM_ALERT_WINDOW)
-        RequestPermission(
-            permissionState = overlayPermissionState,
-            permissionRequestHandler = { context, permissionState, isFirstRequest ->
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:${Constants.APP_PACKAGE_NAME}")
-                )
-                context.startActivity(intent)
-                permissionState.launchPermissionRequest()
-            },
-            permissionHumanReadableName = "On top of other applications",
-            description = "Overlay permission is used to show you an overlay window when alarm mode is enabled to let you cancel it if you did it unintentionally",
-        )
-        return
+    if(Build.VERSION.SDK_INT >= 23) {
+        if(!isDisplayOverOtherAppsFeatureEnabled) {
+            val overlayPermissionState = rememberPermissionState(permission = Manifest.permission.SYSTEM_ALERT_WINDOW)
+            RequestPermission(
+                permissionState = overlayPermissionState,
+                permissionRequestHandler = { context, permissionState, isFirstRequest ->
+                    isDisplayOverOtherAppsFeatureEnabled = Settings.canDrawOverlays(context)
+                    if(isDisplayOverOtherAppsFeatureEnabled) {
+                        return@RequestPermission
+                    }
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:${context.packageName}")
+                    )
+                    context.startActivity(intent)
+                },
+                permissionHumanReadableName = "Display over other apps",
+                description = "Display over other apps permission is used to show you an overlay window when alarm mode is enabled to let you cancel it if you did it unintentionally",
+            )
+            return
+        }
+
+
+
+        if(!isIgnoreBatteryOptimizationEnabled){
+            val ignoreBatteryOptimizationPermission = rememberPermissionState(permission = Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            RequestPermission(
+                permissionState = ignoreBatteryOptimizationPermission,
+                permissionRequestHandler = { context, permissionState, isFirstRequest ->
+                    isIgnoreBatteryOptimizationEnabled = powerManager.isIgnoringBatteryOptimizations(context.packageName)
+                    if(isIgnoreBatteryOptimizationEnabled) {
+                        return@RequestPermission
+                    }
+                    val intent = Intent()
+                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                    intent.data = Uri.parse("package:${context.packageName}")
+                    context.startActivity(intent)
+
+                },
+                permissionHumanReadableName = "Ignore battery optimization",
+                description = "Ignore battery optimization feature is used to work properly in background. If the app will close because of it SaveMyLife will not be able to help you in danger situation",
+            )
+            return
+        }
     }
 
 //    var isSettingsHintDialogOpened by remember { mutableStateOf(isFirstAppLaunch) }
