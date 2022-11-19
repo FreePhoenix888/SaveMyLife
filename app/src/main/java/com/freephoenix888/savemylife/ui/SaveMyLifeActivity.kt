@@ -3,11 +3,14 @@ package com.freephoenix888.savemylife.ui
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -25,6 +28,7 @@ import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
