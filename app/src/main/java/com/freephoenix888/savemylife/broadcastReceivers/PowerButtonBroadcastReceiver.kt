@@ -3,10 +3,8 @@ package com.freephoenix888.savemylife.broadcastReceivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import com.freephoenix888.savemylife.domain.useCases.OpenDangerModeActivationConfirmationScreenUseCase
 import com.freephoenix888.savemylife.domain.useCases.SetIsDangerModeEnabledUseCase
-import com.freephoenix888.savemylife.enums.IntentAction
-import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +26,9 @@ class PowerButtonBroadcastReceiver :
     @Inject
     lateinit var setIsDangerModeEnabledUseCase: SetIsDangerModeEnabledUseCase
 
+    @Inject
+    lateinit var enableDangerModeUseCase: OpenDangerModeActivationConfirmationScreenUseCase
+
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     val TAG = this::class.java.simpleName
@@ -48,11 +49,7 @@ class PowerButtonBroadcastReceiver :
         if (_count == 5) {
             scope.launch {
 //                setIsDangerModeEnabledUseCase(true)
-                val saveMyLifeActivityIntent = Intent(context, SaveMyLifeActivity::class.java)
-                saveMyLifeActivityIntent.action = IntentAction.EnableDangerMode.name
-                saveMyLifeActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                saveMyLifeActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                context.startActivity(saveMyLifeActivityIntent)
+                enableDangerModeUseCase.invoke(context)
             }
         }
         _count++
