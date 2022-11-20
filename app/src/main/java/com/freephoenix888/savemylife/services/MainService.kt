@@ -36,6 +36,7 @@ import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.broadcastReceivers.AlarmBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
 import com.freephoenix888.savemylife.broadcastReceivers.SmsBroadcastReceiver
+import com.freephoenix888.savemylife.broadcastReceivers.alarmIntent
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants.CHANNEL_ID
@@ -84,7 +85,7 @@ class MainService : LifecycleService() {
     private val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
 
     private val alarmManager: AlarmManager by lazy { this@MainService.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
-    private var alarmIntent: PendingIntent? = null
+//    private var alarmIntent: PendingIntent? = null
 
     private val dangerModeBeforeStartTimerInSeconds = MutableStateFlow(5)
 
@@ -114,18 +115,24 @@ class MainService : LifecycleService() {
                     if(isDangerModeEnabled) {
                         val dangerBroadcastReceiverIntent =
                             Intent(this@MainService, AlarmBroadcastReceiver::class.java)
-                        alarmIntent = PendingIntent.getBroadcast(
-                            this@MainService,
-                            0,
-                            dangerBroadcastReceiverIntent,
-                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-                        )
-                        alarmManager?.setRepeating(
-                            AlarmManager.RTC_WAKEUP,
-                            System.currentTimeMillis(),
-                            messageSendingInterval.value.inWholeMilliseconds,
-                            alarmIntent
-                        )
+
+                        sendBroadcast(dangerBroadcastReceiverIntent)
+
+//                        alarmIntent = PendingIntent.getBroadcast(
+//                            this@MainService,
+//                            0,
+//                            dangerBroadcastReceiverIntent,
+//                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+//                        )
+//                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+//                        System.currentTimeMillis() + messageSendingInterval.value.inWholeMilliseconds, alarmIntent)
+
+//                        alarmManager?.setRepeating(
+//                            AlarmManager.RTC_WAKEUP,
+//                            System.currentTimeMillis(),
+//                            messageSendingInterval.value.inWholeMilliseconds,
+//                            alarmIntent
+//                        )
                     }
                 }
             }
