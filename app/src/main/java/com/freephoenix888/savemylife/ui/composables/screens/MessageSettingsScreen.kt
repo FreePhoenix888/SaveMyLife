@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.navigation.Route
+import com.freephoenix888.savemylife.navigation.NavigationDestination
 import com.freephoenix888.savemylife.ui.composables.settings.SettingLink
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -69,15 +69,15 @@ fun MessageSettingsScreen(
                 var isMessageTemplateDialogOpened by remember { mutableStateOf(false) }
 
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Message, contentDescription = "Message template")} ,title = {Text("Message template")}, onClick = {
-                    navController.navigate(Route.Home.Settings.MessageSettings.MessageTemplateSettings.name)
+                    navController.navigate(NavigationDestination.MessageTemplateSettings.name)
                 })
 
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message sending interval")} ,title = {Text("Message sending interval")}, onClick = {
-                    navController.navigate(Route.Home.Settings.MessageSettings.MessageSendingIntervalSettings.name)
+                    navController.navigate(NavigationDestination.MessageSendingIntervalSettings.name)
                 })
 
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message commands")} ,title = {Text("Message commands")}, onClick = {
-                    navController.navigate(Route.Home.Settings.MessageSettings.MessageCommandsSettings.name)
+                    navController.navigate(NavigationDestination.MessageCommandsSettings.name)
                 })
                 //                if(isMessageTemplateDialogOpened) {
 //                    AlertDialog(onDismissRequest = { isMessageTemplateDialogOpened = false }, title = {

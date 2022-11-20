@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.navigation.Route
+import com.freephoenix888.savemylife.navigation.NavigationDestination
 import com.freephoenix888.savemylife.ui.composables.settings.SettingLink
 import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
 
@@ -81,7 +81,7 @@ fun SettingsScreen(
             }, title = {
                 Text(stringResource(R.string.all_phone_numbers))
             }, onClick = {
-                navController.navigate(Route.Home.Settings.PhoneNumbersSettings.name)
+                navController.navigate(NavigationDestination.PhoneNumbersSettings.name)
             })
             SettingLink(icon = {
                 Icon(
@@ -91,7 +91,7 @@ fun SettingsScreen(
             }, title = {
                 Text(stringResource(R.string.all_message))
             }, onClick = {
-                navController.navigate(Route.Home.Settings.MessageSettings.MessageSettingsRoute.name)
+                navController.navigate(NavigationDestination.MessageSettings.name)
             })
 
             SettingLink(icon = {
@@ -102,7 +102,7 @@ fun SettingsScreen(
             }, title = {
                 Text(stringResource(R.string.all_location_sharing))
             }, onClick = {
-                navController.navigate(Route.Home.Settings.LocationSharingSettings.name)
+                navController.navigate(NavigationDestination.LocationSharingSettings.name)
             })
         }
     }

@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.navigation.Route
+import com.freephoenix888.savemylife.navigation.NavigationDestination
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import com.google.accompanist.flowlayout.FlowRow
@@ -145,7 +145,7 @@ fun HomeScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            navController.navigate(Route.Home.Settings.SettingsRoot.name)
+                            navController.navigate(NavigationDestination.Settings.name)
                         },
                         modifier = Modifier
                     ) {
@@ -240,13 +240,13 @@ fun HomeScreen(
                                Text("It is not all what SaveMyLife can do. Go to settings and configure SaveMyLife for you")
                                Text("Location sharing", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold,modifier = Modifier.clickable(
                                    onClick = {
-                                       navController.navigate(Route.Home.Settings.LocationSharingSettings.name)
+                                       navController.navigate(NavigationDestination.LocationSharingSettings.name)
                                    }
                                ))
                                Text("Enable location sharing to send your location url in the emergency message")
                                Text("Message commands", style = MaterialTheme.typography.headlineSmall,modifier = Modifier.clickable(
                                    onClick = {
-                                       navController.navigate(Route.Home.Settings.MessageSettings.MessageCommandsSettings.name)
+                                       navController.navigate(NavigationDestination.MessageCommandsSettings.name)
                                    }
                                ))
                                Text("Enable message command to let your emergency contacts get specific information about you by sending message commands to you")
