@@ -36,42 +36,6 @@ class SaveMyLifeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(null, "SaveMyLifeActivity onCreate: ")
-
-//        // Create an explicit intent for an Activity in your app
-//        val intent = Intent(this, SaveMyLifeActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        }
-//        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-//
-//        var builder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_ID)
-//            .setSmallIcon(R.drawable.ic_stat_name)
-//            .setContentTitle("Text")
-//            .setContentText("Textrrr")
-//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//
-//        // Create the NotificationChannel, but only on API 26+ because
-//        // the NotificationChannel class is new and not in the support library
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val name = NotificationConstants.CHANNEL_NAME
-//            val descriptionText = "Hi"
-//            val importance = NotificationManager.IMPORTANCE_DEFAULT
-//            val channel =
-//                NotificationChannel(NotificationConstants.CHANNEL_ID, name, importance).apply {
-//                    description = descriptionText
-//                }
-//            // Register the channel with the system
-//            val notificationManager: NotificationManager =
-//                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            notificationManager.createNotificationChannel(channel)
-//        }
-//
-//        with(NotificationManagerCompat.from(this)) {
-//            // notificationId is a unique int for each notification that you must define
-//            notify(0, builder.build())
-//        }
-
-
 
         saveMyLifeViewModel.viewModelScope.launch {
             saveMyLifeViewModel.isMainServiceEnabled.collect { isMainServiceEnabled ->
@@ -107,11 +71,6 @@ class SaveMyLifeActivity : AppCompatActivity() {
                                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         )
                     }
-                    navController.navigate(NavigationDestination.DangerModeActivationConfirmation.name) {
-//                        popUpTo(NavigationDestination.Home.name) {
-//                            inclusive = true
-//                        }
-                    }
                 }
                 else -> {}
             }
@@ -120,14 +79,6 @@ class SaveMyLifeActivity : AppCompatActivity() {
 
     }
 
-//    private fun setupToolbar(){
-//        val toolbar = binding.toolbarMain.toolbar
-//        val toolBarConfig = AppBarConfiguration(navController.graph)
-//        setSupportActionBar(toolbar)
-//        toolbar.setupWithNavController(navController, toolBarConfig)
-//        supportActionBar?.setDisplayShowTitleEnabled(false)
-//    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -135,19 +86,5 @@ class SaveMyLifeActivity : AppCompatActivity() {
     ) {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        navigateToButtonFragmentIfNeeded(intent)
-    }
-
-    private fun processIntentAction(intent: Intent?) {
-        navigateToButtonFragmentIfNeeded(intent)
-
-    }
-
-    private fun navigateToButtonFragmentIfNeeded(intent: Intent?) {
-
     }
 }
