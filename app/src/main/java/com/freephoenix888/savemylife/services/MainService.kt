@@ -77,14 +77,13 @@ class MainService : LifecycleService() {
     private var smsBroadcastReceiver: SmsBroadcastReceiver? = null
     private var isFirstStart = true
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val isAlarmModeEnabled = MutableStateFlow(false)
     private val isMessageCommandsEnabled = MutableStateFlow(false)
     private val messageTemplate = MutableStateFlow("")
     private val messageSendingInterval = MutableStateFlow(MessageConstants.DEFAULT_SENDING_INTERVAL)
     private val phoneNumberList = MutableStateFlow(emptyList<PhoneNumber>())
     private val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
 
-    private var alarmManager: AlarmManager? = null
+    private val alarmManager: AlarmManager by lazy { this@MainService.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
     private var alarmIntent: PendingIntent? = null
 
     private val alarmModeBeforeStartTimerInSeconds = MutableStateFlow(5)
@@ -108,48 +107,26 @@ class MainService : LifecycleService() {
     init {
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
-                getIsAlarmModeEnabledFlowUseCase().collect() {
-                    Log.d(TAG, "getIsAlarmModeEnabledFlowUseCase: start $it")
-                    alarmManager =
-                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                getIsAlarmModeEnabledFlowUseCase().collect() { isAlarmModeEnabled ->
                     if (alarmIntent != null) {
                         alarmManager?.cancel(alarmIntent)
                     }
-                    if(!it) {
-                        isAlarmModeEnabled.value = it
-                        return@collect
+                    if(isAlarmModeEnabled) {
+                        val dangerBroadcastReceiverIntent =
+                            Intent(this@MainService, AlarmBroadcastReceiver::class.java)
+                        alarmIntent = PendingIntent.getBroadcast(
+                            this@MainService,
+                            0,
+                            dangerBroadcastReceiverIntent,
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+                        )
+                        alarmManager?.setRepeating(
+                            AlarmManager.RTC_WAKEUP,
+                            System.currentTimeMillis(),
+                            messageSendingInterval.value.inWholeMilliseconds,
+                            alarmIntent
+                        )
                     }
-                    withContext(Dispatchers.Main) {
-                        showOverlay()
-                    }
-                    while(alarmModeBeforeStartTimerInSeconds.value != 0) {
-                        delay(1000)
-                        alarmModeBeforeStartTimerInSeconds.value = alarmModeBeforeStartTimerInSeconds.value - 1
-                    }
-                    if(alarmModeEnsuringView.windowToken != null) {
-                        windowManager.removeView(alarmModeEnsuringView)
-                    }
-
-                    alarmModeBeforeStartTimerInSeconds.value = 5
-
-                    if(!getIsAlarmModeEnabledFlowUseCase().first()) {
-                        return@collect
-                    }
-
-                    val dialogIntent =
-                        Intent(applicationContext, AlarmBroadcastReceiver::class.java)
-                    alarmIntent = PendingIntent.getBroadcast(
-                        applicationContext,
-                        0,
-                        dialogIntent,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-                    )
-                    alarmManager?.setRepeating(
-                        AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis(),
-                        messageSendingInterval.value.inWholeMilliseconds,
-                        alarmIntent
-                    )
                 }
             }
         }
@@ -157,10 +134,10 @@ class MainService : LifecycleService() {
             withContext(Dispatchers.IO) {
                 getIsMainServiceEnabledFlowUseCase().collect {
                     if (!it) {
-                        applicationContext.stopService(
+                        this@MainService.stopService(
                             Intent(
-                                applicationContext,
-                                MainService::class.java
+                                this@MainService,
+                                this@MainService::class.java
                             )
                         )
                     }
@@ -203,28 +180,14 @@ class MainService : LifecycleService() {
 
     }
 
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+        Log.d(TAG, "onStartCommand: ")
         super.onStartCommand(intent, flags, startId)
-        registerPowerButtonBroadcastReceiver()
-        if (intent == null) {
-            return START_STICKY
-        }
-
-        when (intent.action) {
-            ActionConstants.StartMainService -> {
-                if (isFirstStart) {
-                    startForegroundService()
-                    isFirstStart = false
-                }
-            }
-            else -> {}
-        }
         return START_STICKY
     }
 
     override fun onDestroy() {
-        sendBroadcast(Intent(applicationContext, RestartBroadcastReceiver::class.java))
         unregisterReceiver(powerButtonBroadcastReceiver)
         if(smsBroadcastReceiver != null) {
             unregisterReceiver(smsBroadcastReceiver)
@@ -275,7 +238,7 @@ class MainService : LifecycleService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.all_app_name)
             val descriptionText = getString(R.string.all_app_name)
-            val importance = NotificationManager.IMPORTANCE_MAX
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
@@ -284,105 +247,5 @@ class MainService : LifecycleService() {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-    }
-
-    private fun showOverlay() {
-        if (!Settings.canDrawOverlays(this)) {
-            // Create an explicit intent for an Activity in your app
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            ).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-//            val intent = Intent(applicationContext, SaveMyLifeActivity::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            }
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
-            var builder = NotificationCompat.Builder(applicationContext, NotificationConstants.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_stat_name)
-                .setContentTitle("Provide ")
-                .setContentText("Textrrr")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = NotificationConstants.CHANNEL_NAME
-                val descriptionText = "Hi"
-                val importance = NotificationManager.IMPORTANCE_HIGH
-                val channel =
-                    NotificationChannel(NotificationConstants.CHANNEL_ID, name, importance).apply {
-                        description = descriptionText
-                    }
-                // Register the channel with the system
-                val notificationManager: NotificationManager =
-                    applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
-            }
-
-            with(NotificationManagerCompat.from(applicationContext)) {
-                // notificationId is a unique int for each notification that you must define
-                notify(125125, builder.build())
-            }
-            return
-        }
-
-        val layoutFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        } else {
-            WindowManager.LayoutParams.TYPE_PHONE
-        }
-
-        val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            layoutFlag,
-            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_SPLIT_TOUCH or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS /*focus*/,
-            PixelFormat.TRANSLUCENT
-        )
-
-        alarmModeEnsuringView.setContent {
-            val alarmModeBeforeStartTimerInSeconds = alarmModeBeforeStartTimerInSeconds.collectAsState()
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Alarm mode will be enabled in ${alarmModeBeforeStartTimerInSeconds.value}")
-                Button(onClick = {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        setIsAlarmModeEnabledFlowUseCase(false)
-                        if(alarmModeEnsuringView.windowToken != null) {
-                            windowManager.removeView(alarmModeEnsuringView)
-                        }
-                    }
-                }) {
-                    Text("Cancel")
-                }
-            }
-        }
-
-        val lifecycleOwner = MyLifecycleOwner()
-        lifecycleOwner.performRestore(null)
-        lifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        ViewTreeLifecycleOwner.set(alarmModeEnsuringView, lifecycleOwner)
-        alarmModeEnsuringView.setViewTreeSavedStateRegistryOwner(lifecycleOwner)
-        val viewModelStore = ViewModelStore()
-        ViewTreeViewModelStoreOwner.set(alarmModeEnsuringView) { viewModelStore }
-        val coroutineContext = AndroidUiDispatcher.CurrentThread
-        val runRecomposeScope = CoroutineScope(coroutineContext)
-        val recomposer = Recomposer(coroutineContext)
-        alarmModeEnsuringView.compositionContext = recomposer
-        runRecomposeScope.launch {
-            recomposer.runRecomposeAndApplyChanges()
-        }
-
-        val vibratorManager = getSystemService(VibratorManager::class.java) as VibratorManager
-        vibratorManager.vibrate(CombinedVibration.createParallel(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)))
-
-        windowManager.addView(alarmModeEnsuringView, params)
     }
 }
