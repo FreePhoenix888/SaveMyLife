@@ -1,25 +1,17 @@
 package com.freephoenix888.savemylife.ui
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.role.RoleManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.viewModelScope
-import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.constants.ActionConstants
-import com.freephoenix888.savemylife.constants.NotificationConstants
-import com.freephoenix888.savemylife.constants.NotificationConstants.CHANNEL_ID
+import androidx.navigation.compose.rememberNavController
+import com.freephoenix888.savemylife.enums.IntentAction
+import com.freephoenix888.savemylife.navigation.NavigationDestination
 import com.freephoenix888.savemylife.services.MainService
 import com.freephoenix888.savemylife.ui.composables.SaveMyLifeApp
 import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
@@ -28,7 +20,6 @@ import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -45,6 +36,7 @@ class SaveMyLifeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(null, "SaveMyLifeActivity onCreate: ")
 
 //        // Create an explicit intent for an Activity in your app
 //        val intent = Intent(this, SaveMyLifeActivity::class.java).apply {
@@ -98,9 +90,34 @@ class SaveMyLifeActivity : AppCompatActivity() {
                 }
             }
         }
+
         setContent {
-            SaveMyLifeApp()
+            val navController = rememberNavController()
+            SaveMyLifeApp(navController)
+            when (intent.action) {
+                IntentAction.EnableDangerMode.name -> {
+                    if (Build.VERSION.SDK_INT >= 27) {
+                        setShowWhenLocked(true)
+                        setTurnScreenOn(true)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        window.addFlags(
+                            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        )
+                    }
+                    navController.navigate(NavigationDestination.DangerModeActivationConfirmation.name) {
+//                        popUpTo(NavigationDestination.Home.name) {
+//                            inclusive = true
+//                        }
+                    }
+                }
+                else -> {}
+            }
         }
+
+
     }
 
 //    private fun setupToolbar(){
