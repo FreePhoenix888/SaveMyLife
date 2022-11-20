@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.freephoenix888.savemylife.navigation.Route
+import com.freephoenix888.savemylife.navigation.NavigationDestination
 import com.freephoenix888.savemylife.ui.composables.screens.MessageCommandsSettingsScreen
 import com.freephoenix888.savemylife.ui.composables.screens.MessageSendingIntervalSettingsScreen
 import com.freephoenix888.savemylife.ui.composables.screens.MessageSettingsScreen
@@ -15,20 +15,20 @@ import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 fun NavGraphBuilder.messageSettingsNavGraph(
     navController: NavHostController
 ) {
-    navigation(route = Route.Home.Settings.MessageSettings.MessageSettingsRoute.name, startDestination = Route.Home.Settings.MessageSettings.MessageSettingsRoot.name) {
-        composable(route = Route.Home.Settings.MessageSettings.MessageSettingsRoot.name) {
+    navigation(route = "Message Settings Route", startDestination = NavigationDestination.MessageSettings.name) {
+        composable(route = NavigationDestination.MessageSettings.name) {
             val messageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()
             MessageSettingsScreen(messageSettingsViewModel = messageSettingsViewModel, navController = navController)
         }
-        composable(route = Route.Home.Settings.MessageSettings.MessageTemplateSettings.name) {
+        composable(route = NavigationDestination.MessageTemplateSettings.name) {
             val messageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()
             MessageTemplateSettingsScreen(messageSettingsViewModel = messageSettingsViewModel, navController = navController)
         }
-        composable(route = Route.Home.Settings.MessageSettings.MessageSendingIntervalSettings.name) {
+        composable(route = NavigationDestination.MessageSendingIntervalSettings.name) {
             val messageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()
             MessageSendingIntervalSettingsScreen(messageSettingsViewModel = messageSettingsViewModel, navController = navController)
         }
-        composable(route = Route.Home.Settings.MessageSettings.MessageCommandsSettings.name) {
+        composable(route = NavigationDestination.MessageCommandsSettings.name) {
             val messageSettingsViewModel: MessageSettingsViewModel = hiltViewModel()
             MessageCommandsSettingsScreen(messageSettingsViewModel = messageSettingsViewModel, navController = navController)
         }

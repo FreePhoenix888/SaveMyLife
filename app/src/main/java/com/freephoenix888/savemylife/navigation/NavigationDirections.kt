@@ -1,27 +1,54 @@
 package com.freephoenix888.savemylife.navigation
 
-//sealed class NavigationDirections(val direction: String) {
-//    sealed class Home() {
-//        object Settings : NavigationDirections(direction = "settings")
-//        sealed class NestedSettings() {
-//            object PhoneNumbersSettings : NavigationDirections(direction = "phone_numbers_settings")
-//            object MessageSettings : NavigationDirections(direction = "message_settings")
-//            object LocationSharingSettings : NavigationDirections(direction = "location_sharing_settings")
-//        }
-//    }
-//
-//
-//
-//    sealed class MessageSettingsScreen() {
-//        object MessageTemplateSettings : NavigationDirections(direction = "message_template_settings")
-//        object MessageSendingIntervalSettings :
-//            NavigationDirections(direction = "message_sending_interval_settings")
-//
-//        object MessageCommandsSettings : NavigationDirections(direction = "message_commands_settings")
-//    }
-//}
+/*sealed class NavigationDirections() {
+    val name = this::class.simpleName
+    sealed class HomeRoute() : NavigationDirections() {
+        object HomeDestination : HomeRoute()
+        sealed class Settings() : HomeRoute() {
+            object PhoneNumbersSettings : Settings()
+            sealed class MessageSettings : Settings() {
+                object MessageSettings
+            }
+            object LocationSharingSettings : Settings()
+        }
+    }
 
 
+
+    sealed class MessageSettingsScreen() {
+        object MessageTemplateSettings : NavigationDirections(direction = "message_template_settings")
+        object MessageSendingIntervalSettings :
+            NavigationDirections(direction = "message_sending_interval_settings")
+
+        object MessageCommandsSettings : NavigationDirections(direction = "message_commands_settings")
+    }
+}*/
+
+
+
+
+
+enum class NavigationDestination{
+    Home,
+    Settings,
+    PhoneNumbersSettings,
+    MessageSettings,
+    MessageTemplateSettings,
+    MessageSendingIntervalSettings,
+    MessageCommandsSettings,
+    LocationSharingSettings,
+    DangerModeActivationConfirmation
+}
+
+/*
+enum class NavigationRoute(val destinations: List<NavigationDestination>) {
+    Home(destinations = listOf(NavigationDestination.Home)),
+    Settings(destinations = listOf(NavigationDestination.PhoneNumbersSettings, NavigationDestination.MessageSettings, NavigationDestination.LocationSharingSettings)),
+    MessageSettings(destinations = listOf(NavigationDestination.MessageTemplateSettings, NavigationDestination.MessageSendingIntervalSettings, NavigationDestination.MessageCommandsSettings))
+}
+*/
+
+/*
 enum class Route {
     ;
     enum class Home{
@@ -40,9 +67,9 @@ enum class Route {
                 MessageCommandsSettings
             }
         }
-
     }
 }
+*/
 
 //object Route {
 //    const val Root = "Root"
