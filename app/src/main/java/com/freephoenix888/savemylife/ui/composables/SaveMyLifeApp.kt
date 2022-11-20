@@ -2,14 +2,16 @@ package com.freephoenix888.savemylife.ui.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.navigation.navGraph.SaveMyLifeNavGraph
 import com.freephoenix888.savemylife.ui.theme.SaveMyLifeTheme
 
 @Composable
-fun SaveMyLifeApp() {
+fun SaveMyLifeApp(navController: NavHostController) {
     SaveMyLifeTheme {
-        SaveMyLifeNavGraph(navController = rememberNavController())
+        SaveMyLifeNavGraph(navController = navController)
     }
 }
 
@@ -69,8 +71,8 @@ fun SaveMyLifeApp() {
 //    }
 //}
 
-@Preview
-@Composable
-private fun SaveMyLifeAppPreview() {
-    SaveMyLifeApp()
-}
+//@Preview
+//@Composable
+//private fun SaveMyLifeAppPreview() {
+//    SaveMyLifeApp()
+//}
