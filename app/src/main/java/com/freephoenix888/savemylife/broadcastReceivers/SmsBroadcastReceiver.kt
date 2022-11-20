@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
-import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.domain.useCases.GetUserLocationUrlUseCase
+import com.freephoenix888.savemylife.domain.useCases.SendSmsUseCase
 import com.freephoenix888.savemylife.enums.MessageCommand
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +28,9 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     @Inject
     lateinit var getUserLocationUrlUseCase: GetUserLocationUrlUseCase
 
+    @Inject
+    lateinit var sendSmsUseCase: SendSmsUseCase
+
     override fun onReceive(context: Context, intent: Intent) {
         if (!intent.action.equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) return
         val smsMessages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
@@ -40,7 +43,7 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
                 MessageCommand.LOCATION.name.lowercase() -> {
                     scope.launch(Dispatchers.IO) {
                         smsMessage.originatingAddress?.let { originatingAddress ->
-                            Utils.sendSms(
+                            sendSmsUseCase(
                                 context,
                                 phoneNumber = originatingAddress,
                                 message = getUserLocationUrlUseCase()

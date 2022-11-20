@@ -27,7 +27,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.ui.composables.PhoneNumber
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
@@ -71,7 +70,7 @@ fun PhoneNumbersScreen(
         onResult = { activityResult ->
             val contactUri = activityResult.data?.data ?: return@rememberLauncherForActivityResult
             val phoneNumber =
-                Utils.getPhoneNumberByContentUri(contentUri = contactUri, context = context)
+                phoneNumberSettingsViewModel.getPhoneNumberByContentUri(contentUri = contactUri, context = context)
             phoneNumberSettingsViewModel.addPhoneNumber(phoneNumber = phoneNumber)
         })
 

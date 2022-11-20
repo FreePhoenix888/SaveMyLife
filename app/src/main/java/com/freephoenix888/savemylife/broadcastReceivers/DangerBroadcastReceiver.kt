@@ -5,11 +5,10 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import com.freephoenix888.savemylife.Utils
 import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalFlowUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetMessageUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.SendSmsUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -34,13 +33,15 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     @Inject
     lateinit var getMessageSendingIntervalFlowUseCase: GetMessageSendingIntervalFlowUseCase
     @Inject
+    lateinit var sendSmsUseCase: SendSmsUseCase
+    @Inject
     @ApplicationContext
     lateinit var applicationContext: Context
     override fun onReceive(context: Context, intent: Intent) {
         coroutineScope.launch {
             val phoneNumbers = getPhoneNumberListFlowUseCase().first()
             for (phoneNumber in phoneNumbers) {
-                Utils.sendSms(
+                sendSmsUseCase(
                     context = applicationContext,
                     phoneNumber = phoneNumber.phoneNumber,
                     message = getMessageUseCase(phoneNumber)
