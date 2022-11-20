@@ -43,22 +43,8 @@ fun DangerModeActivationConfirmationScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("SaveMyLife")
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            navController.navigate(NavigationDestination.Settings.name)
-                        },
-                        modifier = Modifier
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = stringResource(R.string.all_settings)
-                        )
-                    }
-                }
-            )
+                    Text("Danger Mode Confirmation")
+                })
         }
     ) { innerPadding ->
         val context = LocalContext.current as ComponentActivity
@@ -88,14 +74,14 @@ fun DangerModeActivationConfirmationScreen(
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        val vibrate: () -> Unit = {
+        val vibrate: (milliseconds: Long) -> Unit = { milliseconds ->
             if (Build.VERSION.SDK_INT >= 26) {
                 vibrator.vibrate(
-                    VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE),
+                    VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE),
                 )
             } else {
                 @Suppress("DEPRECATION")
-                vibrator.vibrate(1000)
+                vibrator.vibrate(milliseconds)
             }
         }
 
@@ -103,14 +89,14 @@ fun DangerModeActivationConfirmationScreen(
             mutableStateOf(false)
         }
         val onAction: (isDangerModeEnabled: Boolean) -> Unit = { isDangerModeEnabled ->
-            vibrate()
+            vibrate(if(isDangerModeEnabled) 1000 else 500)
             isActionConfirmed = true
             saveMyLifeViewModel.setIsDangerModeEnabled(isDangerModeEnabled)
         }
         var secondsTimer by remember { mutableStateOf(10) }
 
         LaunchedEffect(Unit) {
-            vibrate()
+            vibrate(1000)
             while (secondsTimer != 0 && !isActionConfirmed) {
                 delay(1000)
                 --secondsTimer
