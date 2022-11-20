@@ -35,7 +35,7 @@ class SaveMyLifeViewModel @Inject constructor(
         setIsDangerModeEnabledUseCase(newValue)
     }
 
-    fun openDangerModeActivationConfirmationScreenUseCase() {
+    fun openDangerModeActivationConfirmationScreen() {
         openDangerModeActivationConfirmationScreenUseCase(applicationContext)
     }
 }
