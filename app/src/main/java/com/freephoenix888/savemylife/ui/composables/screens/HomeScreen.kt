@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -202,7 +201,11 @@ fun HomeScreen(
             }
 
             val dangerModeButtonOnClick: () -> Unit = {
-            saveMyLifeViewModel.switchIsDangerModeEnabled()
+                if(isDangerModeEnabled) {
+                    saveMyLifeViewModel.setIsDangerModeEnabled(false)
+                } else {
+                    saveMyLifeViewModel.openDangerModeActivationConfirmationScreen()
+                }
             }
            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier
                .clickable(enabled = isMainServiceEnabled, role = Role.Switch) {
