@@ -18,11 +18,11 @@ import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 fun AlarmButtonScreen(
     saveMyLifeViewModel: SaveMyLifeViewModel = viewModel(),
 ) {
-    val alarmModeState by saveMyLifeViewModel.isAlarmModeEnabled.collectAsState(initial = false)
+    val dangerModeState by saveMyLifeViewModel.isDangerModeEnabled.collectAsState(initial = false)
     AlarmButtonScreenBody(
-        alarmModeState = alarmModeState,
-        onSwitchIsAlarmModeEnabled = {
-            saveMyLifeViewModel.switchIsAlarmModeEnabled()
+        dangerModeState = dangerModeState,
+        onSwitchIsDangerModeEnabled = {
+            saveMyLifeViewModel.switchIsDangerModeEnabled()
         }
     )
 }
@@ -30,8 +30,8 @@ fun AlarmButtonScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AlarmButtonScreenBody(
-    alarmModeState: Boolean,
-    onSwitchIsAlarmModeEnabled: () -> Unit
+    dangerModeState: Boolean,
+    onSwitchIsDangerModeEnabled: () -> Unit
 ) {
     Scaffold { innerPadding: PaddingValues ->
         Button(
@@ -39,8 +39,8 @@ private fun AlarmButtonScreenBody(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(50.dp),
-            onClick = onSwitchIsAlarmModeEnabled,
-            colors = ButtonDefaults.buttonColors(containerColor = if(alarmModeState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary),
+            onClick = onSwitchIsDangerModeEnabled,
+            colors = ButtonDefaults.buttonColors(containerColor = if(dangerModeState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(20.dp)
         ) {
             Text(stringResource(R.string.all_i_am_in_danger))
@@ -52,10 +52,10 @@ private fun AlarmButtonScreenBody(
 @Preview(showBackground = true, widthDp = 300, heightDp = 300)
 @Composable
 private fun AlarmButtonScreenBodyPreview() {
-    var alarmModeState by remember { mutableStateOf(false)}
+    var dangerModeState by remember { mutableStateOf(false)}
     AlarmButtonScreenBody(
-        alarmModeState = alarmModeState,
-        onSwitchIsAlarmModeEnabled = {
-        alarmModeState = !alarmModeState
+        dangerModeState = dangerModeState,
+        onSwitchIsDangerModeEnabled = {
+        dangerModeState = !dangerModeState
     })
 }

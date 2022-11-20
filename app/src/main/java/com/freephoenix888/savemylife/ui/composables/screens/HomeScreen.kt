@@ -52,7 +52,7 @@ fun HomeScreen(
 
     val isMainServiceEnabled by saveMyLifeViewModel.isMainServiceEnabled.collectAsState(initial = false)
     val isFirstAppLaunch by saveMyLifeViewModel.isFirstAppLaunch.collectAsState(initial = false)
-    val isAlarmModeEnabled by saveMyLifeViewModel.isAlarmModeEnabled.collectAsState(initial = false)
+    val isDangerModeEnabled by saveMyLifeViewModel.isDangerModeEnabled.collectAsState(initial = false)
     var isIgnoreBatteryOptimizationEnabled by remember {
         mutableStateOf(
             if(Build.VERSION.SDK_INT >= 23) powerManager.isIgnoringBatteryOptimizations(context.packageName) else true
@@ -93,7 +93,7 @@ fun HomeScreen(
                     context.startActivity(intent)
                 },
                 permissionHumanReadableName = "Display over other apps",
-                description = "Display over other apps permission is used to show you an overlay window when alarm mode is enabled to let you cancel it if you did it unintentionally",
+                description = "Display over other apps permission is used to show you an overlay window when danger mode is enabled to let you cancel it if you did it unintentionally",
             )
             return
         }
@@ -194,49 +194,49 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(50.dp))
 
 
-            var isAlarmModePopupWarningEnabled by remember {
-                mutableStateOf(isAlarmModeEnabled)
+            var isDangerModePopupWarningEnabled by remember {
+                mutableStateOf(isDangerModeEnabled)
             }
-            var alarmModePopupWarningTimer by remember {
+            var dangerModePopupWarningTimer by remember {
                 mutableStateOf(5)
             }
 
-            val alarmModeButtonOnClick: () -> Unit = {
-            saveMyLifeViewModel.switchIsAlarmModeEnabled()
+            val dangerModeButtonOnClick: () -> Unit = {
+            saveMyLifeViewModel.switchIsDangerModeEnabled()
             }
            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier
                .clickable(enabled = isMainServiceEnabled, role = Role.Switch) {
-                   alarmModeButtonOnClick()
+                   dangerModeButtonOnClick()
                }
                .background(
                    color = MaterialTheme.colorScheme.error.copy(alpha = 0.3f),
                    shape = RoundedCornerShape(50)
                )
                .padding(30.dp)){
-               Text("Alarm mode")
-               Switch(checked = isAlarmModeEnabled, onCheckedChange = {
-                   alarmModeButtonOnClick()
+               Text("Danger mode")
+               Switch(checked = isDangerModeEnabled, onCheckedChange = {
+                   dangerModeButtonOnClick()
                }, enabled = isMainServiceEnabled, thumbContent = {
-                   Icon(imageVector = Icons.Filled.Campaign, contentDescription = "Alarm mode")
+                   Icon(imageVector = Icons.Filled.Campaign, contentDescription = "Danger mode")
                })
-               var isAlarmModeAlertDialogInfoEnabled by remember {
+               var isDangerModeAlertDialogInfoEnabled by remember {
                    mutableStateOf(false)
                }
-               if(isAlarmModeAlertDialogInfoEnabled) {
+               if(isDangerModeAlertDialogInfoEnabled) {
                    AlertDialog(onDismissRequest = {
-                       isAlarmModeAlertDialogInfoEnabled = false
+                       isDangerModeAlertDialogInfoEnabled = false
                    }, confirmButton = {},
                    icon = {
-                       Icon(imageVector = Icons.Filled.Campaign, contentDescription = "Alarm mode info")
+                       Icon(imageVector = Icons.Filled.Campaign, contentDescription = "Danger mode info")
                    },
                    title = {
-                       Text("Alarm mode")
+                       Text("Danger mode")
                    },
                    text = {
                        Column() {
 
                            FlowRow {
-                               Text("Enable alarm mode if you are in danger and SaveMyLife will send emergency messages to your emergency phone numbers")
+                               Text("Enable danger mode if you are in danger and SaveMyLife will send emergency messages to your emergency phone numbers")
                                Text("It is not all what SaveMyLife can do. Go to settings and configure SaveMyLife for you")
                                Text("Location sharing", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold,modifier = Modifier.clickable(
                                    onClick = {
@@ -255,9 +255,9 @@ fun HomeScreen(
                    })
                }
                IconButton(onClick = {
-                   isAlarmModeAlertDialogInfoEnabled = true
+                   isDangerModeAlertDialogInfoEnabled = true
                }) {
-                   Icon(imageVector = Icons.Filled.Info, contentDescription = "Alarm mode info")
+                   Icon(imageVector = Icons.Filled.Info, contentDescription = "Danger mode info")
                }
            }
         }

@@ -4,13 +4,13 @@ import android.util.Log
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class SwitchIsAlarmModeEnabledUseCase @Inject constructor(
-    val getIsAlarmModeEnabledFlowUseCase: GetIsAlarmModeEnabledFlowUseCase,
-    val setIsAlarmModeEnabledUseCase: SetIsAlarmModeEnabledUseCase
+class SwitchIsDangerModeEnabledUseCase @Inject constructor(
+    val getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase,
+    val setIsDangerModeEnabledUseCase: SetIsDangerModeEnabledUseCase
 ) {
     suspend operator fun invoke() {
-        Log.d(null, "SwitchIsAlarmModeEnabledUseCase: ")
-        val oldState = getIsAlarmModeEnabledFlowUseCase().first()
-        setIsAlarmModeEnabledUseCase(!oldState)
+        Log.d(null, "SwitchIsDangerModeEnabledUseCase: ")
+        val oldState = getIsDangerModeEnabledFlowUseCase().first()
+        setIsDangerModeEnabledUseCase(!oldState)
     }
 }

@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.freephoenix888.savemylife.domain.useCases.SetIsAlarmModeEnabledUseCase
+import com.freephoenix888.savemylife.domain.useCases.SetIsDangerModeEnabledUseCase
 import com.freephoenix888.savemylife.enums.IntentAction
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +26,7 @@ class PowerButtonBroadcastReceiver :
     lateinit var applicationContext: Context
 
     @Inject
-    lateinit var setIsAlarmModeEnabledUseCase: SetIsAlarmModeEnabledUseCase
+    lateinit var setIsDangerModeEnabledUseCase: SetIsDangerModeEnabledUseCase
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -47,7 +47,7 @@ class PowerButtonBroadcastReceiver :
         }
         if (_count == 5) {
             scope.launch {
-//                setIsAlarmModeEnabledUseCase(true)
+//                setIsDangerModeEnabledUseCase(true)
                 val saveMyLifeActivityIntent = Intent(context, SaveMyLifeActivity::class.java)
                 saveMyLifeActivityIntent.action = IntentAction.EnableDangerMode.name
                 saveMyLifeActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

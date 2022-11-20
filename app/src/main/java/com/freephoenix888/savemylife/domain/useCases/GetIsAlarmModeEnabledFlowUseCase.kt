@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetIsAlarmModeEnabledFlowUseCase @Inject constructor(private val repository: SaveMyLifeRepository){
+class GetIsDangerModeEnabledFlowUseCase @Inject constructor(private val repository: SaveMyLifeRepository){
     operator fun invoke(): Flow<Boolean> {
-        return repository.settings.map { it.isAlarmModeEnabled }
+        return repository.settings.map { it.isDangerModeEnabled }
     }
 }

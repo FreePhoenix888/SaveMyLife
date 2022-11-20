@@ -102,10 +102,10 @@ fun DangerModeActivationConfirmationScreen(
         var isActionConfirmed by remember {
             mutableStateOf(false)
         }
-        val onAction: (isAlarmModeEnabled: Boolean) -> Unit = { isAlarmModeEnabled ->
+        val onAction: (isDangerModeEnabled: Boolean) -> Unit = { isDangerModeEnabled ->
             vibrate()
             isActionConfirmed = true
-            saveMyLifeViewModel.setIsAlarmModeEnabled(isAlarmModeEnabled)
+            saveMyLifeViewModel.setIsDangerModeEnabled(isDangerModeEnabled)
         }
         var secondsTimer by remember { mutableStateOf(10) }
 
@@ -170,7 +170,7 @@ fun DangerModeActivationConfirmationScreen(
             ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Alarm mode will be enabled in $secondsTimer")
+            Text("Danger mode will be enabled in $secondsTimer")
             Row(
                 horizontalArrangement = Arrangement.spacedBy(
                     space = 16.dp,

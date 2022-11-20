@@ -21,10 +21,10 @@ class SaveMyLifeDataStoreLocalDataSource @Inject constructor(private val dataSto
         }
     }
 
-    override suspend fun setIsAlarmModeEnabled(newState: Boolean) {
+    override suspend fun setIsDangerModeEnabled(newState: Boolean) {
         dataStore.updateData {
             it.toBuilder()
-                .setIsAlarmModeEnabled(newState)
+                .setIsDangerModeEnabled(newState)
                 .build()
         }
     }

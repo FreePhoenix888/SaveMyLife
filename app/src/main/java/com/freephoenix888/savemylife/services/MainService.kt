@@ -63,10 +63,10 @@ class MainService : LifecycleService() {
     lateinit var getIsMainServiceEnabledFlowUseCase: GetIsMainServiceEnabledFlowUseCase
 
     @Inject
-    lateinit var getIsAlarmModeEnabledFlowUseCase: GetIsAlarmModeEnabledFlowUseCase
+    lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
 
     @Inject
-    lateinit var setIsAlarmModeEnabledFlowUseCase: SetIsAlarmModeEnabledFlowUseCase
+    lateinit var setIsDangerModeEnabledFlowUseCase: SetIsDangerModeEnabledFlowUseCase
 
     @Inject
     lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
@@ -86,14 +86,14 @@ class MainService : LifecycleService() {
     private val alarmManager: AlarmManager by lazy { this@MainService.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
     private var alarmIntent: PendingIntent? = null
 
-    private val alarmModeBeforeStartTimerInSeconds = MutableStateFlow(5)
+    private val dangerModeBeforeStartTimerInSeconds = MutableStateFlow(5)
 
     private val windowManager by lazy {
         applicationContext.getSystemService(Context.WINDOW_SERVICE)
                 as WindowManager
     }
 
-    private val alarmModeEnsuringView by lazy {
+    private val dangerModeEnsuringView by lazy {
         ComposeView(this)
     }
 
@@ -107,11 +107,11 @@ class MainService : LifecycleService() {
     init {
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
-                getIsAlarmModeEnabledFlowUseCase().collect() { isAlarmModeEnabled ->
+                getIsDangerModeEnabledFlowUseCase().collect() { isDangerModeEnabled ->
                     if (alarmIntent != null) {
                         alarmManager?.cancel(alarmIntent)
                     }
-                    if(isAlarmModeEnabled) {
+                    if(isDangerModeEnabled) {
                         val dangerBroadcastReceiverIntent =
                             Intent(this@MainService, AlarmBroadcastReceiver::class.java)
                         alarmIntent = PendingIntent.getBroadcast(
@@ -172,7 +172,7 @@ class MainService : LifecycleService() {
         }
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
-                alarmModeBeforeStartTimerInSeconds.collect {
+                dangerModeBeforeStartTimerInSeconds.collect {
                     Log.d(TAG, "NEW TIMER VALUE: $it")
                 }
             }
