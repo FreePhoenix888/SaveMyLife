@@ -15,7 +15,7 @@ import javax.inject.Inject
 class LocationSharingSettingsViewModel @Inject constructor(
     getLocationSettingsFlowUseCase: GetLocationSettingsFlowUseCase,
     private val setIsLocationSharingEnabledUseCase: SetIsLocationSharingEnabledUseCase,
-    private val locationSettingsToLocationSettingsFormStateMapper: LocationSettingsToLocationSettingsFormStateMapper
+    private val locationSettingsToLocationSettingsFormStateMapper: LocationSettingsToLocationSettingsFormStateMapper,
 ) : ViewModel() {
 
     init {
