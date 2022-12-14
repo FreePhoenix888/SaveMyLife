@@ -33,16 +33,14 @@ import androidx.lifecycle.*
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.freephoenix888.savemylife.MyLifecycleOwner
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.broadcastReceivers.AlarmBroadcastReceiver
-import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
-import com.freephoenix888.savemylife.broadcastReceivers.SmsBroadcastReceiver
-import com.freephoenix888.savemylife.broadcastReceivers.alarmIntent
+import com.freephoenix888.savemylife.broadcastReceivers.*
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.constants.NotificationConstants.CHANNEL_ID
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
 import com.freephoenix888.savemylife.domain.useCases.*
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
+import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,16 +65,10 @@ class MainService : LifecycleService() {
     lateinit var getIsDangerModeEnabledFlowUseCase: GetIsDangerModeEnabledFlowUseCase
 
     @Inject
-    lateinit var setIsDangerModeEnabledFlowUseCase: SetIsDangerModeEnabledFlowUseCase
-
-    @Inject
     lateinit var getPhoneNumberListFlowUseCase: GetPhoneNumberListFlowUseCase
 
-    @Inject
-    lateinit var getMessageUseCase: GetMessageUseCase
 
     private var smsBroadcastReceiver: SmsBroadcastReceiver? = null
-    private var isFirstStart = true
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val isMessageCommandsEnabled = MutableStateFlow(false)
     private val messageTemplate = MutableStateFlow("")
@@ -88,11 +80,6 @@ class MainService : LifecycleService() {
 //    private var alarmIntent: PendingIntent? = null
 
     private val dangerModeBeforeStartTimerInSeconds = MutableStateFlow(5)
-
-    private val windowManager by lazy {
-        applicationContext.getSystemService(Context.WINDOW_SERVICE)
-                as WindowManager
-    }
 
     private val dangerModeEnsuringView by lazy {
         ComposeView(this)
@@ -109,30 +96,14 @@ class MainService : LifecycleService() {
         lifecycleScope.launchWhenCreated {
             withContext(Dispatchers.IO) {
                 getIsDangerModeEnabledFlowUseCase().collect() { isDangerModeEnabled ->
-                    if (alarmIntent != null) {
-                        alarmManager?.cancel(alarmIntent)
-                    }
                     if(isDangerModeEnabled) {
-                        val dangerBroadcastReceiverIntent =
-                            Intent(this@MainService, AlarmBroadcastReceiver::class.java)
-
-                        sendBroadcast(dangerBroadcastReceiverIntent)
-
-//                        alarmIntent = PendingIntent.getBroadcast(
-//                            this@MainService,
-//                            0,
-//                            dangerBroadcastReceiverIntent,
-//                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-//                        )
-//                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-//                        System.currentTimeMillis() + messageSendingInterval.value.inWholeMilliseconds, alarmIntent)
-
-//                        alarmManager?.setRepeating(
-//                            AlarmManager.RTC_WAKEUP,
-//                            System.currentTimeMillis(),
-//                            messageSendingInterval.value.inWholeMilliseconds,
-//                            alarmIntent
-//                        )
+                        sendBroadcast(
+                            Intent(applicationContext, DangerBroadcastReceiver::class.java)
+                        )
+                    } else {
+                        sendBroadcast(
+                            Intent(applicationContext, DangerCancellationBroadcastReceiver::class.java)
+                        )
                     }
                 }
             }
