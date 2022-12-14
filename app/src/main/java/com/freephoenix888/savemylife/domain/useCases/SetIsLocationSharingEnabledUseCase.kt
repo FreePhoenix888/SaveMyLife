@@ -1,11 +1,11 @@
 package com.freephoenix888.savemylife.domain.useCases
 
-import com.freephoenix888.savemylife.data.repositories.LocationRepository
+import com.freephoenix888.savemylife.data.repositories.LocationSharingRepository
 import javax.inject.Inject
 
-class SetIsLocationSharingEnabledUseCase @Inject constructor(val locationRepository: LocationRepository) {
+class SetIsLocationSharingEnabledUseCase @Inject constructor(val locationSharingRepository: LocationSharingRepository) {
 
     suspend operator fun invoke(newState: Boolean) {
-        locationRepository.setIsLocationSharingEnabled(newState)
+        locationSharingRepository.setIsLocationSharingEnabled(newState)
     }
 }
