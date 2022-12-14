@@ -1,24 +1,21 @@
 package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.Manifest
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BatterySaver
 import androidx.compose.material.icons.filled.ShareLocation
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,15 +24,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+
 import androidx.navigation.compose.rememberNavController
+import com.freephoenix888.savemylife.BatterySaverModeEnum.BatterySaverMode
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.constants.Constants
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
+import com.freephoenix888.savemylife.ui.composables.settings.SettingCheckbox
+import com.freephoenix888.savemylife.ui.composables.settings.SettingLink
 import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 
 
@@ -43,8 +42,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 @Composable
 fun LocationSettingsScreen(
     locationSharingSettingsViewModel: LocationSharingSettingsViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavController = rememberNavController()
 ) {
+
     val fineLocationPermissionState = rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
     if(!fineLocationPermissionState.status.isGranted) {
         RequestPermission(
@@ -114,6 +114,7 @@ fun LocationSettingsScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(dimensionResource(R.dimen.settings_screen_padding))
+                .verticalScroll(rememberScrollState())
                 ,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

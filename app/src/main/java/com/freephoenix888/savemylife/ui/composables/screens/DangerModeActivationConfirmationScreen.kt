@@ -25,7 +25,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.navigation.NavigationDestination
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
@@ -35,7 +36,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DangerModeActivationConfirmationScreen(
-    navController: NavHostController,
+    navController: NavController,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     saveMyLifeViewModel: SaveMyLifeViewModel = hiltViewModel()
 ) {

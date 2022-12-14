@@ -13,7 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.navigation.NavigationDestination
@@ -25,7 +26,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 @Composable
 fun MessageSettingsScreen(
     messageSettingsViewModel: MessageSettingsViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavController = rememberNavController()
 ) {
 //    RequestPermission(
 //        permissions = listOf(Manifest.permission.SCHEDULE_EXACT_ALARM),
@@ -68,17 +69,17 @@ fun MessageSettingsScreen(
             Column(modifier = Modifier.padding(innerPadding)) {
                 var isMessageTemplateDialogOpened by remember { mutableStateOf(false) }
 
-                SettingLink(icon = { Icon(imageVector = Icons.Filled.Message, contentDescription = "Message template")} ,title = {Text("Message template")}, onClick = {
-                    navController.navigate(NavigationDestination.MessageTemplateSettings.name)
-                })
 
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message sending interval")} ,title = {Text("Message sending interval")}, onClick = {
                     navController.navigate(NavigationDestination.MessageSendingIntervalSettings.name)
                 })
-
                 SettingLink(icon = { Icon(imageVector = Icons.Filled.Timer, contentDescription = "Message commands")} ,title = {Text("Message commands")}, onClick = {
                     navController.navigate(NavigationDestination.MessageCommandsSettings.name)
                 })
+                SettingLink(icon = { Icon(imageVector = Icons.Filled.Message, contentDescription = "Message template")} ,title = {Text("Message template")}, onClick = {
+                    navController.navigate(NavigationDestination.MessageTemplateSettings.name)
+                })
+
                 //                if(isMessageTemplateDialogOpened) {
 //                    AlertDialog(onDismissRequest = { isMessageTemplateDialogOpened = false }, title = {
 //                        Text(stringResource(R.string.message_settings_screen_message_template))

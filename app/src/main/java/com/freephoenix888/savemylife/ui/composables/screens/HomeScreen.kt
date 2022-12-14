@@ -167,7 +167,7 @@ fun HomeScreen(
             Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
                     onClick = {
-                        saveMyLifeViewModel.switchIsMainServiceEnabled()
+                        saveMyLifeViewModel.setIsMainServiceEnabled(!isMainServiceEnabled)
                     },
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(containerColor = if (isMainServiceEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error),

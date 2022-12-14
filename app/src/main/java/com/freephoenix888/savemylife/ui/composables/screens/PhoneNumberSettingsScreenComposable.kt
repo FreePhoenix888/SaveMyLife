@@ -24,7 +24,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.composables.PhoneNumber
@@ -38,7 +38,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 @Composable
 fun PhoneNumbersScreen(
     phoneNumberSettingsViewModel: PhoneNumberSettingsViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavController = rememberNavController()
 ) {
     val readContactsPermissionState = rememberPermissionState(permission = android.Manifest.permission.READ_CONTACTS)
     if(!readContactsPermissionState.status.isGranted) {

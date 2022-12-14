@@ -19,7 +19,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.ui.composables.*
@@ -31,7 +32,7 @@ import kotlin.time.DurationUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavHostController) {
+fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavController) {
     val messageSendingInterval by messageSettingsViewModel.sendingInterval.collectAsState()
     val messageSendingIntervalUiState by messageSettingsViewModel.sendingIntervalUiState.collectAsState()
     val messageSendingIntervalErrorMessage by messageSettingsViewModel.sendingIntervalErrorMessage.collectAsState()

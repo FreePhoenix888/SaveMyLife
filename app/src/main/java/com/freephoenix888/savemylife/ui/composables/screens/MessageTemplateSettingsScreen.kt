@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.constants.MessageTemplateVariables
@@ -26,7 +26,7 @@ import java.time.format.FormatStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavHostController) {
+fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavController) {
 
     val messageTemplate by messageSettingsViewModel.messageTemplate.collectAsState()
     val messageTemplateErrorMessage by messageSettingsViewModel.messageTemplateErrorMessage.collectAsState()

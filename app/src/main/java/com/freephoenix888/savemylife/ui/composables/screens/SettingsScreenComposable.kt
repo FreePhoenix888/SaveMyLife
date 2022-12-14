@@ -85,6 +85,16 @@ fun SettingsScreen(
             })
             SettingLink(icon = {
                 Icon(
+                    imageVector = Icons.Filled.ShareLocation,
+                    contentDescription = stringResource(R.string.all_location_sharing)
+                )
+            }, title = {
+                Text(stringResource(R.string.all_location_sharing))
+            }, onClick = {
+                navController.navigate(NavigationDestination.LocationSharingSettings.name)
+            })
+            SettingLink(icon = {
+                Icon(
                     imageVector = Icons.Filled.Message,
                     contentDescription = stringResource(R.string.all_message)
                 )
@@ -94,16 +104,6 @@ fun SettingsScreen(
                 navController.navigate(NavigationDestination.MessageSettings.name)
             })
 
-            SettingLink(icon = {
-                Icon(
-                    imageVector = Icons.Filled.ShareLocation,
-                    contentDescription = stringResource(R.string.all_location_sharing)
-                )
-            }, title = {
-                Text(stringResource(R.string.all_location_sharing))
-            }, onClick = {
-                navController.navigate(NavigationDestination.LocationSharingSettings.name)
-            })
         }
     }
 }

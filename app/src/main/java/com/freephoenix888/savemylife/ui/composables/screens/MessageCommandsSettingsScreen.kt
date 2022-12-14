@@ -23,7 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.enums.MessageCommand
@@ -38,7 +39,7 @@ import java.time.format.FormatStyle
 @Composable
 fun MessageCommandsSettingsScreen(
     messageSettingsViewModel: MessageSettingsViewModel,
-    navController: NavHostController
+    navController: NavController
 ) {
         val receiveSmsPermissionsState = rememberPermissionState(permission = Manifest.permission.RECEIVE_SMS)
     if (!receiveSmsPermissionsState.status.isGranted) {
