@@ -7,6 +7,7 @@ import android.provider.Telephony
 import com.freephoenix888.savemylife.domain.useCases.GetUserLocationUrlUseCase
 import com.freephoenix888.savemylife.domain.useCases.SendSmsUseCase
 import com.freephoenix888.savemylife.enums.MessageCommand
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SmsBroadcastReceiver : BroadcastReceiver() {
     private val scope = CoroutineScope(SupervisorJob())
 
