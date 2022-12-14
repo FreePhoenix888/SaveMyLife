@@ -5,8 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.telephony.SmsManager
+import javax.inject.Inject
 
-class SendSmsUseCase {
+class SendSmsUseCase @Inject constructor() {
     operator fun invoke(context: Context, phoneNumber: String, message: String) {
         val flags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
         val sentPI: PendingIntent =

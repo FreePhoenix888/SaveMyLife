@@ -5,8 +5,9 @@ import android.net.Uri
 import android.provider.ContactsContract
 import androidx.core.net.toUri
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
+import javax.inject.Inject
 
-class GetPhoneNumberByContentUriUseCase {
+class GetPhoneNumberByContentUriUseCase @Inject constructor() {
     operator fun invoke(context: Context, contentUri: Uri): PhoneNumber {
         val contestResolver = context.contentResolver
         val cursor = contestResolver.query(
