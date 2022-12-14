@@ -2,7 +2,7 @@ package com.freephoenix888.savemylife.navigation.navGraph
 
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.freephoenix888.savemylife.navigation.NavigationDestination
@@ -13,7 +13,7 @@ import com.freephoenix888.savemylife.ui.composables.screens.MessageTemplateSetti
 import com.freephoenix888.savemylife.ui.viewModels.MessageSettingsViewModel
 
 fun NavGraphBuilder.messageSettingsNavGraph(
-    navController: NavHostController
+    navController: NavController
 ) {
     navigation(route = "Message Settings Route", startDestination = NavigationDestination.MessageSettings.name) {
         composable(route = NavigationDestination.MessageSettings.name) {

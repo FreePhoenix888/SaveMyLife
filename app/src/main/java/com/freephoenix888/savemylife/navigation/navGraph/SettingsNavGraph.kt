@@ -2,7 +2,7 @@ package com.freephoenix888.savemylife.navigation.navGraph
 
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.freephoenix888.savemylife.navigation.NavigationDestination
@@ -13,7 +13,7 @@ import com.freephoenix888.savemylife.ui.viewModels.LocationSharingSettingsViewMo
 import com.freephoenix888.savemylife.ui.viewModels.PhoneNumberSettingsViewModel
 
 fun NavGraphBuilder.settingsNavGraph(
-    navController: NavHostController,
+    navController: NavController,
     startDestination: NavigationDestination = NavigationDestination.Settings
 ) {
     navigation(route = "Settings Route", startDestination = startDestination.name) {
