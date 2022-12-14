@@ -18,7 +18,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.constants.Constants
 import com.google.accompanist.permissions.*
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -31,7 +30,7 @@ fun RequestPermission(
         } else {
             val intent = Intent(
                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.parse("package:${Constants.APP_PACKAGE_NAME}")
+                Uri.parse("package:${context.packageName}")
             )
             context.startActivity(intent)
         }
