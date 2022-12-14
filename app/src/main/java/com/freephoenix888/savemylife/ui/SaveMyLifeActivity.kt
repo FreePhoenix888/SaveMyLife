@@ -71,6 +71,7 @@ class SaveMyLifeActivity : AppCompatActivity() {
                                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         )
                     }
+                    navController.navigate(NavigationDestination.DangerModeActivationConfirmation.name)
                 }
                 else -> {}
             }
