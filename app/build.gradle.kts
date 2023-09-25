@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "com.freephoenix888.savemylife"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"

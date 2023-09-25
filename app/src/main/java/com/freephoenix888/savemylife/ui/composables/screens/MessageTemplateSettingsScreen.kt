@@ -29,7 +29,7 @@ import java.time.format.FormatStyle
 fun MessageTemplateSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavController) {
 
     val messageTemplate by messageSettingsViewModel.messageTemplate.collectAsState()
-    val messageTemplateErrorMessage by messageSettingsViewModel.messageTemplateErrorMessage.collectAsState()
+    val messageTemplateErrorMessage by messageSettingsViewModel.messageTemplateError.collectAsState()
     val isMessageTemplateSaveable by messageSettingsViewModel.isMessageTemplateSaveable.collectAsState(false   )
 
     var isNotSavedChangedWarningDialogOpened by remember { mutableStateOf(false)}

@@ -35,7 +35,7 @@ import kotlin.time.DurationUnit
 fun MessageSendingIntervalSettingsScreen(messageSettingsViewModel: MessageSettingsViewModel, navController: NavController) {
     val messageSendingInterval by messageSettingsViewModel.sendingInterval.collectAsState()
     val messageSendingIntervalUiState by messageSettingsViewModel.sendingIntervalUiState.collectAsState()
-    val messageSendingIntervalErrorMessage by messageSettingsViewModel.sendingIntervalErrorMessage.collectAsState()
+    val messageSendingIntervalErrorMessage by messageSettingsViewModel.sendingIntervalError.collectAsState()
     val isMessageSendingIntervalSaveable by messageSettingsViewModel.isSendingIntervalSaveable.collectAsState(false)
 
     var isNotSavedChangesWarningDialogOpened by remember { mutableStateOf(false)}

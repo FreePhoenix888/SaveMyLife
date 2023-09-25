@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.freephoenix888.savemylife.domain.useCases.GetLocationSettingsFlowUseCase
 import com.freephoenix888.savemylife.domain.useCases.SetIsLocationSharingEnabledUseCase
-import com.freephoenix888.savemylife.mappers.LocationSettingsToLocationSettingsFormStateMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +14,6 @@ import javax.inject.Inject
 class LocationSharingSettingsViewModel @Inject constructor(
     getLocationSettingsFlowUseCase: GetLocationSettingsFlowUseCase,
     private val setIsLocationSharingEnabledUseCase: SetIsLocationSharingEnabledUseCase,
-    private val locationSettingsToLocationSettingsFormStateMapper: LocationSettingsToLocationSettingsFormStateMapper,
 ) : ViewModel() {
 
     init {

@@ -27,7 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 import androidx.navigation.compose.rememberNavController
-import com.freephoenix888.savemylife.BatterySaverModeEnum.BatterySaverMode
+
 import com.freephoenix888.savemylife.R
 import com.freephoenix888.savemylife.ui.composables.RequestPermission
 import com.freephoenix888.savemylife.ui.composables.settings.SettingCheckbox
