@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,7 +38,7 @@ class DangerBroadcastReceiver:
 
     override fun onReceive(context: Context?, intent: Intent?) {
         scope.launch {
-            Log.d(null, "DangerBroadcastReceiver onReceive: \n${System.currentTimeMillis()} \n${getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds} \n ${System.currentTimeMillis() + getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds}")
+            Timber.d( "DangerBroadcastReceiver onReceive: \n${System.currentTimeMillis()} \n${getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds} \n ${System.currentTimeMillis() + getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds}")
             doOnDangerUseCase()
  
             val intent = Intent(applicationContext, DangerBroadcastReceiver::class.java)

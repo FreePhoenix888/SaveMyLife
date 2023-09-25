@@ -10,14 +10,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.schedule
 
 @AndroidEntryPoint
-class PowerButtonBroadcastReceiver :
-    BroadcastReceiver() {
+class PowerButtonBroadcastReceiver : BroadcastReceiver() {
 
     @Inject
     @ApplicationContext
@@ -30,7 +30,6 @@ class PowerButtonBroadcastReceiver :
     lateinit var enableDangerModeUseCase: OpenDangerModeActivationConfirmationScreenUseCase
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
     val TAG = this::class.java.simpleName
 
     private var _count = 0
@@ -38,21 +37,20 @@ class PowerButtonBroadcastReceiver :
     override fun onReceive(context: Context, intent: Intent?) {
         val intentAction = intent?.action ?: return
         val isScreenOnOrOff = intentAction == Intent.ACTION_SCREEN_OFF || intentAction == Intent.ACTION_SCREEN_ON
-        if (!isScreenOnOrOff) {
-            return
-        }
-        if (_count == 0) {
-            Timer().schedule(5000) {
+        if (!isScreenOnOrOff) return
+
+        _count++
+        if (_count == 1) {
+            scope.launch {
+                delay(5000)
                 _count = 0
             }
         }
         if (_count == 5) {
             scope.launch {
-//                setIsDangerModeEnabledUseCase(true)
                 enableDangerModeUseCase.invoke(context)
+                _count = 0
             }
         }
-        _count++
-
     }
 }

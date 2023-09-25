@@ -1,14 +1,24 @@
 package com.freephoenix888.savemylife.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.freephoenix888.savemylife.constants.MessageConstants
 import com.freephoenix888.savemylife.domain.models.ValidationResult
-import com.freephoenix888.savemylife.domain.useCases.*
+import com.freephoenix888.savemylife.domain.useCases.GetIsLocationSharingEnabledFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetIsMessageCommandsEnabledFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetMessageSettingsFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.SetIsMessageCommandsEnabledUseCase
+import com.freephoenix888.savemylife.domain.useCases.SetMessageSendingIntervalUseCase
+import com.freephoenix888.savemylife.domain.useCases.SetMessageTemplateUseCase
+import com.freephoenix888.savemylife.domain.useCases.ValidateMessageSendingIntervalInputUseCase
+import com.freephoenix888.savemylife.domain.useCases.ValidateMessageTemplateInputUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -26,39 +36,35 @@ class MessageSettingsViewModel @Inject constructor(
     private val getIsLocationSharingEnabledFlowUseCase: GetIsLocationSharingEnabledFlowUseCase
 ) : ViewModel() {
 
-    private fun <T> getIsSaveableFlow(flow1: Flow<T?>, flow2: Flow<Boolean>): Flow<Boolean> =
-        combine(flow1, flow2) { item1, item2 -> item1 == null && item2 }
+    private val TAG = this::class.simpleName
 
-    val messageTemplate = MutableStateFlow("")
+    // Message Template related members
+    val messageTemplate = MutableStateFlow(MessageConstants.DEFAULT_TEMPLATE)
     val messageTemplateError = MutableStateFlow<String?>(null)
     val hasMessageTemplateChanged = MutableStateFlow(false)
-    val isMessageTemplateSaveable = getIsSaveableFlow(messageTemplateError, hasMessageTemplateChanged)
+    val isMessageTemplateSaveable = isSaveableFlow(messageTemplateError, hasMessageTemplateChanged)
 
-    fun onMessageTemplateChange(newMessageTemplate: String) = viewModelScope.launch {
-        messageTemplate.value = newMessageTemplate
-        hasMessageTemplateChanged.value = true
-        validateMessageTemplate(newMessageTemplate)
-    }
-
-    private fun validateMessageTemplate(template: String) = viewModelScope.launch {
-        validateMessageTemplateInputUseCase(template).let {
-            messageTemplateError.value = when(it) {
-                is ValidationResult.Error -> it.message
-                is ValidationResult.Success -> null
-            }
-        }
-    }
-
-    fun submitMessageTemplate() = viewModelScope.launch {
-        setMessageTemplateUseCase(messageTemplate.value)
-        hasMessageTemplateChanged.value = false
-    }
-
+    // Sending Interval related members
     val sendingInterval = MutableStateFlow(Duration.ZERO)
     val sendingIntervalUiState = MutableStateFlow("")
     val sendingIntervalError = MutableStateFlow<String?>(null)
     val hasSendingIntervalChanged = MutableStateFlow(false)
-    val isSendingIntervalSaveable = getIsSaveableFlow(sendingIntervalError, hasSendingIntervalChanged)
+    val isSendingIntervalSaveable = isSaveableFlow(sendingIntervalError, hasSendingIntervalChanged)
+
+    // Message Commands related members
+    val isMessageCommandsEnabled = MutableStateFlow(false)
+    private val isLocationSharingEnabled = MutableStateFlow(false)
+
+    init {
+        fetchData()
+    }
+
+    fun onMessageTemplateChange(newMessageTemplate: String) = viewModelScope.launch {
+        Timber.d( "onMessageTemplateChange: newMessageTemplate: $newMessageTemplate")
+        messageTemplate.value = newMessageTemplate
+        hasMessageTemplateChanged.value = true
+        validateMessageTemplate(newMessageTemplate)
+    }
 
     fun onSendingIntervalChange(newSendingInterval: String) = viewModelScope.launch {
         sendingIntervalUiState.value = newSendingInterval
@@ -66,13 +72,13 @@ class MessageSettingsViewModel @Inject constructor(
         validateSendingInterval(newSendingInterval)
     }
 
-    private fun validateSendingInterval(interval: String) = viewModelScope.launch {
-        validateMessageSendingIntervalInputUseCase(interval).let {
-            sendingIntervalError.value = when(it) {
-                is ValidationResult.Error -> it.message
-                is ValidationResult.Success -> null
-            }
-        }
+    fun setIsMessageCommandsEnabled(newIsMessageCommandsEnabled: Boolean) = viewModelScope.launch {
+        setIsMessageCommandsEnabledUseCase(newIsMessageCommandsEnabled)
+    }
+
+    fun submitMessageTemplate() = viewModelScope.launch {
+        setMessageTemplateUseCase(messageTemplate.value)
+        hasMessageTemplateChanged.value = false
     }
 
     fun submitSendingInterval() = viewModelScope.launch {
@@ -82,28 +88,45 @@ class MessageSettingsViewModel @Inject constructor(
         hasSendingIntervalChanged.value = false
     }
 
-    val isMessageCommandsEnabled = MutableStateFlow(false)
+    private fun <T> isSaveableFlow(flow1: Flow<T?>, flow2: Flow<Boolean>): Flow<Boolean> =
+        combine(flow1, flow2) { item1, item2 -> item1 == null && item2 }
 
-    fun setIsMessageCommandsEnabled(newIsMessageCommandsEnabled: Boolean) = viewModelScope.launch {
-        setIsMessageCommandsEnabledUseCase(newIsMessageCommandsEnabled)
+    private fun validateMessageTemplate(template: String) {
+        Timber.d( "validateMessageTemplate: template: $template")
+        validate(template, sendingIntervalError) { input -> validateMessageTemplateInputUseCase(input) }
     }
 
-    private val isLocationSharingEnabled = MutableStateFlow(false)
 
-    init {
-        fetchData()
+    private fun validateSendingInterval(interval: String) {
+        validate(interval, sendingIntervalError) { input -> validateMessageSendingIntervalInputUseCase(input) }
+    }
+
+    private fun validate(input: String, errorFlow: MutableStateFlow<String?>, useCase: suspend (String) -> ValidationResult) {
+        viewModelScope.launch {
+            useCase(input).applyToFlow(errorFlow)
+        }
+    }
+
+    private fun ValidationResult.applyToFlow(flow: MutableStateFlow<String?>) {
+        flow.value = when (this) {
+            is ValidationResult.Error -> message
+            is ValidationResult.Success -> null
+        }
     }
 
     private fun fetchData() = viewModelScope.launch {
-        getMessageSettingsFlowUseCase().collect {
-            messageTemplate.value = it.template
+        getMessageSettingsFlowUseCase().collect { settings ->
+            Timber.d( "fetchData: settings: $settings")
+
+            Timber.d( "fetchData: settings.template: ${settings.template}")
+            messageTemplate.value = settings.template
             validateMessageTemplate(messageTemplate.value)
 
-            sendingInterval.value = it.sendingInterval
+            sendingInterval.value = settings.sendingInterval
             sendingIntervalUiState.value = sendingInterval.value.inWholeMinutes.toString()
             validateSendingInterval(sendingIntervalUiState.value)
 
-            isMessageCommandsEnabled.value = it.isMessageCommandsEnabled
+            isMessageCommandsEnabled.value = settings.isMessageCommandsEnabled
         }
 
         getIsLocationSharingEnabledFlowUseCase().collect {
@@ -114,4 +137,5 @@ class MessageSettingsViewModel @Inject constructor(
             isMessageCommandsEnabled.value = it
         }
     }
+
 }

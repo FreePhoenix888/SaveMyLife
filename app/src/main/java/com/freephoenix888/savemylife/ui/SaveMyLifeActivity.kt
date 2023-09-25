@@ -3,7 +3,6 @@ package com.freephoenix888.savemylife.ui
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -19,6 +18,7 @@ import com.freephoenix888.savemylife.ui.viewModels.*
 import com.vmadalin.easypermissions.EasyPermissions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SaveMyLifeActivity : AppCompatActivity() {
@@ -41,7 +41,7 @@ class SaveMyLifeActivity : AppCompatActivity() {
         saveMyLifeViewModel.viewModelScope.launch {
             saveMyLifeViewModel.isMainServiceEnabled.collect { isMainServiceEnabled ->
                 val mainServiceIntent = Intent(this@SaveMyLifeActivity, MainService::class.java)
-                Log.d(null, "activity onCreate saveMyLifeViewModel.isMainServiceEnabled.collect")
+                Timber.d( "activity onCreate saveMyLifeViewModel.isMainServiceEnabled.collect")
                 this@SaveMyLifeActivity.apply {
                     if (isMainServiceEnabled) {
                         startForegroundService(mainServiceIntent)

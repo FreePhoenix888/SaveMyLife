@@ -1,29 +1,33 @@
 package com.freephoenix888.savemylife.services
 
-import android.app.*
-import android.content.Context
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.provider.Telephony
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.broadcastReceivers.*
-import com.freephoenix888.savemylife.constants.MessageConstants
+import com.freephoenix888.savemylife.broadcastReceivers.DangerBroadcastReceiver
+import com.freephoenix888.savemylife.broadcastReceivers.DangerCancellationBroadcastReceiver
+import com.freephoenix888.savemylife.broadcastReceivers.PowerButtonBroadcastReceiver
+import com.freephoenix888.savemylife.broadcastReceivers.SmsBroadcastReceiver
 import com.freephoenix888.savemylife.constants.NotificationConstants
 import com.freephoenix888.savemylife.domain.models.PhoneNumber
-import com.freephoenix888.savemylife.domain.useCases.*
+import com.freephoenix888.savemylife.domain.useCases.GetIsDangerModeEnabledFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetIsMainServiceEnabledFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetMessageSettingsFlowUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetPhoneNumberListFlowUseCase
 import com.freephoenix888.savemylife.ui.SaveMyLifeActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,7 +60,7 @@ class MainService : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(TAG, "onStartCommand: ")
+        Timber.d( "onStartCommand: ")
         startForegroundService()
         return super.onStartCommand(intent, flags, startId).also { START_STICKY }
     }
@@ -117,7 +121,7 @@ class MainService : LifecycleService() {
 
     private suspend fun setupDangerModeBeforeStartTimerObserver() {
         dangerModeBeforeStartTimerInSeconds.collect {
-            Log.d(TAG, "NEW TIMER VALUE: $it")
+            Timber.d( "NEW TIMER VALUE: $it")
         }
     }
 
