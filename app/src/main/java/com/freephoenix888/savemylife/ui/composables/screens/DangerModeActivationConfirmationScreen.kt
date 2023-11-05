@@ -2,7 +2,6 @@ package com.freephoenix888.savemylife.ui.composables.screens
 
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
-import android.media.AudioAttributes
 import android.os.*
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -11,24 +10,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Campaign
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
-
-import com.freephoenix888.savemylife.R
-import com.freephoenix888.savemylife.navigation.NavigationDestination
 import com.freephoenix888.savemylife.ui.viewModels.SaveMyLifeViewModel
 import kotlinx.coroutines.delay
 
@@ -93,6 +84,7 @@ fun DangerModeActivationConfirmationScreen(
             vibrate(if(isDangerModeEnabled) 1000 else 500)
             isActionConfirmed = true
             saveMyLifeViewModel.setIsDangerModeEnabled(isDangerModeEnabled)
+            navController.popBackStack()
         }
         var secondsTimer by remember { mutableStateOf(10) }
 
