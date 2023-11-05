@@ -135,6 +135,8 @@ fun HomeScreen(
 //        })
 //    }
 
+    var readPhoneStatePermissionState = rememberPermissionState(permission = Manifest.permission.READ_PHONE_STATE)
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -167,7 +169,13 @@ fun HomeScreen(
             Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(
                     onClick = {
-                        saveMyLifeViewModel.setIsMainServiceEnabled(!isMainServiceEnabled)
+                        if (!readPhoneStatePermissionState.status.isGranted) {
+//                    TODO: Show toast
+//                    throw Exception("Manifest.permission.READ_PHONE_STATE permission is not granted")
+                            readPhoneStatePermissionState.launchPermissionRequest()
+                        } else {
+                            saveMyLifeViewModel.setIsMainServiceEnabled(!isMainServiceEnabled)
+                        }
                     },
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(containerColor = if (isMainServiceEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error),
@@ -200,7 +208,9 @@ fun HomeScreen(
                 mutableStateOf(5)
             }
 
+
             val dangerModeButtonOnClick: () -> Unit = {
+
                 if(isDangerModeEnabled) {
                     saveMyLifeViewModel.setIsDangerModeEnabled(false)
                 } else {
