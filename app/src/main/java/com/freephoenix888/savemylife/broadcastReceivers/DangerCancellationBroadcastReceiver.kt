@@ -1,10 +1,10 @@
 package com.freephoenix888.savemylife.broadcastReceivers
 
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.freephoenix888.savemylife.domain.useCases.GetDangerBroadcastReceiverPendingIntent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +21,9 @@ class DangerCancellationBroadcastReceiver:
     @ApplicationContext
     lateinit var applicationContext: Context
 
+    @Inject
+    lateinit var getDangerBroadcastReceiverPendingIntent: GetDangerBroadcastReceiverPendingIntent
+
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val alarmManager: AlarmManager by lazy { applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
@@ -28,12 +31,7 @@ class DangerCancellationBroadcastReceiver:
     override fun onReceive(context: Context?, intent: Intent?) {
         scope.launch {
             val intent = Intent(applicationContext, DangerBroadcastReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            val pendingIntent = getDangerBroadcastReceiverPendingIntent()
 
             alarmManager.cancel(pendingIntent)
         }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.freephoenix888.savemylife.domain.useCases.DoOnDangerUseCase
+import com.freephoenix888.savemylife.domain.useCases.GetDangerBroadcastReceiverPendingIntent
 import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalFlowUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,6 +34,9 @@ class DangerBroadcastReceiver:
     @Inject
     lateinit var getMessageSendingIntervalFlowUseCase: GetMessageSendingIntervalFlowUseCase
 
+    @Inject
+    lateinit var getDangerBroadcastReceiverPendingIntent: GetDangerBroadcastReceiverPendingIntent
+
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val alarmManager: AlarmManager by lazy { applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
 
@@ -47,13 +51,7 @@ class DangerBroadcastReceiver:
             }
 
             // Schedule the next alarm
-            val intent = Intent(applicationContext, DangerBroadcastReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            val pendingIntent = getDangerBroadcastReceiverPendingIntent()
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC,
                 System.currentTimeMillis() + getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds,
