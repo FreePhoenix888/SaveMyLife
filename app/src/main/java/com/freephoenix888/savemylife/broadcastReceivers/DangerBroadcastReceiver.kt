@@ -1,12 +1,12 @@
 package com.freephoenix888.savemylife.broadcastReceivers
 
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
+import android.widget.Toast
 import com.freephoenix888.savemylife.domain.useCases.DoOnDangerUseCase
 import com.freephoenix888.savemylife.domain.useCases.GetDangerBroadcastReceiverPendingIntent
 import com.freephoenix888.savemylife.domain.useCases.GetMessageSendingIntervalFlowUseCase
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class DangerBroadcastReceiver:
@@ -50,14 +51,31 @@ class DangerBroadcastReceiver:
                 Timber.e("Error in doOnDangerUseCase: $e")
             }
 
-            // Schedule the next alarm
+            // Check SCHEDULE_EXACT_ALARM
+            if (Build.VERSION.SDK_INT >= 31) {
+                if (!hasScheduleExactAlarmPermission()){
+                    showPermissionError()
+                }
+            }
+
             val pendingIntent = getDangerBroadcastReceiverPendingIntent()
+            @Suppress("ScheduleExactAlarm")
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC,
                 System.currentTimeMillis() + getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds,
                 pendingIntent
             )
         }
+    }
+
+    private fun hasScheduleExactAlarmPermission(): Boolean {
+        return PackageManager.PERMISSION_GRANTED == applicationContext.checkCallingPermission("android.permission.SCHEDULE_EXACT_ALARM")
+    }
+
+    private fun showPermissionError() {
+        // Display a toast message indicating the permission error
+        Toast.makeText(applicationContext, "SCHEDULE_EXACT_ALARM permission not granted", Toast.LENGTH_SHORT)
+            .show()
     }
 
 }
