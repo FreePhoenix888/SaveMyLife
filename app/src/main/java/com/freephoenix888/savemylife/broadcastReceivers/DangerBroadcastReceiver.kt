@@ -38,9 +38,15 @@ class DangerBroadcastReceiver:
 
     override fun onReceive(context: Context?, intent: Intent?) {
         scope.launch {
-            Timber.d( "DangerBroadcastReceiver onReceive: \n${System.currentTimeMillis()} \n${getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds} \n ${System.currentTimeMillis() + getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds}")
-            doOnDangerUseCase()
- 
+            try {
+                Timber.d("DangerBroadcastReceiver onReceive: \n${System.currentTimeMillis()} \n${getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds} \n ${System.currentTimeMillis() + getMessageSendingIntervalFlowUseCase().first().inWholeMilliseconds}")
+                doOnDangerUseCase()
+            } catch (e: Exception) {
+                // Handle exceptions from doOnDangerUseCase
+                Timber.e("Error in doOnDangerUseCase: $e")
+            }
+
+            // Schedule the next alarm
             val intent = Intent(applicationContext, DangerBroadcastReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
