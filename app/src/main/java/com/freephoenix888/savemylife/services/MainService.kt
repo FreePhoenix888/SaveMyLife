@@ -51,12 +51,13 @@ class MainService : LifecycleService() {
     private val powerButtonBroadcastReceiver = PowerButtonBroadcastReceiver()
 
     init {
-        setupLifecycleObservers()
     }
 
     override fun onCreate() {
         super.onCreate()
         registerPowerButtonBroadcastReceiver()
+        setupLifecycleObservers()
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
